@@ -3,7 +3,7 @@ Contributors: Dagon Design
 Donate link: http://www.dagondesign.com/
 Tags: Sitemap, generator
 Requires at least: 2.1
-Tested up to: 2.5.1
+Tested up to: 2.6.2
 Stable tag: trunk
 
 A highly customizable sitemap generator plugin for your WordPress powered site.

@@ -105,20 +105,28 @@
 
 <div id="wrap">
 
-  <div id="header" onclick="location.href='/';" style="cursor: pointer;"></div>
-  
-<?php include (TEMPLATEPATH . '/nav.php'); ?>
+  <div id="header" onclick="location.href='/';" style="cursor: pointer;"><?php show_media_header(); ?>
+<div id="headerText"><a href="/etc/directions" class="addr">1731 SE 10th Avenue, Portland, OR</a>        <a href="/etc/directions" class="hour">Tuesday - Saturday 11am - 7pm</a></div>
+	</div>
 
- <div id="contentCap_top"></div> 
+ <div id="contentCap_top">
+<div id="nav">
+	<?php
+	if (function_exists('dtab_list_tabs')) {
+		dtab_list_tabs();
+	}
+	?>
+	</div>
+</div> 
 
    <div id="main">
-<?php
-if ( $fg_single_column == "true" ) {
-    echo "<div id=\"content_gradient_onecolumn\">";
-} else {
-    echo "<div id=\"content_gradient\">"; 
-} ?>
 
+      <?php
+			if ( $fg_single_column == "true" ) {
+			echo "<div id=\"content_gradient_onecolumn\">";
+			} else {
+			echo "<div id=\"content_gradient\">";
+			} ?>
          <div id="content">
 
 

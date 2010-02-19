@@ -4,16 +4,18 @@
 		
 		<div class="post">
 	
-			<h1 class="posttitle" id="post-<?php the_ID(); ?>"><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e('Permanent link to'); ?> <?php the_title(); ?>"><?php the_title(); ?></a></h1>
+			<h1 class="posttitle" id="post-<?php the_ID(); ?>"> <?php the_title(); ?></h1>
 			
 			<div class="postentry">
-				<?php the_content("<p>Read the rest of this entry &raquo;</p>"); ?>
+				<?php the_content("<p>Read more...</p>"); ?>
 			<?php wp_link_pages(); ?>
 			</div>
 
 			<p class="postmeta">
 			<?php the_time('F j, Y') ?>  
-			&#183; <?php _e('Filed under'); ?> <?php the_category(', ') ?>
+			&#183; 
+			<?php if (the_category(', '))  the_category(); ?>
+			<?php if (get_the_tags()) the_tags(); ?>
 			<?php edit_post_link(__('Edit'), ' &#183; ', ''); ?>
 			</p>
 			
@@ -28,11 +30,10 @@
 		<p><?php _e('Sorry, but the page you requested cannot be found.'); ?></p>
 		
 		<h3><?php _e('Search'); ?></h3>
-		
+		<?php the_tags('<p>Tags: ', ', ', '</p>'); ?>
 		<?php include (TEMPLATEPATH . '/searchform.php'); ?>
 
 	<?php endif; ?>
-<!--
-<?php get_sidebar(); ?>
--->
-<?php get_footer(); ?>
+<?php the_tags('<p>Tags: ', ', ', '</p>'); ?>
+
+<?php require_once TEMPLATEPATH . '/footer.php'; ?>

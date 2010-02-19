@@ -5,7 +5,7 @@
 		<?php $post = $posts[0]; // Thanks Kubrick for this code ?>
 		
 		<?php if (is_category()) { ?>				
-		<h2><?php _e('Archive for '); echo single_cat_title(); ?></h2>
+		<h2><?php _e('Past '); echo single_cat_title(); ?></h2>
 		
  	  	<?php } elseif (is_day()) { ?>
 		<h2><?php _e('Archive for '); the_time('F j, Y'); ?></h2>
@@ -29,7 +29,7 @@
 			
 				<div class="postentry">
 				
-				<?php the_content("&raquo; Continue reading " . the_title('"','"',false), 0); ?>
+				<?php the_content("Read More..."); ?>
 				</div>
 			
 				<p class="postfeedback">

@@ -5,11 +5,11 @@ Plugin Name: Dagon Design Sitemap Generator
 Plugin URI: http://www.dagondesign.com/articles/sitemap-generator-plugin-for-wordpress/
 Description: Generates a fully customizable sitemap
 Author: Dagon Design
-Version: 3.14
+Version: 3.15
 Author URI: http://www.dagondesign.com
 */
 
-$ddsg_ver = '3.14';
+$ddsg_ver = '3.15';
 
 /* 
  * Set up options if they do not exist
@@ -1238,8 +1238,6 @@ function ddsg_permalinks($rules) {
 	}
 
 	if ($ddsg_sm_name != '') {	
-		$ddsg_sm_name = 'index.php/' . $ddsg_sm_name;	
-	
 		$newrules[$ddsg_sm_name . '/([0-9]{1,})/?$'] = 'index.php?&pagename=' . $ddsg_sm_name . '&pg=' . $match_form;
 		$newrules = array_merge($newrules,$rules);
 		return $newrules;

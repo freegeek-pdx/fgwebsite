@@ -61,3 +61,9 @@ msgstr "Die Zahl der Beiträge in jeder Kategorie steht in Klammern hinter dem K
 msgid "by"
 msgstr "von"
 
+msgid "Expand"
+msgstr "Erweitern Sie"
+
+msgid "Collapse"
+msgstr "Einsturz"
+

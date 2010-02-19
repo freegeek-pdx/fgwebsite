@@ -8,7 +8,7 @@
 			<div class="post" id="post-<?php the_ID(); ?>">
 				<h1><a href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>"><?php the_title(); ?></a> <?php edit_post_link('Edit', '<span class="edit">', '</span>'); ?></h1>
 				<div class="entry">
-					<?php the_content('Read the rest of this entry &raquo;'); ?>
+					<?php the_content('Read More...'); ?>
 				</div>
 			</div>
 
@@ -31,3 +31,5 @@
 	print '<p><a href="/about">' . __( 'Click here for more news.' ) . '</a></p>';	
 	require_once TEMPLATEPATH . '/footer.php';
 ?>
+<a href="http://fglime.chasing-daylight.com/index.php?sid=47239&lang=en"><span class="feedback">Feedback</span></a>
+	

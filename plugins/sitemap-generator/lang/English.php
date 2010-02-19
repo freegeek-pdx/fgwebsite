@@ -45,7 +45,7 @@ define('DDSG_GENERAL_OPTIONS', 'General Options');
 define('DDSG_ITEMS_PER_PAGE', 'Items per page:');
 define('DDSG_ITEMS_PER_PAGE_INFO', 'Set to 0 for unlimited');
 define('DDSG_SITEMAP_SLUG', 'Sitemap page slug:');
-define('DDSG_SITEMAP_SLUG_INFO', 'If using permalinks, enter the slug of your sitemap page');
+define('DDSG_SITEMAP_SLUG_INFO', 'If using permalinks, enter the slug of your sitemap page - Update your permalink structure after changing this!');
 define('DDSG_SITEMAP_GENERATION', 'Sitemap Generation');
 define('DDSG_SHOW', 'What to show:');
 define('DDSG_SHOW_BOTH', 'Pages and posts');

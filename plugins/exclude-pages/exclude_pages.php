@@ -1,10 +1,11 @@
 <?php
 /*
 Plugin Name: Exclude Pages from Navigation
-Plugin URI: http://www.simonwheatley.co.uk/wordpress-plugins/exclude-pages/
+Plugin URI: http://wordpress.org/extend/plugins/exclude-pages/
 Description: Provides a checkbox on the editing page which you can check to exclude pages from the primary navigation. IMPORTANT NOTE: This will remove the pages from any "consumer" side page listings, which may not be limited to your page navigation listings.
-Version: 1.4
+Version: 1.7
 Author: Simon Wheatley
+Author URI: http://simonwheatley.co.uk/wordpress/
 
 Copyright 2007 Simon Wheatley
 
@@ -38,10 +39,11 @@ function ep_exclude_pages( & $pages )
 	// If the URL includes "wp-admin", just return the unaltered list
 	// This constant, WP_ADMIN, only came into WP on 2007-12-19 17:56:16 rev 6412, i.e. not something we can rely upon unfortunately.
 	// May as well check it though.
-	if ( defined( 'WP_ADMIN' ) && WP_ADMIN == true ) return $pages;
-	// Fall back to checking the URL... let's hope they haven't got a page called wp-admin (probably not)
+	// Also check the URL... let's hope they haven't got a page called wp-admin (probably not)
 	// SWTODO: Actually, you can create a page with an address of wp-admin (which is then inaccessible), I consider this a bug in WordPress (which I may file a report for, and patch, another time).
-	if ( strpos( $_SERVER[ 'PHP_SELF' ], 'wp-admin' ) !== false ) return $pages;
+	$bail_out = ( ( defined( 'WP_ADMIN' ) && WP_ADMIN == true ) || ( strpos( $_SERVER[ 'PHP_SELF' ], 'wp-admin' ) !== false ) );
+	$bail_out = apply_filters( 'ep_admin_bail_out', $bail_out );
+	if ( $bail_out ) return $pages;
 	$excluded_ids = ep_get_excluded_ids();
 	$length = count($pages);
 	// Ensure we catch all descendant pages, so that if a parent
@@ -72,6 +74,7 @@ function ep_exclude_pages( & $pages )
 
 	// Reindex the array, for neatness
 	// SWFIXME: Is reindexing the array going to create a memory optimisation problem for large arrays of WP post/page objects?
+	if ( ! is_array( $pages ) ) $pages = (array) $pages;
 	$pages = array_values( $pages );
 
 	return $pages;
@@ -246,7 +249,6 @@ function ep_admin_sidebar_wp25()
 	echo '	</div><!-- #excludepagediv -->';
 }
 
-
 // Add some CSS into the HEAD element of the admin area
 function ep_admin_css()
 {
@@ -254,6 +256,8 @@ function ep_admin_css()
 	echo '		div.exclude_alert { font-size: 11px; }';
 	echo '		.new-admin-wp25 { font-size: 11px; background-color: #fff; }';
 	echo '		.new-admin-wp25 div.inner {  padding: 8px 12px; background-color: #EAF3FA; border: 1px solid #EAF3FA; -moz-border-radius: 3px; -khtml-border-bottom-radius: 3px; -webkit-border-bottom-radius: 3px; border-bottom-radius: 3px; }';
+	echo '		#ep_admin_meta_box div.inner {  padding: inherit; background-color: transparent; border: none; }';
+	echo '		#ep_admin_meta_box div.inner label { background-color: none; }';
 	echo '		.new-admin-wp25 div.exclude_alert { padding-top: 5px; }';
 	echo '		.new-admin-wp25 div.exclude_alert em { font-style: normal; }';
 	echo '	</style>';
@@ -266,29 +270,57 @@ function ep_hec_show_dbx( $to_show )
 	return $to_show;
 }
 
+// PAUSE & RESUME FUNCTIONS
+
+function pause_exclude_pages()
+{
+	remove_filter('get_pages','ep_exclude_pages');
+}
+
+function resume_exclude_pages()
+{
+	add_filter('get_pages','ep_exclude_pages');
+}
+
+// INIT FUNCTIONS
+
+function ep_init()
+{
+	// Call this function on the get_pages filter
+	// (get_pages filter appears to only be called on the "consumer" side of WP,
+	// the admin side must use another function to get the pages. So we're safe to
+	// remove these pages every time.)
+	add_filter('get_pages','ep_exclude_pages');
+}
+
+function ep_admin_init()
+{
+	// Add panels into the editing sidebar(s)
+	global $wp_version;
+	if ( version_compare( $wp_version, '2.7-beta', '>=' ) ) {
+		add_meta_box('ep_admin_meta_box', __('Exclude Pages'), 'ep_admin_sidebar_wp25', 'page', 'side', 'low');
+	} else {
+		add_action('dbx_page_sidebar', 'ep_admin_sidebar'); // Pre WP2.5
+		add_action('submitpage_box', 'ep_admin_sidebar_wp25'); // Post WP 2.5, pre WP 2.7
+	}
+
+	// Set the exclusion when the post is saved
+	add_action('save_post', 'ep_update_exclusions');
+
+	// Add some CSS to the admin header
+	add_action('admin_head', 'ep_admin_css');
+
+	// Call this function on our very own hec_show_dbx filter
+	// This filter is harmless to add, even if we don't have the 
+	// Hide Editor Clutter plugin installed as it's using a custom filter
+	// which won't be called except by the HEC plugin.
+	// Uncomment to show the control by default
+	// add_filter('hec_show_dbx','ep_hec_show_dbx');
+}
+
 // HOOK IT UP TO WORDPRESS
 
-// Add panels into the editing sidebar(s)
-add_action('dbx_page_sidebar', 'ep_admin_sidebar'); // Pre WP2.5
-add_action('submitpage_box', 'ep_admin_sidebar_wp25'); // Post WP 2.5
-
-// Set the exclusion when the post is saved
-add_action('save_post', 'ep_update_exclusions');
-
-// Call this function on the get_pages filter
-// (get_pages filter appears to only be called on the "consumer" side of WP,
-// the admin side must use another function to get the pages. So we're safe to
-// remove these pages every time.)
-add_filter('get_pages','ep_exclude_pages');
-
-// Add some CSS to the admin header
-add_action('admin_head', 'ep_admin_css');
-
-// Call this function on our very own hec_show_dbx filter
-// This filter is harmless to add, even if we don't have the 
-// Hide Editor Clutter plugin installed as it's using a custom filter
-// which won't be called except by the HEC plugin.
-// Uncomment to show the control by default
-// add_filter('hec_show_dbx','ep_hec_show_dbx');
+add_action( 'init', 'ep_init' );
+add_action( 'admin_init', 'ep_admin_init' )
 
 ?>

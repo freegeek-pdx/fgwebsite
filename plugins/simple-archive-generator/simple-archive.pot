@@ -62,3 +62,9 @@ msgstr	""
 
 msgid	"by"
 msgstr	""
+
+msgid	"Expand"
+msgstr	""
+
+msgid	"Collapse"
+msgstr	""

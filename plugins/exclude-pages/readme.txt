@@ -3,8 +3,8 @@ Contributors: simonwheatley
 Donate link: http://www.simonwheatley.co.uk/wordpress-plugins/
 Tags: get_pages, navigation, menu, exclude pages, hide pages
 Requires at least: 2.2.3
-Tested up to: 2.5
-Stable tag: 1.4
+Tested up to: 2.8.2
+Stable tag: 1.7
 
 This plugin adds a checkbox, “include this page in menus”, uncheck this to exclude pages from the 
 page navigation that users see on your site.
@@ -14,9 +14,48 @@ page navigation that users see on your site.
 This plugin adds a checkbox, “include this page in menus”, uncheck this to exclude pages from the 
 page navigation that users see on your site.
 
+It is possible to temporarily pause and resume the effect of Exclude Pages by using the new `<?php pause_exclude_pages(); ?>` and `<?php resume_exclude_pages(); ?>` templates tags. The following code will show a list of all pages in your site, even those normally hidden:
+
+`<?php pause_exclude_pages(); ?>
+<?php wp_list_pages('title_li=<h2>Pages</h2>' ); ?>
+<?php resume_exclude_pages(); ?>`
+
+Other plugin authors: the plugin does not operate on wp_list_pages while the user is on an admin page, if this is an issue you can take advantage of the `ep_admin_bail_out` filter and create a filter function which returns false to allow Exclude Pages to operate in the admin area.
+
 Any issues: [contact me](http://www.simonwheatley.co.uk/contact-me/).
 
+=== Incompatible With ===
+
+These plugins and themes don't use the standard WordPress functions to create it's menu, neither does it pass it's list of pages through the get_pages filter. To get them to work you will need to track down the bit of code in the theme/plugin which gets the pages and change it to apply the filter "get_pages" (I cannot be responsible for any unforseen effects of the changes you make, so please test thoroughly). The change to getting pages will probably look something like this:
+
+`$pages = apply_filters( 'get_pages', $pages );`
+
+Please [contact me](http://www.simonwheatley.co.uk/contact-me/) if you're completely stuck and we can discuss possible solutions.
+
+Exclude pages is incompatible with:
+
+* [WP CSS Dropdown Menus](http://wordpress.org/extend/plugins/wordpress-css-drop-down-menu/)
+* [Phantom theme](http://wordpress.org/extend/themes/phantom) - This theme
+
 == Change Log ==
+
+= v1.7 2009/7/29 =
+
+* ENHANCEMENT: You can now turn the Exclude Pages functionality off in the admin area through use of a filter (this is mainly of advantage to other plugin and theme author).
+
+= v1.6 2009/6/8 =
+
+* ENHANCEMENT: You can now turn the Exclude Pages functionality off before showing navigation which you want to be comprehensive (and show pages you've normally hidden). This is done with the new `<?php pause_exclude_pages(); ?>` and `<?php resume_exclude_pages(); ?>` templates tags.
+
+= v1.51 2009/4/23 =
+
+* FIX: Was throwing an error when $pages turned out not to be an array. Thanks to (Sandra)[http://www.vinyltangerine.com/] for reporting this.
+
+= v1.5 2008/11/03 =
+
+* ENHANCEMENT: Now compatible with WP 2.7-beta1
+* DOCS: Added a list of incompatible plugins
+* DOCS: Added a list of incompatible themes
 
 = v1.4 2008/01/02 =
 
@@ -60,9 +99,6 @@ I'm simply noting requests & bug reports here, I've not necessarily looked into 
 1. Create or edit a page, and enjoy the frisson of excitement as you exclude it from the navigation
 
 == Screenshots ==
-
-There appears to be a [bug](http://wordpress.org/support/topic/167316?replies=1) in this plugin site, which is causing screenshots to
-not be updated. This may mean there's not a WordPress 2.5 screenshot below.
 
 1. WP 2.5 - Showing the control on the editing screen to exclude a page from the navigation
 2. WP 2.5 - Showing the control and warning for a page which is the child of an excluded page

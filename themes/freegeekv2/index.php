@@ -9,7 +9,7 @@
 				
 
 				<div class="entry">
-					<?php the_content('Read the rest of this entry &raquo;'); ?>
+					<?php the_content('Read More...'); ?>
 				</div>
 
 				<p class="postmetadata">Posted in <?php the_category(', ') ?> | <?php edit_post_link('Edit', '', ' | '); ?></p>

@@ -5,7 +5,8 @@ WP-Cache Config Sample File
 See wp-cache.php for author details.
 */
 
-define( 'WPCACHEHOME', WP_CONTENT_DIR . '/plugins/wp-super-cache/' );
+if ( ! defined('WPCACHEHOME') )
+	define( 'WPCACHEHOME', WP_CONTENT_DIR . '/plugins/wp-super-cache/' );
 
 $cache_compression = 0; // Super cache compression
 $cache_enabled = false;
@@ -40,13 +41,10 @@ if( defined( 'VHOST' ) ) {
 // Array of files that have 'wp-' but should still be cached 
 $cache_acceptable_files = array( 'wp-comments-popup.php', 'wp-links-opml.php', 'wp-locations.php' );
 
-$cache_rejected_uri = array('wp-.*.php', 'index.php');
+$cache_rejected_uri = array('wp-.*\\.php', 'index\\.php');
 $cache_rejected_user_agent = array ( 0 => 'bot', 1 => 'ia_archive', 2 => 'slurp', 3 => 'crawl', 4 => 'spider');
 
-// Change this to 1 to enable experimental code that tries to serve slightly
-// out of date content to anon users while a new supercache file is being
-// generated.
-$cache_rebuild_files = 0;
+$cache_rebuild_files = 1;
 
 // DEBUG mode. Change this to your email address to be sent debug emails.
 // Remove comment (//) to enable and add back to disable.
@@ -55,7 +53,7 @@ $cache_rebuild_files = 0;
 // Disable the file locking system.
 // If you are experiencing problems with clearing or creating cache files
 // uncommenting this may help.
-//$wp_cache_mutex_disabled = 1;
+$wp_cache_mutex_disabled = 1;
 
 // Just modify it if you have conflicts with semaphores
 $sem_id = 5419;
@@ -66,7 +64,7 @@ if ( '/' != substr($cache_path, -1)) {
 
 $wp_cache_mobile = 0;
 $wp_cache_mobile_whitelist = 'Stand Alone/QNws';
-$wp_cache_mobile_browsers = '2.0 MMP, 240x320, AvantGo, BlackBerry, Blazer, Cellphone, Danger, DoCoMo, Elaine/3.0, EudoraWeb, hiptop, IEMobile, iPhone, iPod, KYOCERA/WX310K, LG/U990, MIDP-2.0, MMEF20, MOT-V, NetFront, Newt, Nintendo Wii, Nitro, Nokia, Opera Mini, Palm, Playstation Portable, portalmmm, Proxinet, ProxiNet, SHARP-TQ-GX10, Small, SonyEricsson, Symbian OS, SymbianOS, TS21i-10, UP.Browser, UP.Link, Windows CE, WinWAP';
+$wp_cache_mobile_browsers = 'Android, 2.0 MMP, 240x320, AvantGo, BlackBerry, Blazer, Cellphone, Danger, DoCoMo, Elaine/3.0, EudoraWeb, hiptop, IEMobile, iPhone, iPod, KYOCERA/WX310K, LG/U990, MIDP-2.0, MMEF20, MOT-V, NetFront, Newt, Nintendo Wii, Nitro, Nokia, Opera Mini, Palm, Playstation Portable, portalmmm, Proxinet, ProxiNet, SHARP-TQ-GX10, Small, SonyEricsson, Symbian OS, SymbianOS, TS21i-10, UP.Browser, UP.Link, Windows CE, WinWAP';
 
 // gzip the first page generated for clients that support it.
 $wp_cache_gzip_first = 0;

@@ -60,10 +60,7 @@
 	<?php if ('open' == $post-> comment_status) : ?> 
 		<?php /* No comments yet */ ?>
 		
-	<?php else : // comments are closed ?>
-		<?php /* Comments are closed */ ?>
-		<p><?php _e('Comments are closed.'); ?></p>
-		
+	
 	<?php endif; ?>
 	
 <?php endif; ?>

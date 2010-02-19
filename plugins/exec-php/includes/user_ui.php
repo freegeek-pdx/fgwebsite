@@ -35,20 +35,21 @@ class ExecPhp_UserUi
 
 	function action_user_profile()
 	{
-		global $profileuser, $wp_version;
+		global $profileuser;
+		global $wp_version;
 
 		if ($profileuser->has_cap(ExecPhp_CAPABILITY_EXECUTE_ARTICLES))
 		{
 			$usermeta =& $this->m_cache->get_usermeta($profileuser->ID);
 ?>
-<?php if (version_compare($wp_version, '2.5') >= 0 || substr($wp_version, 0, 3) == '2.5') : ?>
+<?php if (version_compare($wp_version, '2.5.dev') >= 0) : ?>
 	<h3><?php _es('Exec-PHP Settings', ExecPhp_PLUGIN_ID); ?></h3>
 <?php else : ?>
 	<fieldset><legend><?php _es('Exec-PHP Settings', ExecPhp_PLUGIN_ID); ?></legend>
 <?php endif; ?>
 	<table class="form-table">
 		<tr valign="top">
-			<th scope="row"><?php _es('Disable WYSIWYG Conversion Warning:', ExecPhp_PLUGIN_ID); ?></th>
+			<th scope="row"><?php _es('Disable WYSIWYG Conversion Warning', ExecPhp_PLUGIN_ID); ?></th>
 			<td>
 				<label for="<?php echo ExecPhp_POST_WYSIWYG_WARNING; ?>">
 					<input style="width: auto;" type="checkbox" name="<?php echo ExecPhp_POST_WYSIWYG_WARNING; ?>" id="<?php echo ExecPhp_POST_WYSIWYG_WARNING; ?>" value="true" <?php if ($usermeta->hide_wysiwyg_warning()) : ?>checked="checked" <?php endif; ?>/>
@@ -58,7 +59,7 @@ class ExecPhp_UserUi
 			</td>
 		</tr>
 	</table>
-<?php if (!(version_compare($wp_version, '2.5') >= 0 || substr($wp_version, 0, 3) == '2.5')) : ?>
+<?php if (version_compare($wp_version, '2.5.dev') < 0) : ?>
 	</fieldset>
 <?php endif; ?>
 <?php
