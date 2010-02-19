@@ -1,0 +1,422 @@
+# Glued Ideas Subtle POT.
+# Copyright (C) 2006
+# This file is distributed under the same license as the Glued Ideas Subtle package.
+# FIRST AUTHOR <cfrazier@gluedideas.com>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Glued Ideas Subtle\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-09-15 12:57-0700\n"
+"PO-Revision-Date: 2006-11-01 17:10+0100\n"
+"Last-Translator: Tomek Zielinski <tomasz.zielinski@gmail.com>\n"
+"Language-Team: Glued Ideas / Subtle Community <cfrazier@gluedideas.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: _e;__\n"
+"X-Poedit-Basepath: ./\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../comments.php:20
+msgid "This post is password protected. Enter the password to view comments."
+msgstr "Ten post jest chroniony hasłem. Wpisz hasło by obejrzeć komentarze."
+
+#: ../comments.php:35
+msgid "Write a Comment"
+msgstr "Skomentuj"
+
+#: ../comments.php:36
+msgid "Take a moment to comment and tell us what you think.  Some basic HTML is allowed for formatting."
+msgstr "Napisz, co myślisz na ten temat. Możesz użyć podstawowego formatowania HTML."
+
+#: ../comments.php:39
+msgid "You must be logged in to post a comment."
+msgstr "Musisz być zalogowany by napisać komentarz."
+
+#: ../comments.php:39
+msgid "Click here to login."
+msgstr "Kliknij tu by się zalogować."
+
+#: ../comments.php:44
+msgid "Logged in as"
+msgstr "Zalogowano jako"
+
+#: ../comments.php:44
+msgid "Click to log out"
+msgstr "Kliknij by się wylogować"
+
+#: ../comments.php:48
+msgid "Name"
+msgstr "Nazwisko"
+
+#: ../comments.php:49
+msgid "E-mail"
+msgstr "E-mail"
+
+#: ../comments.php:50
+msgid "Website"
+msgstr "Strona WWW"
+
+#: ../comments.php:54
+msgid "Allow comment box to float next to comments."
+msgstr "Pozwól ramce do wpisywania komentarza pływać przy komentarzach"
+
+#: ../comments.php:56
+msgid "Type your comment here."
+msgstr "Tu wpisz swój komentarz."
+
+#: ../comments.php:72
+msgid "Reader Comments"
+msgstr "Komentarze czytelników"
+
+#: ../comments.php:82
+msgid "What is this?"
+msgstr "Co to jest?"
+
+#: ../comments.php:84
+msgid "Comment Number:"
+msgstr "Liczba komentarzy:"
+
+#: ../comments.php:86
+msgid "Written by:"
+msgstr "Autor:"
+
+#: ../comments.php:87
+msgid "Posted on:"
+msgstr "Wpisano:"
+
+#: ../comments.php:100
+msgid "Be the first to leave a comment!"
+msgstr "Wpisz pierwszy komentarz!"
+
+#: ../comments.php:103
+msgid "Sorry, comments are closed."
+msgstr "Komentarze są wyłączone"
+
+#: ../footer.php:32
+msgid "E-mail Subscription"
+msgstr "Subskrypcja e-mailem"
+
+#: ../footer.php:42
+msgid "Powered by WordPress"
+msgstr "W oparciu o WordPress"
+
+#: ../footer.php:43
+msgid "Design by Glued Ideas"
+msgstr "Design - Glued Ideas"
+
+#: ../footer.php:44
+msgid "Icons by Fam Fam Fam"
+msgstr "Ikony - Fam Fam Fam"
+
+#: ../footer.php:47
+msgid "Unless otherwise specified, all content is made available under the <a href=\"http://creativecommons.org/licenses/by/2.5/\">Creative Commons License</a>."
+msgstr "O ile nie podano inaczej, zawartość jest dostępna pod <a href=\"http://creativecommons.org/licenses/by/2.5/\">Licencją Creative Commons</a>."
+
+#: ../functions.php:75
+msgid "This theme style does not support uploadable headers"
+msgstr "Ta szata graficzna nie wspiera aktualizowalnych nagłówków"
+
+#: ../functions.php:121
+msgid "Based on a joke my brother-in-law made, Subtle is the first public theme released by Glued Ideas.  Designed for sites that have multiple authors, Subtle also makes use of WordPress Widgets, making customization a snap.  For more information about this and other themes from Glued Ideas, <a href=\"http://blog.gluedideas.com\">visit us at our blog</a>."
+msgstr "Oparta na dowcipie mojego szwagra, Subtle jest pierwszą szatą graficzą autorstwa Glued Ideas. Przeznaczona dla stron mających wielu autorów, Subtle korzysta z WordPress Widgets, czyniąc personalizację banalną. Więcej informacj o szacie i innych produktach Glued Ideas <a href=\"http://blog.gluedideas.com\">na naszym blogu</a>."
+
+#: ../functions.php:124
+msgid "The following errors occured when saving your options:"
+msgstr "Podczas zapisywania opcji wystąpił błąd:"
+
+#: ../functions.php:135
+msgid "Theme Specific Options"
+msgstr "Opcje bieżącej szaty graficznej"
+
+#: ../functions.php:138
+msgid "Theme Style"
+msgstr "Szata graficzna"
+
+#: ../functions.php:151
+msgid "Please install a valid style in the /styles/ folder."
+msgstr "Zainstaluj działający wystrój w folderze /styles/"
+
+#: ../functions.php:155
+msgid "Select a style for this theme.  Find more styles at our <a href=\"http://blog.gluedideas.com/\">development blog</a>."
+msgstr "Wybierz wystrój dla tej szaty. Więcej wystrojów na naszym  <a href=\"http://blog.gluedideas.com/\">blogu twórców</a>."
+
+#: ../functions.php:158
+msgid "Upload Header"
+msgstr "Wyślij nagłówek"
+
+#: ../functions.php:160
+msgid "Select an image from your computer to use as your header image.<br />Note: File dimensions should be 820 x 145 pixels."
+msgstr "Wybierz obrazek do użycia w roli nagłówka.<BR />Wskazówka: pożądane wymiary to 820x145 pikseli"
+
+#: ../functions.php:163
+msgid "Reset Header"
+msgstr "Resetuj nagłówek"
+
+#: ../functions.php:164
+msgid "Reset the Default style's header."
+msgstr "Resetuj styl nagłówka do domyślnego"
+
+#: ../functions.php:167
+msgid "Show Metalinks"
+msgstr "Pokazuj metalinki"
+
+#: ../functions.php:168
+msgid "Show Comment Number and Technorati / Digg / Delicious links with posts."
+msgstr "Pokazuj liczbę komentarzy z odnośnikami do Technorati / Digg / Delicious"
+
+#: ../functions.php:172
+msgid "Show Sub-Pages"
+msgstr "Pokazuj podstrony"
+
+#: ../functions.php:173
+msgid "Show sub-pages when viewing a page."
+msgstr "Pokazuj podstrony podczas oglądania strony"
+
+#: ../functions.php:176
+msgid "Site Description"
+msgstr "Opis witryny"
+
+#: ../functions.php:177
+msgid "If a description for the site is given here, it will be displayed as a prominent information box on the home page."
+msgstr "Jeśli pojawi się tu opis strony, zostanie pokazany w wyróżnionej ramce na stronie głównej"
+
+#: ../functions.php:180
+msgid "Number of Leads"
+msgstr "Liczba głównych artykułów"
+
+#: ../functions.php:182
+msgid "The number of posts on the home page to be shown as \"lead stories\" - these will display with their full-text (up to the \"more\" tag)."
+msgstr "Liczba postów pokazywanych na stronie głównej w całości (do tagu \"more\"/\"więcej\")"
+
+#: ../functions.php:185
+msgid "Categories to Display"
+msgstr "Wyświetlaj kategorie"
+
+#: ../functions.php:187
+msgid "Display only the categories you want to display in your front-page loop.  Just provide a comma-separated list of category slugs you'd like to use."
+msgstr "Wyświetlaj na stronie głównej tylko niektóre kategorie postów. Podaj oddzielone przecinkami kategorie których chcesz użyć."
+
+#: ../functions.php:195
+msgid "Gravatar Options"
+msgstr "Opcje gravatarów"
+
+#: ../functions.php:196
+msgid "Allow your readers to show off their personalities in comments through <a href=\"http://gravatar.com\">Gravatars</a>."
+msgstr "Pozwól czytelnikom wyrażać osobowość za pomocą  <a href=\"http://gravatar.com\">Gravatarów</a>."
+
+#: ../functions.php:199
+msgid "Show Gravatars"
+msgstr "Pokazuj grawatary"
+
+#: ../functions.php:200
+msgid "Show gravatars on comments (replaces comment number)."
+msgstr "Pokazuj grawatary przy komentarzach (zamiast numeru)"
+
+#: ../functions.php:203
+msgid "Default Gravatar URL"
+msgstr "Domyślny Gravatar URL"
+
+#: ../functions.php:204
+msgid "Provide a URL to the default image used when a user doesn't have a gravatar."
+msgstr "URl do obrazka, gdy użytkownik nie ma gravatara"
+
+#: ../functions.php:207
+msgid "Gravatar Rating"
+msgstr "Ranking Gravatara"
+
+#: ../functions.php:208
+msgid "Is your site PG rated?  Check out the Gravatar site for more information."
+msgstr "Czy twoja strona ma być niedostępna dla najmłodszych? Sprawdź stronę Gravatarów by poznać szczegóły"
+
+#: ../functions.php:216
+msgid "Feedburner Options"
+msgstr "Opcje FeedBurnera"
+
+#: ../functions.php:217
+msgid "Make reading your RSS feeds easier for your audience by signing up with <a href=\"http://www.feedburner.com\">FeedBurner</a>."
+msgstr "Uczyń czytanie kanałów RSS łatwiejszym poprzez skorzystanie z  <a href=\"http://www.feedburner.com\">FeedBurner</a>."
+
+#: ../functions.php:220
+msgid "E-mail Subscription (Feed ID)"
+msgstr "Sybskrybcja e-mailowa (Feed ID)"
+
+#: ../functions.php:221
+msgid "If you have enabled e-mail subscriptions, type the numeric ID for your feed.  You can find this by going to \"My Feeds\" and then clicking on the feed for this blog.  The URL will end with \"?id=XXXXXXX\" - that number is the Feed ID."
+msgstr "Jeśli włączyłem subskrypcję e-mail, wpisz numeryczny ID feed-a. Możesz go znaleźć przechodząc do strony \"My feeds\" i klikając na feed tego bloga. W adresie znajdziesz ciąg \"?id=XXXXXXX\" - ten numer jest poszukiwanym Feed ID."
+
+#: ../functions.php:224
+msgid "Feedburner Link"
+msgstr "Feedburner link"
+
+#: ../functions.php:225
+msgid "The URL that people go to for this feed."
+msgstr "URL za pomocą którego ludzie pobierają ten feed"
+
+#: ../functions.php:228
+msgid "Show Feedflare"
+msgstr "Pokazuj Feedflare"
+
+#: ../functions.php:229
+msgid "Show FeedFlare on my posts."
+msgstr "Pokazuj FeedFlare przy moich postach"
+
+#: ../header.php:87
+#: ../search.php:95
+msgid "Find this"
+msgstr "Znajdź"
+
+#: ../header.php:94
+msgid "Home"
+msgstr "Początek"
+
+#: ../home.php:44
+msgid "Previous Articles"
+msgstr "Poprzednie artykuły"
+
+#: ../home.php:52
+#: ../search.php:50
+#: ../single.php:27
+msgid "Posted by"
+msgstr "Napisał"
+
+#: ../home.php:57
+#: ../single.php:47
+msgid "No Responses"
+msgstr "Brak odpowiedzi"
+
+#: ../home.php:57
+#: ../single.php:47
+msgid "One Response"
+msgstr "Jedna odpowiedź"
+
+#: ../home.php:57
+#: ../single.php:47
+msgid "Responses"
+msgstr "Odpowiedzi"
+
+#: ../home.php:68
+msgid "Leave a comment..."
+msgstr "Skomentuj..."
+
+#: ../home.php:68
+msgid " or "
+msgstr " lub "
+
+#: ../home.php:68
+msgid "Read comments..."
+msgstr "Czytaj komentarze..."
+
+#: ../home.php:85
+msgid "Oops - There's Nothing Here"
+msgstr "Aj, niczego tu nie ma"
+
+#: ../home.php:86
+msgid "It looks like the blog owner hasn't written anything yet!"
+msgstr "Wygląda na to, że autor niczego jeszcze nie napisał"
+
+#: ../search.php:28
+msgid "Author Archives for"
+msgstr "Archiwa autora"
+
+#: ../search.php:30
+msgid "Search Results for"
+msgstr "Przeszukaj rezultaty"
+
+#: ../search.php:32
+msgid "Site Archives"
+msgstr "Archiwa serwisu"
+
+#: ../search.php:39
+#: ../search.php:67
+msgid "Next Page &raquo;"
+msgstr "Następna strona &raquo;"
+
+#: ../search.php:40
+msgid "&laquo; Previous Page"
+msgstr "&laquo; Poprzednia strona"
+
+#: ../search.php:68
+msgid "&laquo; Previous Entries"
+msgstr "&laquo; Poprzednie wpisy"
+
+#: ../search.php:75
+msgid "No posts were found.  Try searching again."
+msgstr "Nie znaleziono żadnych postów. Spróbuj ponownie."
+
+#: ../search.php:86
+msgid "Visit Author's Website"
+msgstr "Odwiedź witrynę autora"
+
+#: ../search.php:87
+msgid "Author's Feed"
+msgstr "Feed autora"
+
+#: ../search.php:92
+msgid "Find It Quickly"
+msgstr "Znajdź szybko"
+
+#: ../search.php:93
+msgid "Find what you're looking for quickly by using our keyword search.  Can't find it?  Try our links below."
+msgstr "Znajdź poszukiwane posty korzystając z wyszukiwania słów kluczowych. Nie znasz ich? Wypróbuj linki poniżej"
+
+#: ../search.php:105
+msgid "Authors"
+msgstr "Autorzy"
+
+#: ../search.php:106
+msgid "Select an author for posts and author information."
+msgstr "Wybierz autora dla postu i informacje o autorze"
+
+#: ../search.php:113
+msgid "Monthly Archives"
+msgstr "Archiwa miesięczne"
+
+#: ../search.php:114
+msgid "Find posts by the month they were written"
+msgstr "Znajdź posty według miesiąca powstania"
+
+#: ../search.php:125
+#: ../single.php:60
+msgid "Categories"
+msgstr "Kategorie"
+
+#: ../search.php:126
+msgid "Find posts using the \"tags\" provided below."
+msgstr "Znajdź posty używając poniższych \"tagów\""
+
+#: ../single.php:41
+msgid "Information and Links"
+msgstr "Informacje i odnośniki"
+
+#: ../single.php:42
+msgid "Join the fray by commenting, tracking what others have to say, or linking to it from your blog."
+msgstr "Dołącz do kompanii komentując, śledząc komentarze i linkując posty ze swojego bloga"
+
+#: ../single.php:45
+msgid "Information"
+msgstr "Informacje"
+
+#: ../single.php:51
+msgid "Feeds and Links"
+msgstr "Feed-y i linki"
+
+#: ../single.php:52
+msgid "Comment Feed"
+msgstr "Feed komentarzy"
+
+#: ../single.php:53
+msgid "From This Author"
+msgstr "Inne tego autora"
+
+#: ../single.php:67
+msgid "Other Posts"
+msgstr "Inne posty"
+
+#: ../single.php:92
+msgid "Sorry, no posts matched your criteria."
+msgstr "Żaden post nie spełnia podanych kryteriów"
+

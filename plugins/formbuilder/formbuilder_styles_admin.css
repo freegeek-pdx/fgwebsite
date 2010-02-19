@@ -1,0 +1,40 @@
+/* Generic FormBuilder Display Configuration */
+form.formBuilderForm {
+	text-align: left;
+	padding: 10px;
+ 	clear: both;
+}
+
+span.formbuilderLabel {
+	padding-bottom: 4px;
+	display: block;
+	width: 150px;
+	float: left;
+}
+
+div.info-box-formbuilder div.inside {
+	padding: 6px;
+}
+
+.formBuilderAdminForm table textarea {
+	height: 300px;
+}
+
+span.fbexport {
+	display: block;
+	position: relative;
+	float: right;
+}
+
+#formbuilder-admin-left, #formbuilder-admin-right {
+	width: 49%;
+	float: left;
+}
+
+#formbuilder-admin-right {
+	padding-left: 2%;
+}
+
+.clear {
+	clear: both;
+}

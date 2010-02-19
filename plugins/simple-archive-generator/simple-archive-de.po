@@ -1,0 +1,63 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Simple Archive - German - v1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-05-30\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Peter Sterling <webmaster@sterling-adventures.co.uk>\n"
+"Language-Team: Ingo Terpelle - http://www.xing.com/profile/Ingo_Terpelle <it@exanto.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+msgid "There are "
+msgstr "Es gibt "
+
+msgid " posts in "
+msgstr " Beiträge in "
+
+msgid " categories with "
+msgstr " Kategorien mit "
+
+msgid " comments"
+msgstr " Kommentaren"
+
+msgid " (plus "
+msgstr " (plus "
+
+msgid " spam comments)"
+msgstr " Spam Kommentare)"
+
+msgid "alphabetically."
+msgstr "alphabetisch sortiert."
+
+msgid "in the order created."
+msgstr "in Erstellungsreihenfolge sortiert."
+
+msgid "Categories are sorted "
+msgstr "Kategorien sind "
+
+msgid "Hierarchical categories are grouped and indented under their parent category."
+msgstr "Hierarchische Kategorien sind gruppiert und eingerückt unter ihrer Elternkategorie."
+
+msgid "Reports are listed "
+msgstr "Beiträge sind "
+
+msgid "once only, under the category they are first shown."
+msgstr "einmalig aufgeführt unter der Kategorie in der sie zuerst auftauchen."
+
+msgid "under all applied categories."
+msgstr "unter jeder passenden Kategorie aufgeführt."
+
+msgid "A count (in brackets) is given of comments received against individual reports."
+msgstr "Die Zahl in Klammern hinter den Beiträgen steht für erhaltene Kommentare in diesen Beiträgen."
+
+msgid "The number of reports under each category is given (in brackets) after each category name.  Reports may be filed under more than one category and are included in the total for all categories under which they are filed, but are not included in a parent category's total."
+msgstr "Die Zahl der Beiträge in jeder Kategorie steht in Klammern hinter dem Kategorienamen. Beiträge können unter mehr als einer Kategorie abgelegt sein, und sind in der Gesamtwertung für die Kategorien enthalten in denen sie abgelegt sind. Sie zählen jedoch nicht für die Elternkategorien."
+
+msgid "by"
+msgstr "von"
+

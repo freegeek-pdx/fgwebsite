@@ -1,0 +1,343 @@
+/*
+Theme Name: FG Test
+Theme URI: http://freegeek.org/
+Description: New Custom Theme for Freegeek.org
+Version: 1.0
+Author: MW
+Author URI: http://freegeek.org/
+*/
+
+/*
+TODO:
+	1. Find min-height hack for win - stu nichols site.
+	2. Deal with calendar pages - maybe create one column design???
+	3. Uncategorized - move to new "news" cat and update ID in options table.
+	4. Image Captions - 
+*/
+
+/*  Html Elements
+-----------------------------------------*/
+	body {
+		position:relative; /* just in case */
+		font-size: 63%; /* Resets 1em to 10px */
+		font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
+		background: #013E51;
+		color: #2a3845;
+		text-align: center;/* This is reset in the style declaration for #wrap */
+		}
+	.indentleft{
+		padding-left:2.8em;
+		}
+	/* Root Font Sizes */
+		h1{ font-size:2.4em; color:#c72e31; }
+			h1 span.edit{font-size:.5em;font-weight:normal;color:#000;}
+		h2{ font-size:2.0em; color:#3b4337; }
+			li h2{ font-size: 1.50em;}
+		h3{ font-size:1.8em; color:#3b4337;font-style:italic; }
+			li h3{ font-size: 1.33em; }
+		h4{ font-size:1.6em; color:#3b4337; }
+			li h4{ font-size: 1.17em; }
+		h5{ font-size:1.4em; color:#3b4337; }
+			li h5{ font-size: 1.0em; }
+		h6{ font-size:1.2em; color:#3b4337; }
+			li h6{ font-size: .83em; }
+		
+		p,li,td,dd,dt,blockquote,code,samp,kbd,tt,
+		.section { font-size:1.2em; }
+		pre{ font-size:1.5em; }
+		big{font-size:1.5em;}
+		small{ font-size:.8em; }
+		
+	/* Nested Font Sizes */
+		li li,
+		li p,
+		blockquote p, 
+		p code, p samp, p kbd, p tt,
+		blockquote blockquote,
+		pre code{ font-size:1em }
+		
+	/* Font Colors & Styles */
+
+		b,h1,h2,h3,h4,h5,h6,label,th,strong,dt{
+			font-weight:bold;
+			}
+		p,li,td,dd,dt,code,blockquote{
+			color:#444;
+			line-height:1.75em;
+			}
+		td, th{
+			vertical-align:top;
+			}
+		address{
+			font-style:normal;
+			}
+			
+	/* Structure */
+		h1,h2,h3,h4,h5,h6,p,blockquote,pre,table,fieldset,textarea{
+			padding:0;
+			margin-top:0;
+			margin-bottom:7px;
+			}
+		h2,h3,h4,h5,h6{
+			margin-top:14px;
+			}
+		li h2,li h3,li h4,li h5,li h6{
+			margin-bottom:0;
+			padding-bottom:0;
+			}
+		ul,ol{
+			padding:0;
+			margin:1em 0 1em 3.5em;
+			}
+		img{
+			border-width:0;
+			}
+		th{
+			padding:1.7em 0 1em 0;
+			}
+		th.first{
+			padding-top:0;
+			}
+		ul{
+			list-style-image: url(images/bullet.gif);
+			list-style-position:outside;
+			}
+		li li,
+		li dt, li dd, 
+		blockquote blockquote{ font-size:1em }
+
+	
+/* Begin Layout + Design */
+#wrap{
+	width:976px;
+	margin:0 auto;
+	text-align:left;
+	}
+#header{
+	position:relative;
+	padding:220px 0 0 ;
+	background: transparent url("images/header.jpg") left top no-repeat scroll;
+	}
+#linkhome{
+	position:absolute;
+	top:58px;
+	left:15px;
+	width:305px;
+	height:45px;
+	}
+#header ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	background: transparent url("images/header-mid.gif") left top repeat-y scroll;
+	}
+#header li{
+	display:inline;
+	border-left: 2px solid #444;
+	padding: 0 0.2em 0 0.4em;
+	}
+#header_bottom{
+	height:26px;
+	background: transparent url("images/header-bottom.gif") left top no-repeat scroll;
+	}
+#subnav,
+#subnav_one_column{
+	padding:0 0 27px;
+	}
+#subnav{
+	padding:0 0 27px;
+	background:transparent url("images/content-top.gif") left bottom no-repeat scroll;
+	}
+#subnav_one_column{
+	background:transparent url("images/content-top-one-column.gif") left bottom no-repeat scroll;
+	}
+#subnav ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	}
+#subnav li{
+	display:inline;
+	padding-right:1em;
+	}
+#main{
+	width:100%; /* Triggers "has layout" for IE 6??? me thinks :) Footer will look busted without this*/
+	background: transparent url("images/content-mid-flip.gif") left top repeat-y scroll;
+	}
+#main_one_column{
+	width:100%; /* Triggers "has layout" for IE 6??? me thinks :) Footer will look busted without this*/
+	background: transparent url("images/content-mid-one-column.gif") left top repeat-y scroll;
+	}
+	#content_gradient{
+		width:603px;
+		float:left;
+		/*background: transparent url("images/content-gradient.gif") left bottom repeat-x scroll;*/
+		}
+	#content{
+		min-height:175px;
+		}
+	#sidebar_gradient{
+		display:inline; /* For IE6: http://www.positioniseverything.net/explorer/floatIndent.html */
+		width:208px;
+		float:right;
+		margin: 0 10px 0 0 ;
+		/*background: transparent url("images/content-gradient.gif") left top repeat-x scroll;*/
+		}
+	#sidebar ul,
+	#sidebar ol{
+		margin:0;
+		padding:0;
+		list-style-type:none;
+		}
+#footer,
+#footer_one_column{
+	padding:38px 0 0;
+	}
+#footer{
+	padding:38px 0 0;
+	background: transparent url("images/footer-top.gif") left top no-repeat scroll;
+	}
+#footer_one_column{
+	background: transparent url("images/footer-top-one-column.gif") left top no-repeat scroll;
+	}
+#footer_content{
+	background: transparent url("images/footer-mid.gif") left top repeat-y scroll;
+	}
+#footer_content p{
+	margin:0;
+	padding:0;
+	font-weight:bold;
+	line-height:1.25em;
+	color:#e7cb73;
+	}
+#footer_bottom{
+	padding-top:20px;
+	background: transparent url("images/footer-bottom.gif") left top no-repeat scroll;
+	}
+#footer_bottom{
+	color:#739baa;
+	text-align:center;
+	}
+.clear {
+	clear: both;
+}
+
+/* padding for all main containers
+--------------------------------------------------- */
+	#header ul, #subnav{
+		padding-left:13px;
+		}
+	#footer_content{
+		padding:0 25px 0 15px;
+		}
+	#content, #sidebar{
+		padding:0 20px 20px;
+		}
+	
+		
+/* Links
+--------------------------------------------------- */
+	a{text-decoration:none;}
+	#nav a{font-size:.9em;text-transform:uppercase;letter-spacing:-.025em;}
+	#nav a:link{color:#000;}
+	#nav a:visited{color:#000;}
+	#nav a:hover{color:#000;}
+	#nav a:active{color:#000;}
+	
+	#subnav a{}
+	#subnav a:link{color:#d6222b;}
+	#subnav a:visited{color:#d6222c;}
+	#subnav a:hover{color:#000;}
+	#subnav a:active{color:#d6222b;}
+	
+	#main a{text-decoration:none;}
+	#main a:link{color:#c72e31;}
+	#main a:visited{color:#9f2527;}
+	#main a:hover{color:#f4383c;text-decoration:underline;}
+	#main a:active{color:#ff0000;}
+	
+	#footer a:link{color:#000;}
+	#footer a:visited{color:#000;}
+	#footer a:hover{color:#000;}
+	#footer a:active{color:#000;}
+	
+	h1 a, h2 a, h3 a, h4 a, h5 a, h6 a{
+		text-decoration :none;
+		}
+	
+	#nav li.current_page_item a,
+	#nav li.current_page_parent a,
+	#nav li.current_page_ancestor a{ color:#d6222b;font-weight:bold; }
+	
+	#subnav li.current_page_item a,
+	#subnav li.current_page_parent a,
+	#subnav li.current_page_ancestor a{ color:#000;font-weight:bold; }
+
+/* Classes
+--------------------------------------------------- */
+	.section{
+		background: #a9c2a0;
+		margin:0 -20px 10px;
+		padding:.55em;
+		text-align:center
+		}
+
+		
+/* From WordPress Default Theme */
+	p img {
+		padding: 0;
+		max-width: 100%;
+		}
+	img.centered {
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		}
+	img.alignright {
+		padding: 4px;
+		margin: 0 0 2px 7px;
+		display: inline;
+		}
+	img.alignleft {
+		padding: 4px;
+		margin: 0 7px 2px 0;
+		display: inline;
+		}
+	.alignright {
+		float: right;
+		}
+	.alignleft {
+		float: left;
+		}
+	.center{
+		text-align:center;
+	}
+	.left{text-align:left;}
+	.right{text-align:right;}
+	.justify{text-align:justify;}
+
+	.job_details{
+		margin:0;
+		padding:0;
+		background:#f7f8ff;
+		float:right;
+		width:250px;
+		border: 1px solid #c6c9ff;
+		color: #000;
+		background-color:#fff;
+	}
+	.job_details dt{
+		margin:0;
+		padding:0;
+		text-align:center;
+		color:#000;
+		font-weight:bold;
+		background:#f0f0ff;
+		padding:3px;
+	}
+	.job_details dd{
+		margin:0;
+		padding:1em 1em 1em 0;
+		color:#000;
+		background:#fff;
+	}

@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>iBegin Share $$SVN:VERSION$$</title>
+    <link rel="stylesheet" href="global.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="../share/css/share-tool.css?3" />
+    <script src="../share/script/share.js?2" type="text/javascript"></script>
+    <script type="text/javascript">iBeginShare.base_url = '../';</script>
+</head>
+
+<body>
+    <div id="top">
+        <div id="header">
+            <h1>iBegin Share <span>$$SVN:VERSION$$</span></h1>
+            <h4>Brought to you by <a href="http://labs.ibegin.com/">iBegin Labs</a></h4>
+        </div>
+    
+        <div class="message">
+            <p>iBegin Share is an easy to use tool that allows you to make it easy to share and spread your content across the web. Features built-in support for email, the social web &amp; bookmarks, Word Document, PDF, and printing.</p>
+        </div>
+        <div id="toc">
+            <h2>Table of Contents</h2>
+            <ol>
+                <li><a href="#basics">Quick Start</a></li>
+                <li><a href="#usage">Usage Example</a></li>
+                <li><a href="#bookmarks">Bookmarks Services</a></li>
+                <li><a href="#plugins">Plug-ins</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#license">License</a></li>
+            </ol>
+        </div>
+
+        <div class="hastoc">
+            <h2 id="basics"><span><a href="#top">Top</a></span>Quick Start</h2>
+            <p>iBegin Share can be setup in two different environments. It can work both with PHP (and some additional plug-ins) and without PHP. The first thing you will need to do, however, with either configuration, is to include the files in your website's header with two lines:</p>
+
+            <pre>&lt;script type="text/javascript" src="share/script/share.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" href="share/css/share-tool.css" type="text/css" media="screen"/&gt;</pre>
+
+            <h3>share/script/share.js</h3>
+            <p>You will need to update the javascript file with the absolute URL of your <code>/share/</code> directory. Your absolute path is the base URL including the /share/ folder.</p>
+            <p>Example: <code>share.php</code> is located at <code>http://mydomain.com/mysite/share/share.php</code> then your absolute URL is <code>/mysite/share/</code>.</p>
+            <pre>// Change this to your base URL
+base_url: '/mysite/share/',</pre>
+
+            <p>The plug-ins which require PHP are <strong>Email</strong>, <strong>My PC</strong>, and <strong>Print</strong>. If you do not wish to use these then you may disable them in <code>share/script/share.js</code> (at the end of the file) and skip the following settings. In the <code>share/share.php</code> you will find a few options for managing the emails sent via the plugin. These are actually function calls which return strings to send to the user. Basic PHP knowledge is required to edit this.</p>
+
+            <h3>share/share.php</h3>
+            <pre>// The subject of the email to send. (Eg. "You've got new message about iBegin Share")
+function generateEmailSubject($title, $link, $from_name, $from_email, $to_name, $to_email)
+{
+    return "{$from_name} wants you to see this link";
+}
+// The plain text body of the email to send
+function generateEmailBody($title, $link, $from_name, $from_email, $to_name, $to_email, $message=null)
+{
+    $output = array();
+    $output[] = $from_name . ' thought you might find this link interesting:';
+    $output[] = '';
+    $output[] = 'Title: ' . $title;
+    $output[] = 'Link: ' . $link;
+    if ($message) $output[] = 'Message: ' . messageFilter($message);
+    $output[] = '';
+    $output[] = '-----------------------------';
+    $output[] = $from_name . ' is using iBegin Share (http://labs.ibegin.com/share/)';
+    $output[] = '-----------------------------';
+    return implode("\r\n", $output);
+}</pre>
+
+        </div>
+
+        <h2 id="usage"><span><a href="#top">Top</a></span>Usage Examples</h2>
+
+        <p>There are three variables you will need to pass to attach a button. All variables are optional, but most likely you will want to at least specify <code>link</code> and <code>title</code>. If these are not present they default to the current page's title and url.</p>
+
+        <p>The third variable, <code>content</code> variable should be the <strong>full URL</strong> as described in PHP's <code>fopen()</code> <a href="http://www.php.net/fopen">documentation</a> to the page which produces the trimmed content. If you pass the <code>content</code> parameter it will enable two additional plugins, <strong>My Computer</strong> and <strong>Print</strong>.</p>
+
+        <h3>Shiny Button</h3>
+
+        <pre>&lt;span id="share-tool"&gt;&lt;script type="text/javascript"&gt;iBeginShare.attachButton('share-tool', {
+    link: 'http://labs.ibegin.com/share/',
+    title: 'Local Space Innovation'
+});&lt;/script&gt;&lt;/span&gt;</pre>
+        
+        <h3>Example</h3>
+        
+        <p><span id="share-tool"><script type="text/javascript">iBeginShare.attachButton('share-tool', {link: 'http://labs.ibegin.com/share/', title: 'Local Space Innovation'});</script></span></p>
+
+        <h3>Plain Text Link</h3>
+
+        <pre>&lt;span id="share-tool"&gt;&lt;script type="text/javascript"&gt;iBeginShare.attachTextLink('share-tool2', {
+    link: 'http://labs.ibegin.com/share/',
+    title: 'Local Space Innovation'
+});&lt;/script&gt;&lt;/span&gt;</pre>
+
+        <h3>Example</h3>
+
+        <p><span id="share-tool2"><script type="text/javascript">iBeginShare.attachTextLink('share-tool2', {link: 'http://labs.ibegin.com/share/', title: 'Local Space Innovation'});</script></span></p>
+
+        <h2 id="bookmarks"><span><a href="#top">Top</a></span>Bookmarks Services</h2>
+
+    	<p>The bookmarks system is flexible enough to allow you to add additional bookmarks to the list.</p>
+	
+    	<h3>Add Bookmark Services</h3>
+    	<p>Due to the way iBegin Share plugins work adding a bookmark service is extremely easy. You will need to do three things to add a plugin:</p>
+    	<ol>
+    		<li>Add an icon for this service, which will be a cleaned version of the service name in  <code>share/images/icons/</code>. It should be formated as <code>bm_&lt;servicename&gt;.gif</code> and 40x40px dimentions.</p>
+    		<br />Example: <strong>MSN Live</strong> would be <code>bm_msnlive.gif</code>.</li>
+    		<li>Call the <code>addService</code> method anywhere after <code>share/script/share.js</code> has been loaded.
+    		<br />Example: <code>iBeginShare.plugins.builtin.bookmarks.addService('Digg', 'http://digg.com/submit/?url=__URL__');</code>
+    		<br />Two variables are present in the second argument, the url, <code>__TITLE__</code> and <code>__URL__</code>.
+        </ol>
+
+        <h3>Configure Visible Bookmarks</h3>
+    	<p>You are also able to choose which bookmark services appear via editing <code>share/script/share.js</code>. Open up the file, and scroll to the bottom. Near the bottom you will see the list of services already added. Simply comment out any of these to disable them.</p>
+    	<p><strong>Note:</strong> To comment out a service place <code>//</code> at the beginning of the line.</p>
+
+        <h2 id="plugins"><span><a href="#top">Top</a></span>Plug-ins</h2>
+        <p>iBegin Share supports adding additional plug-ins beyond those that are built-in. Below is some brief documentation on creating your own plugin.</p>
+        
+        <p>We will be using the <strong>MyPC built-in plugin</strong> for our example. The code below is slightly modified from the source to make it standalone (built-in require different method calls).</p>
+        
+        <p>We declare our function using the standar namespacing syntax.</p>
+        <pre>var <strong>iBeginSharePlugin_myPC</strong> = function()
+{</pre>
+        <p>Inside we can add any private methods used directly by the function.</p>
+<pre>// This is a private function used by myPC to follow <acronym title="Don't Repeat Yourself">DRY</acronym> standards.
+  function createDocumentRow(type, label, params)
+  {
+    var link = escape(params.link);
+    var title = escape(params.title);
+    var content = escape(params.content);
+
+    var tr = document.createElement('tr');
+    var td = document.createElement('td');
+    td.width = '10%';
+    td.paddingLeft = '50px';
+    var a = document.createElement('a');
+    a.href = iBeginShare.base_url + 'share.php?mod=send&amp;act=mypc&amp;f=pdf&amp;url='+link+'&amp;content='+content+'&amp;title='+title;
+    a.title = label;
+    var img = document.createElement('img');
+    img.src = iBeginShare.base_url + 'share/images/icons/pc_'+type+'.gif';
+    img.style.border = 0;
+    img.style.width = '40px';
+    img.style.height = '40px';
+    a.appendChild(img);
+    td.appendChild(a);
+    tr.appendChild(td);
+    var td = document.createElement('td');
+    var a = document.createElement('a');
+    a.href = iBeginShare.base_url + 'share.php?mod=send&amp;act=mypc&amp;f='+type+'&amp;url='+link+'&amp;content='+content+'&amp;title='+title;
+    a.innerHTML = label;
+    td.appendChild(a);
+    tr.appendChild(td);
+
+    return tr;
+  }</pre>
+        <p>Now we need to add the controls to interact with the framework. <code>label</code> and <code>render</code> are the only required publicly accessible methods.</p>
+        <pre>  return {
+    // The label for your plug-in. Used both in the tab name and the heading.
+    label: '<strong>My PC</strong>',
+    // Any parameters it requires. Link and title are always available, content may not be.
+    requires: ['<strong>link</strong>', '<strong>title</strong>', '<strong>content</strong>'],
+    // The render method passes in a callback function, which is the
+    // iBegin Share control, and a list of parameters.
+    render: function(callback, params)
+    {
+      // Create our HTML
+      var container = document.createElement('div');
+      var table = document.createElement('table');
+      table.cellPadding = 0;
+      table.cellSpacing = 0;
+      table.style.border = 0;
+
+      table.appendChild(createDocumentRow('pdf', 'PDF - Portable Document Format', params));
+      table.appendChild(createDocumentRow('word', 'Microsoft Word, Wordpad, Works', params));
+      container.appendChild(table);
+
+      var iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.name = 'shre_sbmt';
+      container.appendChild(iframe);
+
+      // Pass the HTML as well as the params (they can be changed)
+      // to the iBegin Share framework via a callback function.
+      callback(container, params);
+    }
+  }
+}();</pre>
+        <p>And finally we need to register our plug-in with the framework.</p>
+        <pre>iBeginShare.plugins.register(<strong>iBeginSharePlugin_myPC</strong>);</pre>
+        
+        <p>Available public methods to plug-ins:</p>
+        <ul class="doc">
+            <li><strong><code>label</code></strong>
+                <br /><code>label = 'My Plugin'</code>
+                <br />Used for both the tab and heading label.
+            </li>
+            <li><strong><code>requires</code></strong>
+                <br /><code>requires = ['link']</code>
+                <br />Required parameters passed via the share button initialization.
+            </li>
+            <li><strong><code>render</code></strong>
+                <br /><code>render = function(callback, params){}</code>
+                <br />Called when the plugin is displayed. Should call <code>callback(html, params)</code> from within render.
+            </li>
+            <li><strong><code>unload</code></strong>
+                <br /><code>unload = function(){}</code>
+                <br />Called when the tab is unloaded (used for data storage in Email).
+            </li>
+        </ul>
+
+        <h2 id="resources"><span><a href="#top">Top</a></span>Resources</h2>
+        <ul>
+            <li><a href="http://labs.ibegin.com/share/">iBegin Share homepage</a></li>
+            <li><a href="http://labs.ibegin.com/forum/?CategoryID=3">iBegin Share Support Forum</a></li>
+            <li><a href="http://labs.ibegin.com/">iBegin Labs</a></li>
+        </ul>
+
+        <h2 id="license"><span><a href="#top">Top</a></span>License</h2>
+        <p>Copyright (c) 2008 iBegin</p>
+
+        <p>Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:</p>
+
+        <p>The above copyright notice and this permission notice shall be included in
+        all copies or substantial portions of the Software.</p>
+
+        <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+        THE SOFTWARE.</p>
+    </div>
+
+</body>
+</html>

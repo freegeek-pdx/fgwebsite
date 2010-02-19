@@ -1,0 +1,74 @@
+/*
+*    SHARE TOOL
+*/
+#share-box { color: #333333; position: relative; font: 10px Verdana, Arial, sans-serif; margin: 0; padding: 0; z-index: 99; }
+#share-box * { margin: 0; padding: 0; font-size: 11px; float: none; border: 0; }
+#share-loading { background: #fff url('../images/icons/loading-circle.gif') center center no-repeat; padding: 50px; }
+#share-box a { color: #0075D9; text-decoration:none; outline: 0; }
+a#share-close { color: #fff; border: 1px solid #fff; cursor:pointer; font-weight:bold; font-family:Tahoma, sans-serif; font-size:1em; position:absolute; right:5px; top: 5px; line-height:16px; z-index:1000010; padding: 0 5px; }
+#share-box label { font-weight: bold; }
+#share-box label span { font-weight: normal; }
+/*
+*    SHARE BUTTON
+*/
+
+.share-button { display: block; width: 66px; line-height: 21px; height: 21px; text-decoration: none; outline: 0; margin: 0; padding: 0; background: #003399 url("../images/share.gif") left top no-repeat; text-indent: -10000px; }
+.share-button-wrapper { display: -moz-inline-block; display: -moz-inline-box; display: inline-block; height: 21px; overflow: hidden; position: relative; }
+.share-button:hover,
+.share-button-wrapper a.share-active { background-color: #ff3300; background-position: 0 -21px; }
+
+/*
+*    SHARE BOX
+*/
+
+#share-box { position: absolute; width: 541px; background: #003399 url("../images/share-box-top.gif?1") no-repeat; }
+#share-box-inner { padding: 4px 4px 0 4px; background: transparent url("../images/share-box-bottom.gif?1") left bottom no-repeat; position: relative; }
+
+/*
+*    SHARE MENU
+*/
+
+#share-menu { overflow: hidden; list-style: none; margin: 0; padding: 0; height: 29px; }
+* html #share-menu { height: 27px; }
+#share-menu li { float: left; padding-right: 2px; }
+#share-menu li a { float: left; color: #fff; text-transform: uppercase; font: bold 0.8em "Myriad Pro", Arial, sans-serif; text-decoration: none; }
+#share-menu li a span { font-size: 1.3em; cursor: pointer; float: left; line-height: 27px; padding: 0 6px;  }
+
+#share-menu li a:hover { background: #3581d6 url("../images/share-tab-hover-left.gif?1") no-repeat; }
+#share-menu li a:hover span { background: url("../images/share-tab-hover-right.gif?1") right top no-repeat; }
+
+#share-box #share-menu li.active a { background: #fff url("../images/share-tab-active-left.gif?1") no-repeat; }
+#share-box #share-menu li.active a span { color: #ff3300; background: url("../images/share-tab-active-right.gif?1") right top no-repeat; }
+
+/*
+*    SHARE CONTENT
+*/
+
+#share-content { padding: 0; line-height: 16px; bottom: 5px; background: #fff url("../images/share-content-top.gif?1") top left no-repeat; position: relative; }
+#share-content-inner { padding: 10px 29px 20px 29px; background: #fff url("../images/share-content-bottom.gif?1") left bottom no-repeat; position: relative; }
+
+#share-content h2 { margin-bottom: 5px; color: #003399; font: bold 1.8em "Trebuchet MS", sans-serif; margin-top: 0; }
+#share-content p { border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom: 0px; }
+    /* table */
+
+#share-content table { font-size: .9em; width: 100%; border-collapse: collapse; }
+#share-content table tr td { text-align: left; padding: 10px 2px; }
+#share-content table tr td a { font-weight: bold; font-size: 1em; }
+#share-content table tr td a img { border: 1px solid #ccc; width: 40px; height: 40px; display: block; margin: 0 auto; }
+#share-content table tr td a:hover img { border: 1px solid #999; }
+    /* form */
+
+#share-content form { margin-bottom: 7px; }
+#share-content form table tr td { padding: 1px 4px; }
+#share-content form input,
+#share-content form select,
+#share-content form button { vertical-align: middle; font: 1em Verdana, sans-serif; }
+#share-content form input { width: 217px; padding: 2px; }
+#share-content form textarea { width: 460px; height: 65px; }
+#share-content form input,
+#share-content form textarea { border: 1px solid #aaa; background: #eee; }
+#share-content form input:focus,
+#share-content form textarea:focus { border-color: #888; }
+#share-content form .button { border-bottom-color: #666; border-right-color: #666; background: #bbb; cursor: pointer; width: 100px; }
+#share-content form td span { font-weight: bold; }
+#share-content form .button:hover { background: #ccc;}
