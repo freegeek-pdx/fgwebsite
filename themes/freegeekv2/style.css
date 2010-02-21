@@ -273,20 +273,35 @@ margin: 0;
 padding: 0;
 list-style-type: none;
 }
+
+/* Footer stuff 
+---------------------------------------------------*/
 #footer,
 #footer_one_column {
-padding: 38px 0 0;
+
 }
 #footer {
-padding: 38px 0 0;
+color:#ccc;
+margin:0 auto;
+
+width:930px;
+height:50px;
 }
-#footer_content p {
-margin: 0;
-padding: 0;
-font-weight: bold;
-line-height: 1.25em;
-color: #739BAA;
+#footer_content {
+	margin-top:-10px;
+	padding:0 95px;
 }
+#footer #footer-links li.first:before {
+	content:"";
+}
+#footer li {
+	float:left;
+	margin:0 5px 0 0;
+}
+#footer li:before {
+	content:"|";
+	margin-right:5px;
+} 
 #footer_bottom {
 padding-top: 20px;
 }
@@ -297,23 +312,11 @@ text-align: center;
 .clear {
 clear: both;
 }
-#translation_bar {
-  margin:10px 0 0 0;
-text-align:center;
-}
-#translation_bar a {
-  padding:0 4px;
-}
-#transl_sign {
-display:none;
-}
+
 /* padding for all main containers
 --------------------------------------------------- */
 	#header ul, #subnav {
 padding-left: 13px;
-}
-	#footer_content {
-padding: 0 25px 0 15px;
 }
 	#content, #sidebar {
 padding: 0 20px 20px;

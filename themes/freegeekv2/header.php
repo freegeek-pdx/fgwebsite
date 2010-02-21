@@ -105,7 +105,7 @@
 
 <div id="wrap">
 
-  <div id="header" onclick="location.href='/';" style="cursor: pointer;"><?php show_media_header(); ?>
+  <div id="header" onclick="location.href=' <?php bloginfo('url'); ?>';" style="cursor: pointer;"><?php show_media_header(); ?>
 <div id="headerText"><a href="/etc/directions" class="addr">1731 SE 10th Avenue, Portland, OR</a>        <a href="/etc/directions" class="hour">Tuesday - Saturday 11am - 7pm</a></div>
 	</div>
 
