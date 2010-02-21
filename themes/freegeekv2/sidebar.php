@@ -21,13 +21,7 @@
 	<p class='question-text'><a href='/etc/want-to-learn'>I want to learn</a></p>
 	</div>
 	</div>
-	<div>
-	<ul>
-	<li><a href='/etc/news'>News</a></li>
-	<li><a href='/etc/this-week-at-the-geek'>This Week at the Geek</a></li>
-	<li><a href='/etc/opportunities'>Opportunities</a></li>
-	</ul>
-	</div>
+	
 	</li>"; } ?><?php if (is_page(606)) { 
 	//for news page
 	//========================================================
@@ -54,35 +48,7 @@
 			
 			
 		<?php echo "<ul>";
-		//Handles the rest
-		//======================================================
-	/*		//if the page has a parent
-			if ($post->post_parent) {
-				 $children = wp_list_pages("depth=1&title_li=&child_of=".$post->post_parent."&echo=0");
-				}
-		//if its the about us page
-			elseif (is_page('10')) {
-				$children=wp_list_pages( 'echo=1&child_of=10&title_li=');
-			}
-			//if its the thriftstore page
-			elseif (is_page('295')) {
-				$children=wp_list_pages( 'echo=1&child_of=295&title_li=');
-			}
-			elseif($post->ancestors)
-				{
-					// now you can get the the top ID of this page
-					// wp is putting the ids DESC, thats why the top level ID is the last one
-					$ancestors = end($post->ancestors);
-					$children = wp_list_pages("title_li=&child_of=".$ancestors."&echo=0");
-					// you will always get the whole subpages list
-				}
-			
-			//Everything else
-			else {
-			 $children = wp_list_pages("depth=5&title_li=&child_of=".$post->ID."&echo=0");
-				if ($children) {
-					echo $children;
-				}}*/
+		
 				$post_ancestors = get_post_ancestors($post);
 				if (count($post_ancestors)) {
 				    $top_page = array_pop($post_ancestors);
