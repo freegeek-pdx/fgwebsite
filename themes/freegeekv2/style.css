@@ -278,7 +278,11 @@ list-style-type: none;
 ---------------------------------------------------*/
 #footer,
 #footer_one_column {
+	color:#ccc;
+	margin:0 auto;
 
+	width:930px;
+	height:50px;
 }
 #footer {
 color:#ccc;
@@ -291,14 +295,14 @@ height:50px;
 	margin-top:-10px;
 	padding:0 95px;
 }
-#footer #footer-links li.first:before {
+#footer #footer-links li.first:before, #footer_one_column #footer-links li.first:before {
 	content:"";
 }
-#footer li {
+#footer li, #footer_one_column li {
 	float:left;
 	margin:0 5px 0 0;
 }
-#footer li:before {
+#footer li:before, #footer_one_column li:before {
 	content:"|";
 	margin-right:5px;
 } 
