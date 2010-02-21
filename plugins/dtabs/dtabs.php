@@ -1581,10 +1581,12 @@ function dtab_list_tabs($args = '') {
 			} else {
 				$url = $tab['url'];
 			}
-			
+			// Added elseif for special donate tab class
 			if ($current_tab == $tab['name']) {
 				$class = 'tabselected';
-			} else {
+			} 	elseif ($tab['name'] == 'donate') {
+						$class = 'special';
+					}	else {
 				$class = 'tab';
 			}
 			if (!is_null($have_menus)) {
