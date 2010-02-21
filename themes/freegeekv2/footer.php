@@ -30,7 +30,10 @@
 			</ul>
 			</div><!-- id=footer_content -->
 			<div id="footer_bottom">
-			
+			<ul>
+			<li><img src="wp-content/themes/freegeekv2/images/cc.png" alt="Creative Commons"/></li>
+			<li><img src="wp-content/themes/freegeekv2/images/wp.gif" alt="Wordpress"/></li>
+			</ul>
 			</div>
 			
 		</div><!-- id=footer -->
