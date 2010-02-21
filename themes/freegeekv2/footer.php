@@ -21,18 +21,18 @@
 		
 			<div id="footer_content">
 			 <ul id="footer-links">
-			<li class="first">Jobs</li>
-			<li>Media Center</li>
-			<li>FAQ</li>
-			<li>Privacy/Terms</li>
-			<li>Contact Us</li>
-			<li>Site Map</li>
+			<li class="first"><a href="#">Jobs</a></li>
+			<li><a href="#">Media Center</a></li>
+			<li><a href="#">FAQ</a></li>
+			<li><a href="#">Privacy/Terms</a></li>
+			<li><a href="#">Contact Us</a></li>
+			<li><a href="#">Site Map</a></li>
 			</ul>
 			</div><!-- id=footer_content -->
 			<div id="footer_bottom">
 			<ul>
-			<li><img src="wp-content/themes/freegeekv2/images/cc.png" alt="Creative Commons"/></li>
-			<li><img src="wp-content/themes/freegeekv2/images/wp.gif" alt="Wordpress"/></li>
+			<li><a href="http://creativecommons.org/"><img src="wp-content/themes/freegeekv2/images/cc.png" alt="Creative Commons"/></a></li>
+			<li><a href="http://wordpress.org"><img src="wp-content/themes/freegeekv2/images/wp.gif" alt="Wordpress"/></a></li>
 			</ul>
 			</div>
 			

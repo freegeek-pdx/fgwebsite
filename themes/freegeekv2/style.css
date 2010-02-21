@@ -285,7 +285,7 @@ list-style-type: none;
 	height:50px;
 }
 #footer {
-color:#ccc;
+
 margin:0 auto;
 
 width:930px;
@@ -356,16 +356,16 @@ color: #993300;
 text-decoration: none;
 }
 	#footer a:link {
-color: #993300;
+color: #CCC;
 }
 	#footer a:visited {
-color: #cc6633;
+color: #CCC;
 }
 	#footer a:hover {
 color: #cc6633;
 }
 	#footer a:active {
-color: #993300;
+color: #CCC;
 }
 	
 	h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
