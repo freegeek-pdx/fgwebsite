@@ -32,9 +32,6 @@
 				<?php the_content("Read More..."); ?>
 				</div>
 			
-				<p class="postfeedback">
-				<?php comments_popup_link(__('Leave a Comment'), __('Comments (1)'), __('Comments (%)'), 'commentslink', __('Comments off')); ?>
-				</p>
 				
 				<p class="postmeta"> 
 				<?php the_time('F j, Y') ?> 
@@ -67,4 +64,6 @@
 <!--
 <?php get_sidebar(); ?>
 -->
-<?php get_footer(); ?>
+<?php 	// Footer
+	// ========================================================
+		require_once TEMPLATEPATH . '/footer.php'; ?>

@@ -31,8 +31,9 @@
 			</div><!-- id=footer_content -->
 			<div id="footer_bottom">
 			<ul>
-			<li><a href="http://creativecommons.org/"><img src="wp-content/themes/freegeekv2/images/cc.png" alt="Creative Commons"/></a></li>
-			<li><a href="http://wordpress.org"><img src="wp-content/themes/freegeekv2/images/wp.gif" alt="Wordpress"/></a></li>
+			<li><a href="http://creativecommons.org/"><img src="
+		 <?php bloginfo('url'); ?>/wp-content/themes/freegeekv2/images/cc.png" alt="Creative Commons"/></a></li>
+			<li><a href="http://wordpress.org"><img src="<?php bloginfo('url'); ?>/wp-content/themes/freegeekv2/images/wp.gif" alt="Wordpress"/></a></li>
 			</ul>
 			</div>
 			

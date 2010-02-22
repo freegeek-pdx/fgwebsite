@@ -97,8 +97,8 @@ text-align: left;
 #header {
 clear: both;
 height: 230px;
-margin-left: auto;
-margin-right: auto;
+margin:0 auto;
+padding-top:8px;
 text-align: center;
 width: 930px;
 background:transparent url(images/body-grad.png) repeat-y;
@@ -355,16 +355,16 @@ color: #993300;
 	#footer a {
 text-decoration: none;
 }
-	#footer a:link {
+	#footer a:link, #footer_one_column a:link {
 color: #CCC;
 }
-	#footer a:visited {
+	#footer a:visited, #footer_one_column a:visited {
 color: #CCC;
 }
-	#footer a:hover {
+	#footer a:hover, #footer_one_column a:hover {
 color: #cc6633;
 }
-	#footer a:active {
+	#footer a:active, #footer_one_column a:active {
 color: #CCC;
 }
 	

@@ -22,30 +22,11 @@
 	</div>
 	</div>
 	
-	</li>"; } ?><?php if (is_page(606)) { 
-	//for news page
-	//========================================================
-	?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html>
-	<head>
-		<title></title>
-	</head>
-	<body>
-		<div>
-			<ul>
-				<li>
-					<a href='/category/events'>Events</a>
-				</li>
-				<li>
-					<a href='/category/media-coverage'>Media Coverage</a>
-				</li>
-				<li>
-					<a href='/category/press-releases'>Press Releases</a>
-				</li>
-			</ul>		
-		</div><?php }?>
-			
+	</li>"; } ?>
+		
+	<?php
+	
+ ?>
 			
 		<?php echo "<ul>";
 		
@@ -55,6 +36,7 @@
 				    $children = wp_list_pages('title_li=&child_of='.$top_page.'&echo=0');
 				    $sect_title = get_the_title($top_page);
 				} 
+				
 					//if its the about us page
 						elseif (is_page('10')) {
 							$children=wp_list_pages( 'echo=1&child_of=10&title_li=');
@@ -62,6 +44,10 @@
 						//if its the thriftstore page
 						elseif (is_page('295')) {
 							$children=wp_list_pages( 'echo=1&child_of=295&title_li=');
+						}
+						//if its the news page
+						elseif (is_page('606')) {	
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
 						}
 				elseif (is_page()) {
 				    $children = wp_list_pages('title_li=&child_of='.$post->ID.'&echo=0&depth=2');
