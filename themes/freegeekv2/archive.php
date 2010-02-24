@@ -30,9 +30,7 @@
 				<div class="postentry">
 				
 				<?php the_content("Read More..."); ?>
-				</div>
-			
-				
+				</div>		
 				<p class="postmeta"> 
 				<?php the_time('F j, Y') ?> 
 				&#183; <?php _e('Filed under'); ?> <?php the_category(', ') ?>

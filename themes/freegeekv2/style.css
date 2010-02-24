@@ -71,17 +71,16 @@ font : bold 1.1em Georgia, serif;
 ul {
 padding: 0;
 margin: 0;
-list-style:none;
-
+list-style: none;
 }
 #main ul {
-	list-style:circle;
-	margin-left:12px;
+list-style: circle;
+margin-left: 12px;
 }
 
 #sidebar ul {
-	list-style-type:none;
-	list-style-image:none;
+list-style-type: none;
+list-style-image: none;
 }
 blockquote {
 border-left: 1px solid #EAEAEA;
@@ -97,26 +96,25 @@ text-align: left;
 #header {
 clear: both;
 height: 230px;
-margin:0 auto;
-padding-top:8px;
+margin: 0 auto;
+padding-top: 8px;
 text-align: center;
 width: 930px;
-background:transparent url(images/body-grad.png) repeat-y;
+background: transparent url(images/body-grad.png) repeat-y;
 }
 #headerText {
-		width: 930px;
+width: 930px;
 }
 #headerText a {
-	color:#EEE;
-	font-size:1.3em;
-	font-weight:bold;
-	vertical-align:top;
+color: #EEE;
+font-size: 1.3em;
+font-weight: bold;
+vertical-align: top;
 }
 .addr {
-	margin:0 165px 0 0;
+margin: 0 165px 0 0;
 }
 .hour {
-	
 }
 /* ---------------------- Tab Navigation -----------------------------*/
 #nav {
@@ -155,7 +153,7 @@ height: 32px;
 text-align: center;
 }
 .tabselected {
-height:33px
+height: 33px
 }
 .tab {
 background: #888888 url(images/tab.png) no-repeat;
@@ -191,11 +189,11 @@ margin: 5px 0 20px 0 ;
 list-style-type: none;
 }
 #question img {
-	text-align:center;
-	margin-left:20px;
+text-align: center;
+margin-left: 20px;
 }
 #sidebar .search {
-	margin:10px 0;
+margin: 10px 0;
 }
 /** FREEGEEK CUSTOM from art of blog **/
 
@@ -278,43 +276,34 @@ list-style-type: none;
 ---------------------------------------------------*/
 #footer,
 #footer_one_column {
-	color:#ccc;
-	margin:0 auto;
-
-	width:930px;
-	height:50px;
-}
-#footer {
-
-margin:0 auto;
-
-width:930px;
-height:70px;
+color: #ccc;
+margin: 0 auto;
+width: 930px;
+height: 50px;
 }
 #footer_content {
-	margin-top:-10px;
-	padding:0 95px;
+margin-top: -10px;
+padding: 0 95px;
 }
 #footer_content #footer-links li.first:before, #footer_one_column  #footer_content #footer-links li.first:before {
-	content:"";
+content: "";
 }
 #footer_content li, #footer_one_column #footer_content li {
-	float:left;
-	margin:0 5px 0 0;
+float: left;
+margin: 0 5px 0 0;
 }
 #footer_content li:before, #footer_one_column #footer_content li:before {
-	content:"|";
-	margin-right:5px;
-} 
+content: "|";
+margin-right: 5px;
+}
 #footer_bottom {
 color: #739baa;
 text-align: center;
 padding-top: 20px;
 }
 #footer_bottom li {
-	clear:both;
-	display:inline;
-
+clear: both;
+display: inline;
 }
 .clear {
 clear: both;
@@ -351,7 +340,7 @@ color: #cc6633;
 	#main a:active {
 color: #993300;
 }
-	
+/* footer links */	
 	#footer a {
 text-decoration: none;
 }
@@ -395,7 +384,7 @@ color: transparent;
 height: 119px;
 position: absolute;
 top: 560px;
-right:0;
+right: 0;
 width: 40px;
 }
 
@@ -468,16 +457,16 @@ background: #fff;
 
 
 .dnghu {
-background-color:#F5F5F5;
-border:1px solid #E3E4E4;
+background-color: #F5F5F5;
+border: 1px solid #E3E4E4;
 margin-left: auto;
 margin-right: auto;
 width: 930px;
 text-align: center;
-color:#505050;
-font-family:Arial;
-font-size:10px;
-padding:2px 3px 3px 8px;
+color: #505050;
+font-family: Arial;
+font-size: 10px;
+padding: 2px 3px 3px 8px;
 }
 
 /** copied from artofblog's static page style.css 
@@ -486,11 +475,11 @@ padding:2px 3px 3px 8px;
 font-family: Arial, sans-serif;
 font-size: 15px;
 line-height: 20px;
-height:80px;
+height: 80px;
 color: #ffef55;
 padding: 10px;
 page-break-before: avoid;
-background:transparent url(images/mast.png) no-repeat;
+background: transparent url(images/mast.png) no-repeat;
 }
 
 /* Print Style Sheet 
