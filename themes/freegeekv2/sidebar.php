@@ -10,7 +10,7 @@
 	</div>
 	<div class='Qtwo'>
 	<a href='/donate/what-we-take/'><img src='http://fgdev.chasing-daylight.com/wp-content/themes/freegeekv2/images/donate.jpg' alt='Donate your used hardware.'/>
-	</a><p class='question-text'><a href='/donate/what-we-take/'>I have technology to donate</a></p>
+	</a><p class='question-text'><a href='/donate/what-we-take/'>I have a donation</a></p>
 	</div>
 	<div class='Qthree'>
 	<a href='/etc/get-involved'><img src='http://fgdev.chasing-daylight.com/wp-content/themes/freegeekv2/images/volunteer.jpg' alt='Volunteer with us.'/></a>
