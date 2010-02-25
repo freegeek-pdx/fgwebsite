@@ -285,16 +285,9 @@ height: 50px;
 margin-top: -10px;
 padding: 0 95px;
 }
-#footer_content #footer-links li.first:before, #footer_one_column  #footer_content #footer-links li.first:before {
-content: "";
-}
 #footer_content li, #footer_one_column #footer_content li {
 float: left;
 margin: 0 5px 0 0;
-}
-#footer_content li:before, #footer_one_column #footer_content li:before {
-content: "|";
-margin-right: 5px;
 }
 #footer_bottom {
 color: #739baa;

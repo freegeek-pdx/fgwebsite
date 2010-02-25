@@ -22,10 +22,14 @@
 			<div id="footer_content">
 			 <ul id="footer-links">
 			<li class="first"><a href="<?php bloginfo('url'); ?>/news/jobs/">Jobs</a></li>
+			<li>|</li>
 			<!-- <li><a href="#">Media Center</a></li> -->
 			<li><a href="<?php bloginfo('url'); ?>/about/FAQ">FAQ</a></li>
+			<li>|</li>
 			<li><a href="<?php bloginfo('url'); ?>/terms">Privacy/Terms</a></li>
+			<li>|</li>
 			<li><a href="<?php bloginfo('url'); ?>/contact">Contact Us</a></li>
+			<li>|</li>
 			<li><a href="#">Site Map</a></li>
 			</ul>
 			</div><!-- id=footer_content -->
