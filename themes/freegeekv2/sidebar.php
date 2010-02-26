@@ -1,33 +1,31 @@
 <!-- BEGIN SIDEBAR -->
+
 <?php 
-	//check for home page 
-	if (is_front_page() || is_page(443) || is_page(445) || is_page(456)) {
-	echo "<li>
+		if (is_front_page() || is_page(443) || is_page(445) || is_page(456)) : ?>
+		
+	<li>
 			<div id='question'>
-	<div class='Qone'><a href='/etc/need-a-computer/'>
-	<img src='http://fgdev.chasing-daylight.com/wp-content/themes/freegeekv2/images/person-comp.jpg' alt='Get a computer'/>
-	</a> <p class='question-text'><a href='/etc/need-a-computer/'>I need a computer</a></p>
+	<div class='Qone'><a href='<?php bloginfo( 'url' ); ?>/etc/need-a-computer/'>
+	<img src='<?php bloginfo( 'template_url' ); ?>/images/person-comp.jpg' alt='Get a computer'/>
+	</a> <p class='question-text'><a href='<?php bloginfo( 'url' ); ?>/etc/need-a-computer/'>I need a computer</a></p>
 	</div>
 	<div class='Qtwo'>
-	<a href='/donate/what-we-take/'><img src='http://fgdev.chasing-daylight.com/wp-content/themes/freegeekv2/images/donate.jpg' alt='Donate your used hardware.'/>
-	</a><p class='question-text'><a href='/donate/what-we-take/'>I have a donation</a></p>
+	<a href='<?php bloginfo( 'url' ); ?>/donate/what-we-take/'><img src='<?php bloginfo( 'template_url' ); ?>/images/donate.jpg' alt='Donate your used hardware.'/>
+	</a><p class='question-text'><a href='<?php bloginfo( 'url' ); ?>/donate/what-we-take/'>I have a donation</a></p>
 	</div>
 	<div class='Qthree'>
-	<a href='/etc/get-involved'><img src='http://fgdev.chasing-daylight.com/wp-content/themes/freegeekv2/images/volunteer.jpg' alt='Volunteer with us.'/></a>
-	<p class='question-text'><a href='/etc/get-involved'>I want to get involved</a></p>
+	<a href='<?php bloginfo( 'url' ); ?>/etc/get-involved'><img src='<?php bloginfo( 'template_url' ); ?>/images/volunteer.jpg' alt='Volunteer with us.'/></a>
+	<p class='question-text'><a href='<?php bloginfo( 'url' ); ?>/etc/get-involved'>I want to get involved</a></p>
 	</div>
 	<div class='Qfour'>
-	<a href='/etc/want-to-learn'><img src='http://fgdev.chasing-daylight.com/wp-content/themes/freegeekv2/images/learn.jpg' alt='Come participate in one of our learning opportunities.'/></a>
-	<p class='question-text'><a href='/etc/want-to-learn'>I want to learn</a></p>
+	<a href='<?php bloginfo( 'url' ); ?>/etc/want-to-learn'><img src='<?php bloginfo( 'template_url' ); ?>/images/learn.jpg' alt='Come participate in one of our learning opportunities.'/></a>
+	<p class='question-text'><a href='<?php bloginfo( 'url' ); ?>/etc/want-to-learn'>I want to learn</a></p>
 	</div>
 	</div>
-	
-	</li>"; } ?>
-		
-	<?php
-	
- ?>
-			
+	</li>
+
+	<?php endif; ?>
+
 		<?php echo "<ul>";
 		
 				$post_ancestors = get_post_ancestors($post);
