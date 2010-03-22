@@ -10,3 +10,11 @@
 		echo '</p></div><br />';
 	}
 ?>
+<div class="updated fade below-h2">
+	<p>
+	If you use this plugin and like it please consider donating to our development fund.<br /><br />
+	Our developers create and maintain these plugins on their own time and any donations would be greatly appreciated. <strong>Even $1.00</strong> helps<br />
+	<br />
+	<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6LJ9BJN6EUFEY">Donate Now with Paypal</a>
+	</p>
+</div>

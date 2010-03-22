@@ -54,26 +54,72 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 			$data[$field_name] = $field_post;
 		}
 		
+		
 		// send a request to example.com (referer = jonasjohn.de)
-		list($header, $content) = formbuilder_PostRequest(
+		list($header, $content) = formbuilder_curlRequest(
 		    $url,
 		    $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
 		    $data
 		);
 		 
-		// print the result of the request:
-		$result = explode("\n", $content);
-
-		$thankyoutext = "";
-		
-		for($i=1; $i<count($result); $i+=2)
-			$thankyoutext .= $result[$i];
+		$thankyoutext = $content;
 		
 		echo "\n<div class='formBuilderSuccess'>" . decode_html_entities($thankyoutext, ENT_NOQUOTES, get_option('blog_charset')) . "</div>";
 
 		return(false);
 	}
 	
+	/*
+	 * POST Request using Curl libraries if available.
+	 */
+	function formbuilder_curlRequest($url, $referer, $_data = null)
+	{
+		// Fall back to original code if curl not found.
+		if(!function_exists('curl_init')) return(formbuilder_PostRequest($url, $referer, $_data));
+		
+		// Process post variables if any.
+		if(!is_null($_data))
+		{
+			if(!is_array($_data))
+			{
+				return(false);
+			}
+			
+			$q = http_build_query($_data);
+		}
+		
+		// Initialize the curl connection.
+		$ch = curl_init();
+		
+		// Encode the post data if any.
+		if($q)
+		{
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $q);
+		}
+		
+		// Initialize other curl settings.
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HEADER, true);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+		curl_setopt($ch, CURLOPT_REFERER, $referer);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		
+		$data = curl_exec($ch);
+		
+		curl_close($ch);
+		
+	    // split the result header from the content
+	    $result = explode("\r\n\r\n", $data, 2);
+	    
+	    $header = isset($result[0]) ? $result[0] : '';
+	    $content = isset($result[1]) ? $result[1] : '';
+	 
+	    // return as array:
+	    return array($header, $content);
+	}
+
 	/*
 	 * POST Request function taken from Jonas John at
 	 * http://www.jonasjohn.de/snippets/php/post-request.htm
@@ -114,22 +160,96 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	    fputs($fp, $data);
 	 
 	    $result = ''; 
-	    while(!feof($fp)) {
-	        // receive the results of the request
-	        $result .= fgets($fp, 128);
-	    }
-	 
+		// Get the headers
+		while (!feof($fp)) {
+		    $result .= fgets($fp);
+
+			if(substr($result, -4)=="\r\n\r\n") {
+				$headers = formbuilder_get_headers($result);
+				
+				break;
+			}
+		}
+
+		// Check whether we have to get the data as chunked or not...
+		if($headers['TRANSFER-ENCODING'] != 'chunked')
+		{
+			while (!feof($fp)) 
+			{
+			    $result .= fgets($fp);
+			}
+		}
+		else
+		{
+			do {
+				// Determine total size of chunk.
+				$chunksize = fgets($fp);
+				
+				$chunksize = hexdec($chunksize);
+				
+				$tmp = "";
+				$remaining = $chunksize;
+				
+				// Read data until we have hit the chunk size.
+				while($remaining > 0)
+				{
+					$tmp .= fread($fp, $remaining);
+					$size_read = strlen($tmp);
+					$remaining = $chunksize - $size_read;
+				} 
+				
+				$discard = fgets($fp);
+				
+				// Add the temporary data to the main data.
+				$result .= $tmp;
+				
+			} while($chunksize > 0);
+
+		}
+		
 	    // close the socket connection:
 	    fclose($fp);
 	 
 	    // split the result header from the content
 	    $result = explode("\r\n\r\n", $result, 2);
-	 
+	    
 	    $header = isset($result[0]) ? $result[0] : '';
 	    $content = isset($result[1]) ? $result[1] : '';
-	 
+	    
+	    
 	    // return as array:
 	    return array($header, $content);
 	}
+	
+	
+	
+	// Parse out headers to an array.
+	function formbuilder_get_headers($header)
+	{
+		$header = "\r\n" . trim($header);
 
+		// Extract headers to individual array variables.
+		$pattern = "#\r?\n([a-z0-9\-]+)\:(.*)\r?\n[a-z0-9\-]+\:#isU";
+		$offset = 0;
+
+		while(preg_match($pattern, $header, $regs, PREG_OFFSET_CAPTURE, $offset))
+		{
+			$headers[strtoupper($regs[1][0])] = trim($regs[2][0]);
+			$offset = $regs[0][1]+5;
+		}
+
+		if(preg_match("#\r?\n([a-z0-9\-]+)\:(.*)$#isU", $header, $regs, PREG_OFFSET_CAPTURE, $offset))
+		{
+			$headers[strtoupper($regs[1][0])] = trim($regs[2][0]);
+		}
+		
+		if(eregi("HTTP/([^ ]+) +([0-9]+)", $header, $regs))
+		{
+			$headers['HTTPVER'] = trim($regs[1]);
+			$headers['STATUS'] = trim($regs[2]);
+		}
+	
+		return($headers);
+		
+	}
 ?>

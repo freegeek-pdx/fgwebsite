@@ -5,6 +5,8 @@
 
 /* Shortcode handler */
 
+wpcf7_add_shortcode( 'submit', 'wpcf7_submit_shortcode_handler' );
+
 function wpcf7_submit_shortcode_handler( $tag ) {
 	if ( ! is_array( $tag ) )
 		return '';
@@ -32,18 +34,53 @@ function wpcf7_submit_shortcode_handler( $tag ) {
 	if ( $class_att )
 		$atts .= ' class="' . trim( $class_att ) . '"';
 
-	$value = $values[0];
+	$value = isset( $values[0] ) ? $values[0] : '';
 	if ( empty( $value ) )
 		$value = __( 'Send', 'wpcf7' );
 
-	$ajax_loader_image_url = wpcf7_plugin_url( 'images/ajax-loader.gif' );
-
 	$html = '<input type="submit" value="' . esc_attr( $value ) . '"' . $atts . ' />';
-	$html .= ' <img class="ajax-loader" style="visibility: hidden;" alt="ajax loader" src="' . $ajax_loader_image_url . '" />';
+
+	if ( wpcf7_script_is() )
+		$html .= ' <img class="ajax-loader" style="visibility: hidden;" alt="ajax loader" src="' . wpcf7_plugin_url( 'images/ajax-loader.gif' ) . '" />';
 
 	return $html;
 }
 
-wpcf7_add_shortcode( 'submit', 'wpcf7_submit_shortcode_handler' );
+
+/* Tag generator */
+
+add_action( 'admin_init', 'wpcf7_add_tag_generator_submit', 55 );
+
+function wpcf7_add_tag_generator_submit() {
+	wpcf7_add_tag_generator( 'submit', __( 'Submit button', 'wpcf7' ),
+		'wpcf7-tg-pane-submit', 'wpcf7_tg_pane_submit', array( 'nameless' => 1 ) );
+}
+
+function wpcf7_tg_pane_submit( &$contact_form ) {
+?>
+<div id="wpcf7-tg-pane-submit" class="hidden">
+<form action="">
+<table>
+<tr>
+<td><code>id</code> (<?php echo esc_html( __( 'optional', 'wpcf7' ) ); ?>)<br />
+<input type="text" name="id" class="idvalue oneline option" /></td>
+
+<td><code>class</code> (<?php echo esc_html( __( 'optional', 'wpcf7' ) ); ?>)<br />
+<input type="text" name="class" class="classvalue oneline option" /></td>
+</tr>
+
+<tr>
+<td><?php echo esc_html( __( 'Label', 'wpcf7' ) ); ?> (<?php echo esc_html( __( 'optional', 'wpcf7' ) ); ?>)<br />
+<input type="text" name="values" class="oneline" /></td>
+
+<td></td>
+</tr>
+</table>
+
+<div class="tg-tag"><?php echo esc_html( __( "Copy this code and paste it into the form left.", 'wpcf7' ) ); ?><br /><input type="text" name="submit" class="tag" readonly="readonly" onfocus="this.select()" /></div>
+</form>
+</div>
+<?php
+}
 
 ?>

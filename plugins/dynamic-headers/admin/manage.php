@@ -23,7 +23,7 @@
 		$conf = 1;
 	}
 	
-	if($conf = 1){
+	if($conf == 1){
 		echo '<div style="background-color: rgb(255, 251, 204);" id="message" class="updated fade"><p>File: <strong>'.$_POST['mediaHeader'].'</strong> has been updated.</p></div>';
 }	
 ?>

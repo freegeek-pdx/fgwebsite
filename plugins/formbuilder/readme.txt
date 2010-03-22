@@ -3,8 +3,8 @@ Contributors: truthmedia
 Donate link: http://truthmedia.com/engage/giving
 Tags: form, forms, email, comments, contact, input, spam, form to email, email form, contact form
 Requires at least: 2.5
-Tested up to: 2.8.2
-Stable tag: 0.81
+Tested up to: 2.9
+Stable tag: 0.82
 
 Allows WordPress bloggers to easily create customised forms for use on pages or posts.
 
@@ -68,6 +68,14 @@ Programming and Design by [James Warkentin](http://www.warkensoft.com/about-me/)
 3. Adding new form fields.
 
 == Changelog ==
+
+= 0.82 =
+* Feature: Added ability to export or delete specific forms from the XML backup database.
+* Feature: Added ability to translate specific front-end strings without translating the whole application.
+* Feature: Slight navigation and design reorganization for easier navigation.
+* Feature: Updated alternate_action with more robust code checking for curl library first.
+* Bug Fix: Fixed more Windows path related problems.
+* Bug Fix: Enabled setting checkboxes, dropdowns and radio buttons as required fields.
 
 = 0.81 =
 * Feature: Configured FB to automatically scroll back to the location of the form on the page when submitted.

@@ -1,18 +1,16 @@
 === Dynamic Headers ===
-Contributors: k0pper,css_wizard
-Donate link: http://nicasiodesign.com/blog/
+Contributors: dcannon1,css_wizard
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6LJ9BJN6EUFEY
 Tags: header, images, dynamic, Post, posts, plugin, page, image, aesthetic, small, fast, custom
 Requires at least: 2.7
-Tested up to: 2.8.4
-Stable tag: 3.4.5
+Tested up to: 2.9.1
+Stable tag: 3.5.1
 
 Dynamic Headers does just what you think it would based on the name - it allows you to create highly dynamic header space on your WordPress site.
 
 == Description ==
 
 Dynamic headers fills a void that has been present for a while in WordPress. It is a small, easy to use plugin that allows you to manage what header media is shown on each page/post. Unlike some other plugins however, this plugin allows you to use any image file OR a .swf Flash file. So you are no longer limited to a certain media type for your headers and you are no longer limited to one site-wide header. Enjoy.
-
-**Note About WordPress 2.6 and Lower:** This latest version will drop support for all versions below 2.7. This is due to increased problems with trying to make the plugin compatible with every version of WordPress as we add new features. If you are on 2.6 or lower you will need to use an earlier version of the plugin.
 
 **Features:**
 
@@ -26,23 +24,29 @@ Dynamic headers fills a void that has been present for a while in WordPress. It 
 -  Supports both built in browser uploader or FTP.
 -  Quick and lightweight.
 -  Simply add template tag to theme to pull dynamic media.
--  Tested and validated to work on WordPress version 2.3+
+-  Tested and validated to work on WordPress version 2.3+ (Version < 2.7 Only)
 -  Ability to add links to your header images.
--  WordPress MU Compatible
+-  WordPress MU Compatible (As of 2.8)
 -  Theme developer friendly with several template tags and functions for custom themes.
 
-**Important Upgrade Note:** If upgrading from Dynamic Headers 2.7 or lower: The image folder has moved. You will need to create the directory `/wp-content/header-images/` and make it writable. You will need to backup `/wp-content/plugins/dynamic-headers/header-images/` and move your header files to the new directory before upgrading.
+**Regarding Support:** This plugin is offered completely free of charge with no expressed or implied warranty. This plugin is open source and is to be used 'as-is' and at your own risk. Always remember to backup your WordPress database (and ideally your file structure) before using any new plugin for the first time.
+
+**Important Upgrade Note:** 
 
 == Installation ==
 
 These are the directions for the install. Be sure to read Directions for Use before using.
 
-1. Upload 'the custom-header' directory to the `/wp-content/plugins/` directory
+1. Upload 'the custom-header' directory to your plugins directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Create the directory `/wp-content/header-images/` and make it writable (777).
+1. Create the directory `wp-content/header-images/` and make it writable (777). Don't worry if your wp-content directory is in an 
 1. Read the Other Notes page for Directions for Use. These directions are also contained in the plugin.
 
 == Frequently Asked Questions ==
+
+= I upgraded from Version<2.7 to the current version, what's the problem?  =
+
+If upgrading from Dynamic Headers 2.7 or lower: The image folder has moved. You will need to create the directory `/wp-content/header-images/` and make it writable. You will need to backup `/wp-content/plugins/dynamic-headers/header-images/` and move your header files to the new directory before upgrading.
 
 = Does this plugin automatically resize my files? =
 
@@ -66,19 +70,30 @@ Sure, just upload your media to `/wp-content/header-images/`.
 1. Upload media (using the filtypes listed above) on the Add New File Page.
 1. Go to the Settings Page (under the Headers menu created by the plugin) and set your default header image. If you do not set a default header image, no media will be shown for posts and pages that do not have a header image associated with it.Alternatively, you can also add images to the `/wp-content/header-images/` directory using your FTP client or other file manager.
 1. Create or edit a post or page and at the bottom of the page you will see a new box called "Dynamic Header by Nicasio Design". Select from the drop down one of your uploaded media files. This media will be shown only on the page or posts you set it to appear on.
+1. BACKUP YOUR THEME DIRECTORY BEFORE MAKING ANY MODIFICATIONS TO ANY THEME FILES
 1. Now you will need to add the template tag created by the plugin to your theme file where you want your dynamic header to appear (this will usually be in `/wp-content/themes/your-theme-name/header.php`).
 
 You have 2 options for adding your dynamic header:
 
-**Option 1 (Recommended)**: Simply drop the this line of code into your theme file
+**Option 1 (Recommended)**: Simply drop the this snippet of code into your theme file that controls your header (usually header.php)
 
-`<?php show_media_header(); ?>`
+Note: The location to add this code can vary widely from theme to theme and depending on your theme's css settings you may have to use Option 2 and modify the CSS of your theme **BACKUP ANY THEME FILES BEFORE MODIFYING**
+
+`<?php 
+if(function_exists('show_media_header')){
+show_media_header();
+}
+?>`
 
 This will automatically determine what type of media you are using and generate the appropriate code to insert it. No other coding is required on your part.
 
 **Option 2**: You can use this line of code to simply get the URL of the media for a particular post or page. This will allow you to do some more advanced things and embed the media yourself if you know what you are doing.
 
-`<?php $dynamic_header_url = dh_get_page_image_url(); ?>`
+`<?php 
+if(function_exists('dh_get_page_image_url')){
+$dynamic_header_url = dh_get_page_image_url(); 
+}
+?>`
 
 You can then use the variable `$dynamic_header_url` however you see fit. It will contain the full path to your media file.
 
@@ -92,13 +107,20 @@ It is advised that most users simply use Option 1 as it is significantly more si
 
 There are several functions/template tags you can use to customize your theme using Dynamic Headers. These could be used in unique ways to build custom CSS code around Dynamic Headers, or use your imagination.
 
-`dh_get_page_image_url()` - This function will return the full URL of the header file for the page. Will be replacing `get_media_header_url()`
+`dh_get_page_image_url()` - This function will return the full URL of the header file for the page. Will be replacing get_media_header_url()
+
 `dh_get_page_link_url()` - Will return the full URL for a link assigned to a header file, or an empty string, '', if there is none.
+
 `dh_get_page_link_target()` - Will return the link target associated with a header file, or an empty string, '', if there is none.
+
 `dh_has_header()` - Conditional function. Will return TRUE if the current page has a header explicitly assigned to it (not counting default headers) or FALSE if not.
+
 `dh_print_media_path()` - Will print the relative path to the directory where Dynamic Header media files are stored.
+
 `dh_get_media_path()` - Will return the relative path to the directory where Dynamic Header media files are stored.
+
 `dh_get_random_media_item()` - Will return the URL of a random media item contained in the Dynamic Headers media directory
+
 
 == Screenshots ==
 
@@ -107,6 +129,30 @@ There are several functions/template tags you can use to customize your theme us
 3. The Dynamic Header box on the post/page editing page.
 
 == Changelog ==
+
+= 3.5.0 =
+* Fixed message bug on Manage page in admin
+* Clarified some directions
+* Added some new information to the about page
+* Added donation link
+
+= 3.5.0 =
+* Made a function call to get flash dimensions reference the file by its server path rather than its URL which was causing an error to be thrown on hosts where URL file access is not allowed.
+* Changed several path constants to use the formal WordPress path variables, insuring the plugin will work when the wp-content or plugins directory is moved from its normal place
+* Changed directions to include an if function exists logic so disabling the plugin will not break a theme where that still contains the template tag
+* Fixed a logic mistake from an older version that was causing the footer link to be opt-out instead of opt-in as it should be
+* Several typo fixes and updates to clarify directions
+* Update to the About page
+* Optimized database calls where possible
+
+= 3.4.7 =
+* Fixed an issue caused by 3.4.6
+
+= 3.4.6 =
+* Fixed an issue causing some icons/images to not display correctly on sub-directory WordPress installations.
+* Updated version compatibility
+* Optimization fixes
+* This is an advised upgrade and should not affect functionality on your site
 
 = 3.4.5 =
 * Internal changes.

@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	}
 
 	function formbuilder_options_page($action=""){
-		global $wpdb, $fbdbg;
+		global $wpdb, $fbdbg, $formbuilder_admin_nav_options;
 		
 		$version = get_option('formbuilder_version');
 
@@ -54,7 +54,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		}
 
 		$version = get_option('formbuilder_version');
-
+		
+		$formbuilder_admin_nav_options = array();
+		$formbuilder_admin_nav_options['forms'] = "Forms";
+		$formbuilder_admin_nav_options['settings'] = "Settings";
+		$formbuilder_admin_nav_options['formResults'] = "Stored Results";
+		$formbuilder_admin_nav_options['strings'] = "Text Translations";
 
 		?>
 
@@ -62,8 +67,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		<div id="icon-tools" class="icon32"><br></div>
 		<div class="wrap">
 			<h2><?php _e('FormBuilder Management', 'formbuilder'); ?> (v <?php echo $version; ?>)</h2>
-			<strong><?php _e('Navigation', 'formbuilder'); ?>:</strong> <a href="<?php echo FB_ADMIN_PLUGIN_PATH; ?>"><?php _e('FormBuilder', 'formbuilder'); ?></a>
-
 		<?php
 		if(!isset($_GET['fbaction'])) $_GET['fbaction'] = false;
 		switch($_GET['fbaction']) {
@@ -113,7 +116,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 				else
 					formbuilder_cleaninstall($_GET['confirm']);
 			break;
+			
+			case "settings":
+				formbuilder_options_settings();
+			break;
+			
+			case "strings":
+				formbuilder_options_strings();
+			break;
 
+			case "forms":
 			default:
 				formbuilder_options_default();
 			break;
@@ -127,6 +139,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 	}
 
-
+	function formbuilder_admin_nav($selected = 'forms')
+	{
+		global $formbuilder_admin_nav_options;
+		?>
+<div class="formbuilder-subnav">
+	<ul class="subsubsub">
+		<?php foreach( $formbuilder_admin_nav_options as $key=>$value ) { ?>
+		<li><a <?php if($selected == $key) { ?>class="current"<?php } ?> href="<?php echo FB_ADMIN_PLUGIN_PATH; ?>&fbaction=<?php echo $key; ?>"><?php echo $value; ?></a> |</li>
+		<?php } ?>
+		<li><a href="http://truthmedia.com/category/formbuilder/">Blog</a> |</li>
+		<li><a href="http://truthmedia.com/wordpress/formbuilder/documentation">Documentation</a></li>
+	</ul>
+</div>
+		<?php
+	}
 
 ?>

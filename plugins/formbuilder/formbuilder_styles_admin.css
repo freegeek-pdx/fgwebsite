@@ -38,3 +38,15 @@ span.fbexport {
 .clear {
 	clear: both;
 }
+
+div.formbuilder-subnav ul.subsubsub {
+	display: block;
+	clear: both;
+	float: none;
+}
+
+.formbuilder-plugin-update {
+	padding: 10px;
+	font-weight: bold;
+	color: #FF0000;
+}

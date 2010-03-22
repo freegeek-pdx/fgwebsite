@@ -785,6 +785,21 @@ CHANGE `from_name` `from_name` BLOB NOT NULL ';
 				update_option('formbuilder_version', "0.81");
 			}
 			
+			// Upgrade to version 0.82
+			if(get_option('formbuilder_version') < 0.82)
+			{
+				formbuilder_admin_alert("Upgraded FormBuilder to version 0.82", 
+					"Feature: Added ability to export or delete specific forms from the XML backup database.<br/>" . 
+					"Feature: Added ability to translate specific front-end strings without translating the whole application.<br/>" . 
+					"Feature: Slight navigation and design reorganization for easier navigation.<br/>" . 
+					"Feature: Updated alternate_action with more robust code checking for curl library first.<br/>" . 
+					"Bug Fix: Fixed more Windows path related problems.<br/>\n" .
+					"Bug Fix: Enabled setting checkboxes, dropdowns and radio buttons as required fields.<br/>\n" .
+					"");
+					
+				update_option('formbuilder_version', "0.82");
+			}
+			
 			
 			
 			/* For a future version

@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  	function formbuilder_options_editResponse($response_id)
  	{
- 		global $wpdb;
+ 		global $wpdb, $formbuilder_admin_nav_options;
 		// Make a connection to the database.
 		$message = "";
 
@@ -72,7 +72,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 		}
 
-		echo " &gt; <a href='" . $_SERVER['REQUEST_URI'] . "'>" . __("Edit Autoresponse", 'formbuilder') . "</a>";
+		$formbuilder_admin_nav_options['edit response'] = "Edit Autoresponse";
 		if($message) echo "<div class='updated'><p><strong>$message</strong></p></div>"; 
 
 		$result = $wpdb->get_results("SELECT * FROM " . FORMBUILDER_TABLE_RESPONSES . " WHERE id = '" . $response_id . "';", ARRAY_A);
@@ -84,7 +84,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 			
 			$field['Field'] = $key;
 			
-			if(!$data[$key])
+			if(!isset($data[$key]) OR !$data[$key])
 				$field['Value'] = $value;
 			else
 				$field['Value'] = $data[$key];

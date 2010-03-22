@@ -36,7 +36,7 @@ class formbuilder_xml_db_results
 	// Methods
 	function show_adminpage()
 	{
-		echo " &gt; <a href='" . FB_ADMIN_PLUGIN_PATH . "&fbaction=formResults'>" . __("Database Backup", 'formbuilder') . "</a>";
+ 		global $formbuilder_admin_nav_options;
 		
 		if(!isset($_GET['fbxmlaction'])) $_GET['fbxmlaction'] = '';
 		
@@ -86,11 +86,10 @@ class formbuilder_xml_db_results
 	
 	function show_export()
 	{
-		echo " &gt; <a href='" . $_SERVER['REQUEST_URI'] . "'>" . __('Export', 'formbuilder') . "</a>";
 		global $wpdb;
 		
 		?>
-		
+		<?php formbuilder_admin_nav('formResults'); ?>
 		<fieldset class="options metabox-holder">
 			<div class="info-box-formbuilder postbox">
 				<h3 class="info-box-title hndle"><?php _e('Export Data:', 'formbuilder'); ?> </h3>
@@ -129,8 +128,6 @@ class formbuilder_xml_db_results
 	
 	function show_email($email_id)
 	{
-		echo " &gt; <a href='" . $_SERVER['REQUEST_URI'] . "'>" . __("Form Details", 'formbuilder') . "</a>";
-		
 		global $wpdb;
 		if(!eregi('^[0-9]+$', $email_id)) $error = "Invalid email ID";
 		
@@ -142,7 +139,7 @@ class formbuilder_xml_db_results
 			$form_data = $this->xmltoarray($result['xmldata']);
 		}
 		?>
-		
+		<?php formbuilder_admin_nav('formResults'); ?>
 		<h3><?php _e('Form Details', 'formbuilder'); ?>: </h3>
 		<div class="fbxml-form-details">
 		<?php
@@ -162,11 +159,62 @@ class formbuilder_xml_db_results
 	{
 		global $wpdb;
 		
+		
+		if(isset($_POST['formResultSelected']) AND isset($_POST['formResultSelectedAction']))
+		{
+			switch($_POST['formResultSelectedAction'])
+			{
+				case 'Delete':
+					if(is_array($_POST['formResultSelected']))
+					{
+						$selected = $_POST['formResultSelected'];
+						
+						foreach($selected as $formResultID)
+						{
+							if(is_numeric($formResultID) AND preg_match('/^[0-9]+$/isu', $formResultID))
+							{
+								$sql = "DELETE FROM " . FORMBUILDER_TABLE_RESULTS . " WHERE id = '" . $formResultID . "' LIMIT 1;";
+								$result = $wpdb->query($sql);
+							}
+							else
+								echo "Invalid form result ID detected: $formResultID<br/>\n";
+						}
+					}
+				break;
+				
+				case 'Export':
+					if(is_array($_POST['formResultSelected']))
+					{
+						$selected = $_POST['formResultSelected'];
+						
+						foreach($selected as $formResultID)
+						{
+							if(is_numeric($formResultID) AND preg_match('/^[0-9]+$/isu', $formResultID))
+							{
+								$export_ids[] = $formResultID;
+							}
+							else
+								echo "Invalid form result ID detected: $formResultID<br/>\n";
+						}
+						
+						$export_ids_string = implode(",", $export_ids);
+						$url = FORMBUILDER_PLUGIN_URL . "formbuilder_export_results.php?formResults=$export_ids_string";
+						echo "<meta HTTP-EQUIV='REFRESH' content='0; url=" . $url . "'>";
+					}
+				break;
+				
+				default:
+				break;
+			}
+		}
+		
+		
 		// Check to see if we should display multiple pages.
 		if(isset($_GET['paged']) AND eregi("^[0-9]+$", $_GET['paged'])) $result_page = $_GET['paged'];
 		else $result_page = 1;
 		
 				?>
+		<?php formbuilder_admin_nav('formResults'); ?>
 		<fieldset class="options metabox-holder">
 			<div class="info-box-formbuilder postbox">
 				<h3 class="info-box-title hndle"><?php _e('Recent Form Results:', 'formbuilder'); ?> </h3>
@@ -178,8 +226,9 @@ class formbuilder_xml_db_results
 					$total_rows = count($result);
 		
 				// Iterate through the results and display them line by line.
-				echo "<table class='widefat'>";
+				echo "<form action='' method='POST'><table class='widefat'>";
 				echo "<tr class='fbexporttable'>" .
+						"<td>&nbsp;</td>" .
 						"<td><strong>" . __("Date:", 'formbuilder') . "</strong></td>" .
 						"<td>" .
 						"<span class='fbexport'>" .
@@ -202,6 +251,7 @@ class formbuilder_xml_db_results
 					if(strlen($message) > 80) $message = substr($message, 0, 80) . "...";
 		
 					echo "<tr>" .
+							"<td><input type='checkbox' name='formResultSelected[]' value='" . $result['id'] . "'/></td>" .
 							"<td><a href='" . FB_ADMIN_PLUGIN_PATH . "&fbaction=formResults" .
 							"&fbxmlaction=showemail&fbxmlid=" . $result['id'] . "'>" . 
 							date("F j, Y, g:i a", $result['timestamp']) . "</a></td>" .
@@ -217,6 +267,7 @@ class formbuilder_xml_db_results
 				else
 					echo "<td align='left'>&nbsp;</td>";
 				
+				echo "<td align='left'>&nbsp;</td>";
 				
 				if($curpos < $total_rows)
 					echo "<td align='right'><a href='" . FB_ADMIN_PLUGIN_PATH . "&fbaction=formResults&paged=" . ($result_page + 1) . "'>" . __("next", 'formbuilder') . " --&gt;</a></td>";
@@ -224,7 +275,15 @@ class formbuilder_xml_db_results
 					echo "<td align='right'>&nbsp;</td>";
 				echo "</tr>";
 				
-				echo "</table>";
+				echo "<tr><td colspan=3 align='left'>" .
+						"With Selected: <select name='formResultSelectedAction'>" .
+							"<option value=''></option>" .
+							"<option value='Export'>Export</option>" .
+							"<option value='Delete'>Delete</option>" .
+						"</select>" .
+						" <input type='submit' value='Go' /></td></tr>";
+				
+				echo "</table></form>";
 				?>
 			</div>
 		</fieldset>		
@@ -239,7 +298,7 @@ class formbuilder_xml_db_results
 		$where = "WHERE 1";
 		
 		// Configure the Where clause depending on posted data.
-		if($_POST['date_from'] AND $_POST['date_to'])
+		if(isset($_POST['date_from']) AND isset($_POST['date_to']))
 		{
 			$timestamp_from = $this->output_date($_POST['date_from'], false);
 			$timestamp_to = $this->output_date($_POST['date_to'], true);
@@ -247,13 +306,33 @@ class formbuilder_xml_db_results
 			$where .= " AND timestamp > '$timestamp_from' AND timestamp < '$timestamp_to'";
 		}
 
-		if($_POST['form_id'] != "" AND eregi('^[0-9]+$', $_POST['form_id']))
+		if(isset($_POST['form_id']) AND $_POST['form_id'] != "" AND eregi('^[0-9]+$', $_POST['form_id']))
 		{
 			$form_id = addslashes(trim($_POST['form_id']));
 			$specific_form = true;
 			$where .= " AND form_id = '" . $form_id . "'";
 		}
-#		echo "<pre>";
+		
+		if(isset($_GET['formResults']))
+		{
+			$formIDs = explode(",", $_GET['formResults']);
+			$where .= " AND (";
+			$first = true;
+			foreach($formIDs as $form_id)
+			{
+				if(eregi('^[0-9]+$', $form_id))
+				{
+					$form_id = addslashes(trim($form_id));
+					if(!$first) $where .= " OR";
+					$where .= " id = '" . $form_id . "'";
+				}
+				$first = false;
+			}
+			
+			$where .= " ) ";
+		}
+		
+		
 		// Set headers
 		
 		header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
@@ -273,7 +352,6 @@ class formbuilder_xml_db_results
 			$field_list[] = 'FormSubject';
 			$field_list[] = 'FormRecipient';
 			$sql = "SELECT * FROM " . FORMBUILDER_TABLE_FIELDS . " WHERE form_id = '" . $form_id . "' ORDER BY display_order ASC;";
-#			echo "\nSQL: $sql\n";
 			$fields = $wpdb->get_results($sql, ARRAY_A);
 			if(isset($fields) AND $fields !== false) foreach($fields as $field)
 			{
@@ -309,7 +387,6 @@ class formbuilder_xml_db_results
 		{
 			$sql_offset = $this->result_limit;
 			$sql = "SELECT * FROM " . FORMBUILDER_TABLE_RESULTS . " $where ORDER BY timestamp DESC;";
-#			echo "\nSQL: $sql\n";
 			$result = $wpdb->get_row($sql, ARRAY_A, $i);
 			
 			if($result === false OR $result == "") break;

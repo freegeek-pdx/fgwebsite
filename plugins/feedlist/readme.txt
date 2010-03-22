@@ -3,8 +3,8 @@ Contributors: finalcut
 Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bill%40doxie%2eorg&item_name=Feedlist&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
 Tags: rss, atom, feeds, listings
 Requires at least: 1.5
-Tested up to: 2.5
-Stable tag: 2.22.3
+Tested up to: 2.8.4
+Stable tag: 2.51
 
 Allows you to display lists of links from an rss or atom feed on your blog.
 
@@ -23,7 +23,7 @@ Allows you to display lists of links from an rss or atom feed on your blog.
 == Installation ==
 	INSTALLATION:
 
-	1.) Place the plugin (feedlist.php) in your wp-content/plugins/ directory.
+	1.) Place the plugin (feedlist.php) in your wp-content/plugins/feedlist directory. (create the feedlist directory if necessary)
 
 	2.) Edit feedlist.php and fill out the values in the CONFIGURATION section.
 
@@ -87,6 +87,15 @@ cache directory.
 
 	24 Mar 2008			Added new parameter "show_description_only" which forces the output to only show each items description (will be linked if a link exists in the feed).
 
+	08 Apr 2009			The Read More link now acts according to the behavior of the "new_window" argument
+
+	07 Jul 2009			Added "feedListExtensions.php" with first extension point, "transformURL" see bottom of this document for help on extensions.
+
+	23 Sep 2009			fixed a variety of issues identified at http://code.google.com/p/wp-feedlist/issues/list (issues: 15, 17, 22, 30, 31, 32, 37)
+
+	25 Nov 2009			Added filter for posts to use the random feed file
+
+	19 Jan 2010			Added new option of to display rel="nofollow" on the links.  Option is called "no_follow_on" and by default is set to false.
 -------------------------------------------------------------------------------------------------------
   
 == LICENSE ==
@@ -101,6 +110,8 @@ version.
 	May not handle internationalization very well.  Has seen very 
 limited testing with non UTF-8 encoding.
 
+== KNOWN BUG ==
+	using the rssFile filter results in a duplication of the feedList display
 
 
 == USAGE ==
@@ -116,7 +127,7 @@ pass the parameters in order as follows:
 	* random (default: false) - Whether or not to randomize the items
 	* before (default: "<li>") - Tag placed before the item	
 	* after (default: "</li>") - Tag placed after the item	
-	* description_seperator (default: " - ") - Between the link and the item
+	* description_separator (default: " - ") - Between the link and the item
 	* encoding (default: false) - Change to true if you are reading in a ISO-8859-1 formatted file.  Basically, if you see a bunch of question marks (?) in your titles set this to true and see if it fixes the problem.
 	* sort (default: "none") - takes one of three values; none, asc, desc
 			none - doesn't sort and leaves your existing code as is
@@ -157,6 +168,9 @@ pass the parameters in order as follows:
 	* show_description_only - provides a mechanism for turning off the item titles
 			true - suppresses the title and the description separator; forces "show_description" to be true
 			false - won't change the behavior of the plugin at all.  (DEFAULT)
+	* no_follow_on - flag for turning on, or off, the rel="nofollow" attribute on links
+			true - include rel="nofollow" with each link in the feed
+			false - don't include rel="nofollow"  (DEFAULT)
 				
 	FILTER USAGE
 
@@ -173,6 +187,16 @@ pass the parameters in order as follows:
 			Finally note the whole thing must be on ONE line.  No line breaks or else it won't work.
 
 
+		* random file:
+			<!--rssFile:[FilePath]-->
+
+			NOTE: if you aren't using named parameters with the filter only provide the full path to the file or else it won't work.
+			NOTE: if you don't provide a filepath the default one set in the file, feedlist.php near line 187 will be used (typically siteroot\wp-content\plugins\feeds.txt)
+			
+			* Named Parameters
+			<!--rssFile:feedsToShow:=1,num_items:=3,file:=c:\dev\websites\wordpress\wp-content\plugins\feeds2.txt-->
+
+			NOTE: this example will pull one feed from the file, and then show 3 items fro the feed
 
 
   EXAMPLES:
@@ -251,7 +275,7 @@ pass the parameters in order as follows:
 
 
 	ADVANCED: 
-		<?php randomFeedList("feedsToShow=2&itemsPerFeed=3") ?>
+		<?php randomFeedList("feedsToShow=2&num_items=3") ?>
 
 		there are ALOT of parameters you can pass into randomFeedList.  I am taking a different approach to it here than I do elsewhere in the feedList plugin.
 		If you want to pass parameters they must be passed in as shown separating each additional name/value pair with an ampersand &.  
@@ -260,7 +284,7 @@ pass the parameters in order as follows:
 	PARAMETERS
 	file - the path to your feedfile (default: '.wp-content/plugins/feeds.txt')
 	feedsToShow - the number of feeds to poll from your feedfile (default: 5)
-	itemsPerFeed - the number of items to show from each feed polled (default: 1)
+	num_items - the number of items to show from each feed polled (default: 1)
 	show_description - show the description of each item or not (default: false)
 	randomItemsPerFeed - not only can you show random feeds from the feed file but you can also show random items from each feed (default: true)
 	beforeItems - what to show before an item  (default: '<li>')
@@ -284,3 +308,22 @@ pass the parameters in order as follows:
 		<?php randomFeedList("file=./wp-content/feeds2.txt&feedsToShow=2&itemsPerFeed=3&show_description=true&randomItemsPerFeed=false&beforeItems=&afterItems=&description_separator=::&encoding=false&sort=asc&new_window=true&ignore_cache=200&suppress_link=false&show_date=true&additional_fields=x~y~z.a.b") ?>
 
 
+== Troubleshooting ==
+
+	1. if your feed isn't being loaded properly then try to replace the following two files in your wp-includes directory of your wordpress install:
+		class-snoopy.php and rss.php
+	 with the copies found at http://code.google.com/p/wp-feedlist/downloads/list
+
+== Extensions ==
+	I have added a rudimentary extension mechanism that will let you add custom behavior to how feedList process the feeds.  This way you can edit the feedListExtensions.php file and
+	not have to worry about breaking compatiability with feedList (thus you will get updates without a problem.  Upgrades may become more difficult in the future so we shall see how this
+	goes.
+
+	-- transformLinkURL --
+		This extension point is used to make changes to the URLs associated with all the links before they are used within feedList.  For example if you wanted to add a tracking code
+		to the end of the url you could just update the default function to return as follows:
+			return $url . "&trackingCode=mytrackingCode";
+
+		Obviously you'd want to add a little bit of logic to make sure you needed the & and not the ? before appending your new url argument (I leave that to you).  Likewise
+		this is a pretty weak example but hopefully it illustrates the extension point well enough.  One user is using this extension point to reroute all URls to a different location
+		before they go off to their actual destination (not sure why).

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
  	function formbuilder_options_default()
  	{
- 		global $wpdb;
+ 		global $wpdb, $formbuilder_admin_nav_options;
 		$relative_path = FORMBUILDER_PLUGIN_URL;
 		include('html/options_default.inc.php');
  	}
@@ -62,7 +62,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  	function formbuilder_options_editForm($form_id)
  	{
- 		global $wpdb;
+ 		global $wpdb, $formbuilder_admin_nav_options;
  		
 		if(isset($_POST['formbuilder']) AND is_array($_POST['formbuilder']))
 		{
@@ -270,7 +270,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 		}
 		
-		echo " &gt; <a href='" . $_SERVER['REQUEST_URI'] . "'>" . __('Edit Form', 'formbuilder') . "</a>";
+		$formbuilder_admin_nav_options['edit form'] = "Edit Form";
 		if(isset($message)) echo "<div class='updated'><p><strong>$message</strong></p></div>"; 
 
 		$sql = "SELECT * FROM " . FORMBUILDER_TABLE_FORMS . " WHERE id = '$form_id';";
@@ -386,7 +386,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
  	function formbuilder_options_copyForm($form_id)
  	{
-		global $wpdb;
+		global $wpdb, $formbuilder_admin_nav_options;
 		
 		// Duplicate the main form table row
 		$sql = "SELECT * FROM " . FORMBUILDER_TABLE_FORMS . " WHERE id = '$form_id' LIMIT 0,1;";
@@ -414,7 +414,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 	function formbuilder_options_removeForm($form_id)
 	{
-		global $wpdb;
+		global $wpdb, $formbuilder_admin_nav_options;
 		
 		$sql = "DELETE FROM " . FORMBUILDER_TABLE_FORMS . " WHERE id = '$form_id';";
 		$wpdb->query($sql);
@@ -427,6 +427,44 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 			$wpdb->query($sql);
 		}
 	}
+	
+	
+	function formbuilder_options_settings()
+ 	{
+ 		global $wpdb, $formbuilder_admin_nav_options;
+		$relative_path = FORMBUILDER_PLUGIN_URL;
+		include('html/options_settings.inc.php');
+ 	}
+
+	
+	
+
+	function formbuilder_options_strings()
+ 	{
+ 		global $wpdb, $formbuilder_admin_nav_options;
+ 		
+		$formBuilderTextStrings = formbuilder_load_strings();
+		
+		if(isset($_POST['formbuilder_reset_all_text_strings']) AND $_POST['formbuilder_reset_all_text_strings'] == 'yes')
+		{
+			delete_option('formbuilder_text_strings');
+			$formBuilderTextStrings = formbuilder_load_strings();
+		}
+		elseif($_POST) foreach($formBuilderTextStrings as $key=>$value)
+		{
+			if($_POST[$key])
+			{
+				$formBuilderTextStrings[$key] = htmlentities(stripslashes($_POST[$key]), ENT_QUOTES, get_option('blog_charset'));
+			}
+			update_option('formbuilder_text_strings', $formBuilderTextStrings);
+		}
+ 		
+		$relative_path = FORMBUILDER_PLUGIN_URL;
+		include('html/options_strings.inc.php');
+ 	}
+
+	
+	
 
 	// Function to display individual form fields on an HTML page.  $field_info should contain an array describing the field, including any data associated with it.
 	function formbuilder_display_form_field($field_info, $prefix = "formbuilder", $template_before = "<div style='padding: 1px 0 2px 20px;'>", $template_mid = ": ", $template_after = "</div>\n")

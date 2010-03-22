@@ -1,3 +1,4 @@
+<?php formbuilder_admin_nav('edit form'); ?>
 <form name="form1" method="post" class="formBuilderForm" action="<?php echo FB_ADMIN_PLUGIN_PATH; ?>&fbaction=editForm&fbid=<?php echo $form_id; ?>">
 
 	<h3 class="info-box-title"><?php _e('Form Details', 'formbuilder'); ?></h3>
@@ -179,7 +180,7 @@
 			<tr valign="top">
 				<td>
 					<input type='submit' name='fieldAction[newField]' value='<?php _e('Add New Field', 'formbuilder'); ?>'>
-					<input type="submit" name="Save" value="<?php _e('Save Form', 'formbuilder'); ?>">
+					<input type="submit" name="Save" value="<?php _e('Save', 'formbuilder'); ?>">
 				</td>
 			</tr>
 		</table>

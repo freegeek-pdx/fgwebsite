@@ -4,7 +4,7 @@ Plugin Name: FormBuilder
 Plugin URI: http://truthmedia.com/wordpress/formbuilder
 Description: The FormBuilder plugin allows the administrator to create contact forms of a variety of types for use on their WordPress blog.  The FormBuilder has built-in spam protection and can be further protected by installing the Akismet anti-spam plugin.  Uninstall instructions can be found <a href="http://truthmedia.com/wordpress/formbuilder/documentation/uninstall/">here</a>.  Forms can be included on your pages and posts either by selecting the appropriate form in the dropdown below the content editing box, or by adding them directly to the content with [formbuilder:#] where # is the ID number of the form to be included.
 Author: TruthMedia Internet Group
-Version: 0.81
+Version: 0.82
 Author URI: http://truthmedia.com/
 
 
@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 	
-	define("FORMBUILDER_VERSION_NUM", "0.81");
+	define("FORMBUILDER_VERSION_NUM", "0.82");
 
 	// Define FormBuilder Related Tables
 	global $table_prefix;
@@ -67,15 +67,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 		$new_abs = substr(ABSPATH, 0, (strlen(ABSPATH)-1));
 		$new_abs = str_replace("\\", "/", $new_abs);
-		define ("ABSOLUTE_PATH", $new_abs);
 
 	} else {
 		//This looks like the typical case... Carry on as normal..
-		define ( "ABSOLUTE_PATH", ABSPATH );
+		$new_abs = ABSPATH;
+		$IS_WINDOWS = false;	//Handy for some other places
 	}
+	
+	if(substr($new_abs, -1, 1) != '/') $new_abs = $new_abs . '/';
+	define ( "ABSOLUTE_PATH", $new_abs );
 
 	// Define FormBuilder Paths and Directories
 	define("FORMBUILDER_FILENAME", basename(__FILE__));
+	
+	define("FORMBUILDER_PLUGIN_KEY", basename(dirname(__FILE__)) . '/' . basename(__FILE__));
+	
+	
 
 	if ($IS_WINDOWS) {
 		$temp = str_replace(FORMBUILDER_FILENAME, "", __FILE__);
@@ -89,7 +96,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	if ( ! defined( 'WP_CONTENT_URL' ) )
 	      define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
 	if ( ! defined( 'WP_CONTENT_DIR' ) )
-	      define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
+	      define( 'WP_CONTENT_DIR', ABSOLUTE_PATH . 'wp-content' );
 	if ( ! defined( 'WP_PLUGIN_URL' ) )
 	      define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
 	if ( ! defined( 'WP_PLUGIN_DIR' ) )
@@ -106,8 +113,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		define('FORMBUILDER_SITE_URL', get_bloginfo('siteurl'));
 		define('FORMBUILDER_BLOG_URL', get_bloginfo('wpurl'));
 	}
-	define("FORMBUILDER_PLUGIN_URL", FORMBUILDER_BLOG_URL . str_replace(ABSPATH, "/", FORMBUILDER_PLUGIN_PATH));
-  
+	define("FORMBUILDER_PLUGIN_URL", FORMBUILDER_BLOG_URL . str_replace(ABSOLUTE_PATH, "/", FORMBUILDER_PLUGIN_PATH));
   
 	// Define Regular Expressions used throughout.
 	define("FORMBUILDER_CONTENT_TAG", '\[ *formbuilder *\: *([0-9]+) *\]');
@@ -138,9 +144,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 	add_filter('wp_head', 'formbuilder_css');
 
-
-	// Post Specific Filters and Actions
-
+	
 	// Admin Specific Filters and Actions
 	add_action('admin_menu', 'formbuilder_admin_menu');
 	add_action('admin_menu', 'formbuilder_add_custom_box');
@@ -160,16 +164,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		// Include additional function for admin system.
 		include_once("formbuilder_admin_functions.php");
 		include_once("formbuilder_admin_pages.inc.php");
-
+		
 		// Display the admin related CSS
 		formbuilder_admin_css();
-
 	}
 
 
 
 
-
+	//
+	function formbuilder_plugin_notice( $plugin ) {
+		$version = get_option('formbuilder_version');
+		if($version != FORMBUILDER_VERSION_NUM)
+		{
+		 	if( $plugin == FORMBUILDER_PLUGIN_KEY && function_exists( "admin_url" ) )
+				echo '<td colspan="5" class="formbuilder-plugin-update">FormBuilder must be configured. Go to <a href="' . admin_url( 'tools.php?page=formbuilder.php' ) . '">the admin page</a> to enable and configure the plugin.</td>';
+		}
+	}
+	add_action( 'after_plugin_row', 'formbuilder_plugin_notice' );
+	
+	function formbuilder_plugin_links( $links, $file ) {
+		if( $file == FORMBUILDER_PLUGIN_KEY && function_exists( "admin_url" ) ) {
+			$manage_link = '<a href="' . admin_url( 'tools.php?page=formbuilder.php' ) . '">' . __('Manage') . '</a>';
+			array_unshift( $links, $manage_link );
+		}
+		return $links;
+	}
+	add_filter( 'plugin_action_links', 'formbuilder_plugin_links', 10, 2 );
+	
 
 
 
@@ -180,7 +202,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		if(!$version) return($content);
 
 		$module_status = false;
-
 
 		if($post->post_password != '' AND strpos($content, 'wp-pass.php')) return($content);
 
@@ -291,6 +312,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 			
 			<?php
 		}
+
+
+	
 	}
 
 	function formbuilder_init() {
@@ -326,6 +350,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		{
 			$fb_do_js_manually = true;
 		}
+
 	}
 
 	// This function should take any string of text and convert it to a readable variable name.
@@ -361,6 +386,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		static $last_email_address;
 		$post_errors = false;
 		
+		if($field['field_type'] == 'selection dropdown' 
+			OR $field['field_type'] == 'recipient selection' 
+			OR $field['field_type'] == 'radio buttons'
+		)
+		{
+			$options = explode("\n", $field['field_value']);
+			$roption = trim($options[$field['value']])	;
+			
+			if(strpos($roption, "|")) 
+			{
+				list($option_value, $option_label) = explode("|", $roption, 2);
+			}
+			else 
+			{
+				$option_label = $option_value = $roption;
+			}
+			
+			$field['value'] = trim($option_value);
+		}
+
+
 		switch($field['required_data']) 
 		{
 			case "any text":
@@ -413,6 +459,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 			$post_errors = true;
 		}
 		
+		
 		return(!$post_errors);
 	}
 
@@ -422,6 +469,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	function formbuilder_process_form($form_id, $data=false)
 	{
 		global $wpdb;
+		
+		$formBuilderTextStrings = formbuilder_load_strings();
 		
 		$siteurl = get_option('siteurl');
 		$relative_path = str_replace(ABSPATH, "/", FORMBUILDER_PLUGIN_PATH);
@@ -500,7 +549,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 						if($duplicate_check_hash == $old_hash) {
 							$post_errors = true;
 
-							$tmp_msg = "\n<div class='formBuilderFailure'><h4>" . __("Form Problem:", 'formbuilder') . "</h4><p>" . __("You have already submitted this form data once.", 'formbuilder') . "</p>";
+							$tmp_msg = "\n<div class='formBuilderFailure'><h4>" . $formBuilderTextStrings['form_problem'] . "</h4><p>" . $formBuilderTextStrings['already_submitted'] . "</p>";
 							$tmp_msg .= "\n</div>\n" . $formDisplay;
 
 							$formDisplay = $tmp_msg;
@@ -586,7 +635,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 										if( !isset( $_SERVER['HTTP_COOKIE'] ) ) 
 										{
 											$post_errors = true;
-											$missing_post_fields[$divID] = __("The CAPTCHA field below may not work due to cookies being disabled in your browser.  Please turn on cookies in order to fill out this form.", 'formbuilder');
+											$missing_post_fields[$divID] = $formBuilderTextStrings['captcha_cookie_problem'];
 										}
 										else
 										{
@@ -748,7 +797,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 									else
 									{
 										$formLabel = "<div class='$formLabelCSS'>" . decode_html_entities($field['field_label'], ENT_NOQUOTES, get_option('blog_charset')) . " </div>";
-										$formInput = "<div class='formBuilderInput'>" . __("Captcha functionality unavailable.  Please inform the website administrator.", 'formbuilder') . "</div>";
+										$formInput = "<div class='formBuilderInput'>" . $formBuilderTextStrings['captcha_unavailable'] . "</div>";
 									}
 								break;
 
@@ -804,9 +853,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 									
 									$previous_page_insert = "";
 									if($page_id > 1)
-									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . __('Previous', 'formbuilder') . "' onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' . " />";
+									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['previous'] . "' onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' . " />";
 									
-									$formInput .= "$previous_page_insert <input type='button' name='formbuilder_page_break' value='" . __('Next', 'formbuilder') . "' onclick=" . '"  jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id + 1) . '\').show();  "' . " />" .
+									$formInput .= "$previous_page_insert <input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['next'] . "' onclick=" . '"  jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id + 1) . '\').show();  "' . " />" .
 											"</div>";
 
 									$page_id++;
@@ -822,7 +871,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 									$previous_page_insert = "";
 									if($page_id > 1)
-									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . __('Previous', 'formbuilder') . "' onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' . " />";
+									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['previous'] . "' onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' . " />";
 									
 									$formInput = "<div class='formBuilderSubmit'>$previous_page_insert<input type='submit' name='" . $field['name'] . "' value='" . decode_html_entities($field['field_label'], ENT_NOQUOTES, get_option('blog_charset')) . "' /></div>";
 
@@ -834,7 +883,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 									$previous_page_insert = "";
 									if($page_id > 1)
-									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . __('Previous', 'formbuilder') . "' onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' . " />";
+									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['previous'] . "' onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' . " />";
 									
 									$formInput = "<div class='formBuilderSubmit'>$previous_page_insert<input type='image' name='" . $field['name'] . "' src='" . decode_html_entities($field['field_label'], ENT_NOQUOTES, get_option('blog_charset')) . "' value='" . $field['value'] . "' alt='" . $field['value'] . "' /></div>";
 
@@ -883,11 +932,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 						$previous_page_insert = "";
 						if($page_id > 1)
 						$previous_page_insert = "<input type='button' name='formbuilder_page_break' " .
-							"value='" . __('Previous', 'formbuilder') . "' " .
+							"value='" . $formBuilderTextStrings['previous'] . "' " .
 							"onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  ' .
 							'jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' .	" />";
 			
-						$formDisplay .= "\n<div class='formBuilderSubmit'>$previous_page_insert<input type='submit' name='Submit' value='" . __("Send!", 'formbuilder') . "' /></div>";
+						$formDisplay .= "\n<div class='formBuilderSubmit'>$previous_page_insert<input type='submit' name='Submit' value='" . $formBuilderTextStrings['send'] . "' /></div>";
 					}
 					else
 						$formDisplay .= "";
@@ -1006,14 +1055,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 						{
 							if(!$msg)
 							{
-								if(!isset($form['thankyoutext'])) $form['thankyoutext'] = "<h4>" . __("Success!", 'formbuilder') . "</h4><p>" . __("Your message has been sent successfully.", 'formbuilder') . "</p>";
+								if(!$form['thankyoutext']) $form['thankyoutext'] = "<h4>" . $formBuilderTextStrings['success'] . "</h4><p>" . $formBuilderTextStrings['send_success'] . "</p>";
 								$formDisplay = "\n<div class='formBuilderSuccess'>" . decode_html_entities($form['thankyoutext'], ENT_NOQUOTES, get_option('blog_charset')) . "</div>";
 							}
 							else
-								$formDisplay = "\n<div class='formBuilderFailure'><h4>" . __("Failed!", 'formbuilder') . "</h4><p>" . __("Your message has NOT been sent successfully.", 'formbuilder') . "<br/>$msg</p></div>";
+								$formDisplay = "\n<div class='formBuilderFailure'><h4>" . $formBuilderTextStrings['failed'] . "</h4><p>" . $formBuilderTextStrings['send_failed'] . "<br/>$msg</p></div>";
 						}
 						elseif($msg)
-							$formDisplay = "\n<div class='formBuilderFailure'><h4>" . __("Failed!", 'formbuilder') . "</h4><p>$msg</p></div>$formDisplay";
+							$formDisplay = "\n<div class='formBuilderFailure'><h4>" . $formBuilderTextStrings['failed'] . "</h4><p>$msg</p></div>$formDisplay";
 						else
 							$formDisplay = $msg;
 					}
@@ -1021,7 +1070,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 					{
 						if(isset($post_errors) AND isset($missing_post_fields) AND $post_errors AND $missing_post_fields)
 						{
-							$msg = "\n<div class='formBuilderFailure'><h4>" . __("Form Problem:", 'formbuilder') . "</h4><p>" . __("You seem to have missed or had mistakes in the following required field(s).", 'formbuilder') . "</p>";
+							$msg = "\n<div class='formBuilderFailure'><h4>" . $formBuilderTextStrings['form_problem'] . "</h4><p>" . $formBuilderTextStrings['send_mistakes'] . "</p>";
 							$msg .= "\n<ul>";
 							foreach($missing_post_fields as $idValue=>$field_label) {
 								$msg .= "\n<li><a href='#$idValue'>$field_label</a></li>";
@@ -1032,7 +1081,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 						}
 						elseif(isset($post_errors) AND is_string($post_errors))
 						{
-							$msg = "\n<div class='formBuilderFailure'><h4>" . __("Form Problem:", 'formbuilder') . "</h4>";
+							$msg = "\n<div class='formBuilderFailure'><h4>" . $formBuilderTextStrings['form_problem'] . "</h4>";
 							$msg .= "\n<p>$post_errors</p></div>\n" . $formDisplay;
 
 							$formDisplay = $msg;
@@ -1043,7 +1092,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 				}
 				else
-					return(__("ERROR!  Unable to display form!", 'formbuilder'));
+					return($formBuilderTextStrings['display_error']);
 	}
 
 
@@ -1051,6 +1100,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	function formbuilder_process_db($form, $fields)
 	{
 		global $_POST;
+		
+		$formBuilderTextStrings = formbuilder_load_strings();
 		
 		$xml_container = "form";
 		
@@ -1097,7 +1148,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 				"VALUES ('" . $form['id'] . "', '" . time() . "', '" . addslashes($xml) . "');";
 		
 		if($wpdb->query($sql) === false) 
-			return(__("Error: Form processing failure.  Unable to store the form data in the database.", 'formbuilder'));
+			return($formBuilderTextStrings['storage_error']);
 	}
 
 
@@ -1106,6 +1157,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	{
 		global $_POST, $wpdb;
 
+		$formBuilderTextStrings = formbuilder_load_strings();
+		
 
 		$email_msg = "";
 		$autoresponse_required = false;
@@ -1139,7 +1192,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 					$form['recipient'] = trim($field['value']);
 				}
 				else
-					$email_msg .= __("* It looks like an alternate destination_email field was defined for this form, but the email address it contained was invalid", 'formbuilder') . " [" . trim($field['value']) . "]\n\n";
+					$email_msg .= $formBuilderTextStrings['bad_alternate_email'] . " [" . trim($field['value']) . "]\n\n";
 			}
 
 			// Get source email address, if exists.  Will use the first email address listed in the form results, as the source email address.
@@ -1206,6 +1259,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	// Function to send an email
 	function formbuilder_send_email($to, $subject, $message, $headers="")
 	{
+		$formBuilderTextStrings = formbuilder_load_strings();
+		
 		// Check to and subject for header injections
 		$badStrings = array("Content-Type:",
 		                     "MIME-Version:",
@@ -1214,17 +1269,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		                     "cc:");
 		foreach($badStrings as $v2){
 		    if(strpos(strtolower($to), strtolower($v2)) !== false){
-		        $error = __("TO Header Injection Detected!", 'formbuilder');
+		        $error = $formBuilderTextStrings['hack_to'];
 		    }
 		    if(strpos(strtolower($subject), strtolower($v2)) !== false){
-		        $error = __("SUBJECT Header Injection Detected!", 'formbuilder');
+		        $error = $formBuilderTextStrings['hack_subject'];
 		    }
 		}
 
 		// If no errors are detected, send the message and return the response of the mail command.
 		if(!isset($error)) {
-			#echo "To: $to<br>Subject: $subject<br>Message:<br>$message<br>Headers: $headers";
-
 			$headers = trim($headers) . "\nContent-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 			
 			if(get_option('formbuilder_alternate_email_handling') != 'Enabled')
@@ -1232,14 +1285,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 				if(mail($to, $subject, $message, $headers))
 					return(false);
 				else
-					return(__("Mail server error.  Unable to send email.  Try switching FormBuilder to use Alternate Email Handling on the main configuration page.", 'formbuilder'));
+					return($formBuilderTextStrings['mail_error_default']);
 			}
 			else
 			{
 				if(wp_mail($to, $subject, $message, ''))
 					return(false);
 				else
-					return(__("Mail server error.  Unable to send email using the built-in WordPress mail controls.  ", 'formbuilder'));
+					return($formBuilderTextStrings['mail_error_alternate']);
 			}
 			
 		}
@@ -1286,7 +1339,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	{
 		if(!($return = @html_entity_decode($string, $quote_style, $charset)))
 		{
-			$return = html_entity_decode($string, $quote_style);
+			$return = @html_entity_decode($string, $quote_style);
 		}
 		return($return);
 	}
@@ -1350,6 +1403,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 				return true;
 		}
 		return(false);
+	}
+	
+	function formbuilder_load_strings()
+	{
+
+		// Text strings displayed to visitors
+		$formBuilderTextStrings = get_option('formbuilder_text_strings');
+		if(!$formBuilderTextStrings)
+		{
+			$formBuilderTextStrings['form_problem'] = __("Form Problem:", 'formbuilder');
+			$formBuilderTextStrings['already_submitted'] = __("You have already submitted this form data once.", 'formbuilder');
+			$formBuilderTextStrings['captcha_cookie_problem'] = __("The CAPTCHA field below may not work due to cookies being disabled in your browser.  Please turn on cookies in order to fill out this form.", 'formbuilder');
+			$formBuilderTextStrings['captcha_unavailable'] = __("Captcha functionality unavailable.  Please inform the website administrator.", 'formbuilder');
+			$formBuilderTextStrings['previous'] = __('Previous', 'formbuilder');
+			$formBuilderTextStrings['next'] = __('Next', 'formbuilder');
+			$formBuilderTextStrings['send'] = __("Send!", 'formbuilder');
+			$formBuilderTextStrings['success'] = __("Success!", 'formbuilder');
+			$formBuilderTextStrings['failed'] = __("Failed!", 'formbuilder');
+			$formBuilderTextStrings['send_success'] = __("Your message has been sent successfully.", 'formbuilder');
+			$formBuilderTextStrings['send_failed'] = __("Your message has NOT been sent successfully.", 'formbuilder');
+			$formBuilderTextStrings['send_mistakes'] = __("You seem to have missed or had mistakes in the following required field(s).", 'formbuilder');
+			$formBuilderTextStrings['display_error'] = __("ERROR!  Unable to display form!", 'formbuilder');
+			$formBuilderTextStrings['storage_error'] = __("Error: Form processing failure.  Unable to store the form data in the database.", 'formbuilder');
+			$formBuilderTextStrings['bad_alternate_email'] = __("* It looks like an alternate destination_email field was defined for this form, but the email address it contained was invalid", 'formbuilder');
+			$formBuilderTextStrings['hack_to'] = __("TO Header Injection Detected!", 'formbuilder');
+			$formBuilderTextStrings['hack_subject'] = __("SUBJECT Header Injection Detected!", 'formbuilder');
+			$formBuilderTextStrings['mail_error_default'] = __("Mail server error.  Unable to send email.  Try switching FormBuilder to use Alternate Email Handling on the main configuration page.", 'formbuilder');
+			$formBuilderTextStrings['mail_error_alternate'] = __("Mail server error.  Unable to send email using the built-in WordPress mail controls.  ", 'formbuilder');
+		}
+		
+		return($formBuilderTextStrings);
 	}
 
 ?>

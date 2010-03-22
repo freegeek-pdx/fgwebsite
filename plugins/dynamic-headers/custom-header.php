@@ -2,8 +2,8 @@
 /*
 Plugin Name: Dynamic Headers by Nicasio Design
 Plugin URI: http://nicasiodesign.com/blog/category/wordpress-plugins/
-Version: 3.4.5
-Description: This plugin allows a custom header image to be displayed on each page
+Version: 3.5.1
+Description: Allows a custom header image or flash file to be displayed site wide, randomly or on a page by page and post by post basis. Please <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6LJ9BJN6EUFEY">Donate Today</a>
 Author: Dan Cannon
 Author URI: http://nicasiodesign.com/blog/
 License: GPL
@@ -24,8 +24,8 @@ License: GPL
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-$dhnd_image_dir = ABSPATH.'wp-content/header-images/';
-$dhnd_image_url_base = get_bloginfo('wpurl').'/wp-content/header-images/';
+$dhnd_image_dir = WP_CONTENT_DIR.'/header-images/';
+$dhnd_image_url_base = WP_CONTENT_URL.'/header-images/';
 
 if (!class_exists("custom_header")) {
 	class custom_header {
@@ -55,7 +55,7 @@ if (!class_exists("custom_header")) {
 			add_option('dhnd_max_size', '400');
 			add_option('dhnd_default', 'None');
 			add_option('dhnd_homepage', 'None');
-			add_option('dhnd_footer_link', 'Yes');
+			add_option('dhnd_footer_link', 'No');
 			add_option('dhnd_image_dir', 'wp-content/header-images/');
 		}
 		
@@ -124,7 +124,8 @@ if (!class_exists("custom_header")) {
 
 //This function will actually build the admin menu
 function dhnd_menu() {
-  add_menu_page('Headers', 'Headers', 8, __FILE__, 'dhnd_main_menu', '/wp-content/plugins/dynamic-headers/images/custom_header_icon.png');
+	$icon_url = plugins_url($path = '/dynamic-headers').'/images/custom_header_icon.png';
+  add_menu_page('Headers', 'Headers', 8, __FILE__, 'dhnd_main_menu', $icon_url);
   add_submenu_page(__FILE__, 'Directions', 'Directions', 8, __FILE__, 'dhnd_main_menu');
   add_submenu_page(__FILE__, 'Add New File', 'Add New File', 8, 'dhnd_add_menu', 'dhnd_add_menu');
   add_submenu_page(__FILE__, 'Manage Files', 'Manage Files', 8, 'dhnd_manage_files', 'dhnd_manage_files');
@@ -133,23 +134,23 @@ function dhnd_menu() {
 }
 
 function dhnd_about() {
-	include(ABSPATH."/wp-content/plugins/dynamic-headers/admin/about.php");
+	include("admin/about.php");
 }
 
 function dhnd_main_menu() {
-	include(ABSPATH."/wp-content/plugins/dynamic-headers/admin/directions.php");
+	include("admin/directions.php");
 }
 
 function dhnd_add_menu() {
-	include(ABSPATH."/wp-content/plugins/dynamic-headers/admin/main.php");
+	include("admin/main.php");
 }
 
 function dhnd_options() {
-	include(ABSPATH."/wp-content/plugins/dynamic-headers/admin/options.php");
+	include("admin/options.php");
 }
 
 function dhnd_manage_files() {
-	include(ABSPATH."/wp-content/plugins/dynamic-headers/admin/manage.php");
+	include("admin/manage.php");
 }
  
 //initialize the class to a variable
@@ -220,7 +221,7 @@ function create_ch_form() {
 			if($filetype != 'swf'){
 				echo '<img src="'.$dhnd_image_url_base.$media_file.'" style="width:30%;margin-top:10px;" />';
 			} else {
-				echo '<img src="'.get_bloginfo('wpurl').'/wp-content/plugins/dynamic-headers/images/Flash-logo.png" style="position:relative;top:8px;" /> '. $media_file;
+				echo '<img src="'.plugins_url($path = '/dynamic-headers').'/images/Flash-logo.png" style="position:relative;top:8px;" /> '. $media_file;
 			}
 		?>
 		<br />
@@ -371,8 +372,11 @@ function show_media_header(){
 				$i++;
 			}
 			
+			global $dhnd_image_dir;
+			
+			$swf_path = $dhnd_image_dir.$load_this_media;
 			$swf_src = $dhnd_image_url_base.$load_this_media;
-			list($width, $height, $type, $attr) = getimagesize($swf_src);
+			list($width, $height, $type, $attr) = getimagesize($swf_path);
 		?>
 				<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" width="<?php echo $width; ?>" height="<?php echo $height; ?>" id="mediaHeader" align="middle">
 				<param name="allowScriptAccess" value="sameDomain" />
@@ -471,15 +475,15 @@ function dh_has_header(){
 }
 
 function print_media_path(){
-	return '/wp-content/header-images/';
+	return WP_CONTENT_URL.'/header-images/';
 }
 
 function dh_get_media_path(){
-	return '/wp-content/header-images/';
+	return WP_CONTENT_URL.'/header-images/';
 }
 
 function dh_print_media_path(){
-	echo '/wp-content/header-images/';
+	echo WP_CONTENT_URL.'/header-images/';
 }
 
 function is__writable($path) {

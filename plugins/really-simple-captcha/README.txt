@@ -2,15 +2,15 @@
 Contributors: takayukister
 Donate link: http://pledgie.com/campaigns/3259
 Tags: captcha
-Requires at least: 2.2
-Tested up to: 2.7.1
-Stable tag: 1.0
+Requires at least: 2.8
+Tested up to: 2.8.5
+Stable tag: 1.1
 
 Really Simple CAPTCHA is a CAPTCHA module intended to be called from other plugins. It is originally created for my Contact Form 7 plugin.
 
 == Description ==
 
-Really Simple CAPTCHA does not work alone and is intended to work with other plugins. It is originally created for Contact Form 7, however, you can use it with your own plugin.
+Really Simple CAPTCHA does not work alone and is intended to work with other plugins. It is originally created for [Contact Form 7](http://contactform7.com/), however, you can use it with your own plugin.
 
 Note: This product is "really simple" as its name suggests, i.e., it is not strongly secure. If you need perfect security, you should try other solutions.
 
@@ -23,6 +23,8 @@ When you generate a CAPTCHA, Really Simple CAPTCHA creates two files for it; one
 The two files have the same (random) prefix in their file names, for example, "a7hk3ux8p.png" and "a7hk3ux8p.php." In this case, for example, when the respondent answers "K5GF" as an answer to the "a7hk3ux8p.png" image, then Really Simple CAPTCHA runs "a7hk3ux8p.php" code and tests the answer against the return value it receives. If the return value is "K5GF," the two match, and the answer is confirmed as correct.
 
 = How to use with your plugin =
+
+Note: Below are instructions for plugin developers.
 
 First, create an instance of ReallySimpleCaptcha class:
 
@@ -70,3 +72,23 @@ However, if you install this manually, follow these steps:
 1. Activate the plugin through the 'Plugins' menu in WordPress.
 
 FYI: There is no "control panel" for this plugin.
+
+== Frequently Asked Questions ==
+
+= CAPTCHA does not work; the image does not show up. =
+
+Really Simple CAPTCHA needs GD and FreeType library installed on your server. Ask your server administrator if they are installed.
+
+Also, make the temporary file folder writable. The location of the temporary file folder is managed by the instance variable `tmp_dir` of ReallySimpleCaptcha class. Note that the setting varies depending on the calling plugin. For example, Contact Form 7 uses `wp-contents/uploads/wpcf7_captcha` as the temporary folder basically, but it can use different folder depending on your settings.
+
+If you have any further questions, please submit them [to the support forum](http://wordpress.org/tags/really-simple-captcha?forum_id=10#postform).
+
+== Screenshots ==
+
+1. screenshot-1.png
+
+== Changelog ==
+
+= 1.1 =
+* The required WordPress version changed to 2.8 and higher.
+* `cleanup()` method added.

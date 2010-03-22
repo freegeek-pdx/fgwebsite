@@ -1,3 +1,4 @@
+<?php formbuilder_admin_nav('edit response'); ?>
 		<form name="form1" method="post" class="formBuilderForm formBuilderAdminForm" action="<?php echo FB_ADMIN_PLUGIN_PATH; ?>&fbaction=editResponse&fbid=<?php echo $response_id; ?>">
 			<h3 class="info-box-title"><?php _e('Current Autoresponses', 'formbuilder'); ?></h3>
 			<fieldset class="options">
@@ -18,7 +19,7 @@
 					</tr>
 					<tr valign="top">
 						<td>
-							<input type="submit" name="Save" value="<?php _e('Save Autoresponse', 'formbuilder'); ?>">
+							<input type="submit" name="Save" value="<?php _e('Save', 'formbuilder'); ?>">
 						</td>
 					</tr>
 

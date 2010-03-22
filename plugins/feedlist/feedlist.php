@@ -1,18 +1,23 @@
-<?
+<?php
 /*
 	Plugin Name: FeedList
 	Plugin URI: http://rawlinson.us/blog/articles/feedlist-plugin/
 	Description: Displays any ATOM or RSS feed in your blog.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 2.22.3
+	Version: 2.51
 */
 
-	// include files
-		$relroot = dirname(__FILE__).'/../../../';
+// setup error level
+ error_reporting(E_ERROR);
 
-		// get the magpie libary
-			if (file_exists($relroot . 'wp-includes/rss.php')) {
+
+
+ 	// include files
+			$relroot = ABSPATH . '/';
+			require_once('feedListExtensions.php');
+ 		// get the magpie libary
+ 			if (file_exists($relroot . 'wp-includes/rss.php')) {
 				require_once($relroot . 'wp-includes/rss.php');
 			} else if(file_exists($relroot . 'wp-includes/rss-functions.php')){
 				require_once($relroot . 'wp-includes/rss-functions.php');
@@ -20,7 +25,7 @@
 				function FeedListInitError(){
 				?>
 			
-				<div id="message" style="margin-top: 15px; padding: 10px;" class="updated fade">There was a problem initializing the feedlist plugin.  Make sure the file feedlist.php is directly under your <strong>wp-content/plugins</strong> directory and not a subdirectory.</div>
+				<div id="message" style="margin-top: 15px; padding: 10px;" class="updated fade">There was a problem initializing the feedlist plugin.  Make sure the file feedlist.php is in the feedList directory under your <strong>wp-content/plugins</strong> directory.</div>
 			<?
 				}
 			}
@@ -79,8 +84,10 @@
 					($this->args['feedsToShow'] < 1) ? 1 : $this->args['feedsToShow'];
 					($this->args['feedsToShow'] > sizeof($feedInfo)) ? sizeof($feedInfo) : $this->args['feedsToShow'];
 
+
 					// we will fetch each feed, then coallate items
 					for($i=0;$i<$this->args['feedsToShow'];$i++){
+
 						$thisFeed = $feedInfo[$i];
 
 						$urlAndTitle =  preg_split("/~/", $thisFeed);
@@ -96,7 +103,7 @@
 								shuffle($this->items);
 							}
 							// Slice off the number of items that we want:
-							if ($this->args['num_items'] > 0)
+							if ($this->args['num_items'] > 0 && is_array($this->items))
 							{
 								$this->items = array_slice($this->items, 0, $this->args['num_items']);
 							}
@@ -131,7 +138,7 @@
 				}
 
 				// coallate feed items
-				echo $this->output;
+				return $this->output;
 
 			}
 		/* end core methods */
@@ -179,7 +186,7 @@
 					$Translations['fr_FR'] = array();
 					$Translations['fr_FR']['ReadMore'] = 'Lisez davantage';
 				
-				$feedListFile = '/feeds.txt'; // IF you are going to use the random feedlist generator make sure this holds the correct name for your feed file:
+				$feedListFile = ABSPATH .  'wp-content\plugins\feeds.txt'; // IF you are going to use the random feedlist generator make sure this holds the correct name for your feed file:
 
 				// Build an array out of the settings and send them back:
 				$settings = array (	'feedListDebug' => $feedListDebug,
@@ -213,11 +220,13 @@
 							'additional_fields' => '',
 							'max_characters' => 0,
 							'max_char_wordbreak' => true,
-							'file'=>$settings['file'],
+							'file'=>$settings['feedListFile'],
 							'feedsToShow'=>0,
+							'itemsPerFeed'=>1,
 							'mergeFeeds'=>false,
 							'show_date_per_item' => false,
-							'show_description_only' => false
+							'show_description_only' => false,
+							'no_follow_on' => false
 						);
 			
 			}
@@ -236,7 +245,7 @@
 						shuffle($this->items);
 					}
 					// Slice off the number of items that we want:
-					if ($this->args['num_items'] > 0)
+					if ($this->args['num_items'] > 0 && is_array($this->items))
 					{
 						$this->items = array_slice($this->items, 0, $this->args['num_items']);
 					}
@@ -266,6 +275,9 @@
 				{
 					$target=' target="_blank" ';
 				}
+
+
+				$noFollowFlag = $this->args["no_follow_on"] ? 'rel="nofollow" ' : '';
 
 				$this->output ='';
 
@@ -309,7 +321,7 @@
 
 						} else if ($encoding) { 
 							//further really weak attempt at internationalization
-							$thisDescription = htmlentities(utf8_decode($thisDescription));
+							$thisDescription = html_entity_decode($thisDescription, ENT_QUOTES, "UTF-8");
 						}
 
 						$linkTitle = $thisDescription;
@@ -326,21 +338,24 @@
 
 					// Only build the hyperlink if a link is provided..and we are not told to suppress the link:
 					if (!$this->args['suppress_link'] && strlen(trim($item['link'])) && strlen(trim($thisTitle)) && !$this->args['show_description_only']){
-						$thisLink = '<span class="rssLinkListItemTitle"><a href="'.htmlentities(utf8_decode($item['link'])).'"' . $target .' title="'.$linkTitle.'">'.$thisTitle.'</a></span>';
+						$thisLink = '<span class="rssLinkListItemTitle"><a ' . $noFollowFlag . 'href="'.htmlentities(utf8_decode(transfromLinkURL($item['link']))).'"' . $target .' title="'.$linkTitle.'">'.$thisTitle.'</a></span>';
 					}
-					elseif (strlen(trim($item['link'])) && $this->args['show_description'])
+					elseif (strlen(trim($item['link'])) && $this->args['show_description'] && !$this->args['suppress_link'])
 					{
 						// If we don't have a title but we do have a description we want to show.. link the description
-						$thisLink = '<span class="rssLinkListItemTitle"><a href="'.htmlentities(utf8_decode($item['link'])).'"' . $target .'><span class="rssLinkListItemDesc">'.$thisDescription.'</span></a></span>';
+						$thisLink = '<span class="rssLinkListItemTitle"><a ' . $noFollowFlag . 'href="'.htmlentities(utf8_decode(transfromLinkURL($item['link']))).'"' . $target .'><span class="rssLinkListItemDesc">'.$thisDescription.'</span></a></span>';
 						$thisDescription = '';
 					}
-					else
+					elseif(!$this->args['show_description_only'])
 					{
 						$thisLink = '<span class="rssLinkListItemTitle">' . $thisTitle . '</span>';
+					} else {
+						$thisLink = '<span class="rssLinkListItemDesc">' . $thisDescription . '</span>';
 					}
 
+
 					if($this->args['show_date_per_item']){
-						$thisItemDate =  '<div class="feedItemDate">' . $item['feeddate'] . '<div>';
+						$thisItemDate =  '<div class="feedItemDate">' . $item['feeddate'] . '</div>';
 					}
 
 					// Determine if any extra data should be shown:
@@ -386,7 +401,7 @@
 						$this->output .= $this->args['before'].$thisLink.$thisItemDate.$extraData;
 					}
 					if (is_numeric($this->args['max_characters']) && $this->args['max_characters'] > 0) {
-						$this->output .= '<div class="ReadMoreLink"><a href="'.htmlentities(utf8_decode($item['link'])).'">'.$settings["translations"][$settings["language"]]['ReadMore'].'</a> &nbsp; </div>';
+						$this->output .= '<div class="ReadMoreLink"><a ' . $target .' href="'.htmlentities(utf8_decode(transfromLinkURL($item['link']))).' ">'.$settings["translations"][$settings["language"]]['ReadMore'].'</a> &nbsp; </div>';
 					}
 
 					$this->output .= $this->args['after'];
@@ -492,7 +507,7 @@
 					a delimeter between feeds and a tilde (~) between URL and TITLE
 				*/
 				$x = file($file);
-				return preg_split("/--NEXT--/", join('', file($file)));
+				return preg_split("/--NEXT--/", join('', $x));
 			}
 
 			function GetArgumentArray(){
@@ -526,6 +541,7 @@
 					$a[$d] = isset($this->args[$i]) ? $this->args[$i] : $a[$d];
 					$i++;
 				}
+
 				return $a;
 			}
 
@@ -577,6 +593,10 @@
 		{
 			return preg_replace_callback("/<!--rss:(.*)-->/", "feedListFilter", $text);
 		}
+		function rssLinkListFileFilter($text)
+		{
+			return preg_replace_callback("/<!--rssFile:(.*)-->/", "feedListFileFilter", $text);
+		}
 
 
 	/* Templates can call any of these functions */
@@ -597,11 +617,16 @@
 		}
 
 		function randomFeedList($args){
+				echo processRandomFeedList($args);
+		}
+
+		function processRandomFeedList($args){
 			if(!is_array($args)){
-				$this->args = parse_str($args,$a);
-				$this->args = $a;
+				$args = parse_str($args,$a);
+				$args = $a;
 			}
 			$feed = new FeedList($args);
+			$feed->Debug("called");
 			return $feed->FeedListFile();
 		}
 		
@@ -624,8 +649,29 @@
 			}
 
 			$feed = new FeedList($args);
-
 			return $feed->FeedListFilter();
+		}
+
+		function feedListFileFilter($args){
+			$args = explode(",",$args[1]);
+
+
+			if(count($args) == 1 && !strpos($args[0],":=")){
+				$a = array();
+				$a["file"] = $args[0];
+				$args = $a;
+			} else {
+				$a = array();
+				foreach($args as $arg){
+					$arg = explode(":=",$arg);
+					$a[$arg[0]] = $arg[1];
+				}
+				$args = $a;
+
+			}
+
+			return processRandomFeedList($args);
+
 		}
 
 	/* end template functions */
@@ -633,10 +679,24 @@
 		if (function_exists('add_filter'))
 		{
 			add_filter('the_content', 'rssLinkListFilter');
+			add_filter('the_content', 'rssLinkListFileFilter');
 		}
 
 		if(function_exists('FeedListInitError')){
 			add_action('admin_head','FeedListInitError');
+		}
+
+
+		
+		if(function_exists('register_deactivation_hook'))
+		{
+			register_deactivation_hook(__FILE__, 'cleanupFeedlistCache'); 
+		}
+
+		function cleanupFeedListCache(){
+			global $wpdb;
+			$sql = "delete from wp_options WHERE option_name like 'rss_%'";
+			$wpdb->query( $sql );
 		}
 
 
@@ -657,7 +717,7 @@ if(function_exists('add_action')) {
 	                  var r = elm.attachEvent("on"+evType, fn); 
 	                  return r; 
 	              } else { 
-	                  alert("Handler could not be removed"); 
+	                  // alert("Handler could not be removed"); 
 	              } 
 	            }  
 	            function externalLinks() { 

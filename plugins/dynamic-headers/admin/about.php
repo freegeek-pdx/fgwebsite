@@ -6,12 +6,17 @@
 	<br />
 	Nicasio Design is a full service web design firm specializing in WordPress.<br />
 	<br />
-	Feel free to <a href="http://nicasiodesign.com/contact-us.php" target="_blank">Contact Us Today</a>  to discuss your next project.
+	Feel free to <a href="http://nicasiodesign.com/contact-us.php" target="_blank">Contact Us Today</a>  to discuss your next WordPress project.<br />
 	<br />
-	<h2>Credits</h2>
-	<strong>Dan Cannon</strong> - Lead Developer/Programmer<br />
-	<strong>Chris Underwood</strong> - Lead Designer<br />
-	<strong>Felix Figuereo</strong> - Project Management<br />
+	Follow Nicasio on Twitter: <a href="http://twitter.com/nicasiodesign">http://twitter.com/nicasiodesign</a>
+	<br />
+	<h2>The Nicasio Team</h2>
+	<strong>Dan Cannon</strong> - Chief Technology Officer<br />
+	<strong>Chris Underwood</strong> - Chief Design Officer<br />
+	<strong>Felix Figuereo</strong> - Chief Executive Officer<br />
+	<strong>Jeff Carpenter</strong> - Account Manager<br />
+	<br />
+	Thanks to Chris Underwood for some of the design elements related to this plugin.
 	
 	<?php require_once (ABSPATH . WPINC . '/rss-functions.php'); ?>
 	<?php $today = current_time('mysql', 1); ?>
@@ -22,7 +27,7 @@
 		$rss = @fetch_rss('http://blog.nicasiodesign.com/feed/');
 		if ( isset($rss->items) && 0 != count($rss->items) ) {
 		?>
-			<ol>
+			<ul>
 			<?php
 			$rss->items = array_slice($rss->items, 0, 10);
 			foreach ($rss->items as $item ) {
@@ -40,13 +45,5 @@
 		}
 		}
 		?>
-		</ol>
-	<h2>Future Functionality</h2>
-	- Ability to manage multiple dynamic media modules on each page.<br />
-	- Ability to create your own dynamic media modules.<br />
-	- More visual selection and management of your dynamic media library.<br />
-	- Integration to allow use of WordPress Media Library.<br />
-	- Ability to set header for different WordPress archive pages.<br />
-	<br />
-	<br />
+		</ul>
 </div>
