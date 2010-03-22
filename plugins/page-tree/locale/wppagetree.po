@@ -1,0 +1,124 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Wordpress Page Tree\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-12-03 11:10+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Måns Jonasson <mans@mansjonasson.se>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: wppagetree.php:32
+#: wppagetree.php:33
+msgid "Page Tree"
+msgstr ""
+
+#: wppagetree.php:32
+msgid "Display a hierarchically structured tree of your pages."
+msgstr ""
+
+#: wppagetree.php:43
+msgid "Wordpress Page Tree"
+msgstr ""
+
+#: wppagetree.php:43
+#: wppagetree.php:70
+#: wppagetree.php:240
+msgid "Page tree"
+msgstr ""
+
+#: wppagetree.php:90
+msgid "Title"
+msgstr ""
+
+#: wppagetree.php:93
+msgid "Show controls"
+msgstr ""
+
+#: wppagetree.php:94
+msgid "Display the links to expand all, collapse all or toggle all?"
+msgstr ""
+
+#: wppagetree.php:95
+#: wppagetree.php:100
+#: wppagetree.php:105
+msgid "No"
+msgstr ""
+
+#: wppagetree.php:96
+#: wppagetree.php:101
+#: wppagetree.php:106
+msgid "Yes"
+msgstr ""
+
+#: wppagetree.php:98
+msgid "Expand all"
+msgstr ""
+
+#: wppagetree.php:99
+msgid "When loading the tree, should all branches be expanded by default?"
+msgstr ""
+
+#: wppagetree.php:103
+msgid "Only subpages"
+msgstr ""
+
+#: wppagetree.php:104
+msgid "Should the tree only show pages below the current page in the tree structure?"
+msgstr ""
+
+#: wppagetree.php:108
+msgid "Page tree root"
+msgstr ""
+
+#: wppagetree.php:109
+msgid "Starting point for the tree."
+msgstr ""
+
+#: wppagetree.php:110
+msgid "Show the complete structure"
+msgstr ""
+
+#: wppagetree.php:185
+#: wppagetree.php:253
+msgid "Collapse the entire tree below"
+msgstr ""
+
+#: wppagetree.php:185
+#: wppagetree.php:253
+msgid "Collapse All"
+msgstr ""
+
+#: wppagetree.php:186
+#: wppagetree.php:254
+msgid "Expand the entire tree below"
+msgstr ""
+
+#: wppagetree.php:186
+#: wppagetree.php:254
+msgid "Expand All"
+msgstr ""
+
+#: wppagetree.php:187
+#: wppagetree.php:255
+msgid "Toggle the tree below, opening closed branches, closing open branches"
+msgstr ""
+
+#: wppagetree.php:187
+#: wppagetree.php:255
+msgid "Toggle All"
+msgstr ""
+
+#: wppagetree.php:308
+msgid "(no title)"
+msgstr ""
+
+#: wppagetree.php:514
+msgid "Pages"
+msgstr ""
+

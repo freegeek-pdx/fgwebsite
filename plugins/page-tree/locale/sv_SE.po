@@ -1,0 +1,127 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Wordpress Page Tree\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-12-03 11:11+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Måns Jonasson <mans@mansjonasson.se>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: wppagetree.php:32
+#: wppagetree.php:33
+msgid "Page Tree"
+msgstr "Sidträd"
+
+#: wppagetree.php:32
+msgid "Display a hierarchically structured tree of your pages."
+msgstr "Visa ett hierarkiskt strukturerat träd med dina sidor"
+
+#: wppagetree.php:43
+msgid "Wordpress Page Tree"
+msgstr "Wordpress sidträd"
+
+#: wppagetree.php:43
+#: wppagetree.php:70
+#: wppagetree.php:240
+msgid "Page tree"
+msgstr "Sidträd"
+
+#: wppagetree.php:90
+msgid "Title"
+msgstr "Rubrik"
+
+#: wppagetree.php:93
+msgid "Show controls"
+msgstr "Visa kontrollpanel"
+
+#: wppagetree.php:94
+msgid "Display the links to expand all, collapse all or toggle all?"
+msgstr "Visa länkar för att expandera, fälla ihop och växla alla grenar?"
+
+#: wppagetree.php:95
+#: wppagetree.php:100
+#: wppagetree.php:105
+msgid "No"
+msgstr "Nej"
+
+#: wppagetree.php:96
+#: wppagetree.php:101
+#: wppagetree.php:106
+msgid "Yes"
+msgstr "Ja"
+
+#: wppagetree.php:98
+msgid "Expand all"
+msgstr "Fäll ut alla"
+
+#: wppagetree.php:99
+msgid "When loading the tree, should all branches be expanded by default?"
+msgstr "När trädet laddats, ska alla grenar vara utfällda från början?"
+
+#: wppagetree.php:103
+msgid "Only subpages"
+msgstr "Endast undersidor"
+
+#: wppagetree.php:104
+msgid "Should the tree only show pages below the current page in the tree structure?"
+msgstr "Ska trädet endast visa sidor som ligger under nuvarande sida i strukturen?"
+
+#: wppagetree.php:108
+msgid "Page tree root"
+msgstr "Sidträdets rot"
+
+#: wppagetree.php:109
+msgid "Starting point for the tree."
+msgstr "Startpunkt för sidträdet."
+
+#: wppagetree.php:110
+msgid "Show the complete structure"
+msgstr "Visa hela trädet"
+
+#: wppagetree.php:185
+#: wppagetree.php:253
+msgid "Collapse the entire tree below"
+msgstr "Fäll ihop hela trädet nedan"
+
+#: wppagetree.php:185
+#: wppagetree.php:253
+msgid "Collapse All"
+msgstr "Fäll ihop alla"
+
+#: wppagetree.php:186
+#: wppagetree.php:254
+msgid "Expand the entire tree below"
+msgstr "Fäll ut hela trädet nedan"
+
+#: wppagetree.php:186
+#: wppagetree.php:254
+msgid "Expand All"
+msgstr "Fäll ut alla"
+
+#: wppagetree.php:187
+#: wppagetree.php:255
+msgid "Toggle the tree below, opening closed branches, closing open branches"
+msgstr "Växla grenarna i trädet nedan, så att alla öppna grenar stängs och vice versa"
+
+#: wppagetree.php:187
+#: wppagetree.php:255
+msgid "Toggle All"
+msgstr "Växla alla"
+
+#: wppagetree.php:308
+msgid "(no title)"
+msgstr "(ingen titel)"
+
+#: wppagetree.php:514
+msgid "Pages"
+msgstr "Sidor"
+
+#~ msgid "<no name>"
+#~ msgstr "<namnlös>"
+
