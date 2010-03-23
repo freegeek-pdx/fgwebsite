@@ -393,6 +393,9 @@ width: 40px;
 #about-page-section ul {
 	list-style-type:none;
 }
+.about-header {
+	margin:0 0 10px 45px;
+}
 /* From WordPress Default Theme 
 -------------------------------------------------*/
 	p img {
