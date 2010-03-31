@@ -26,20 +26,19 @@
 
 	<?php endif; ?>
 
-		<?php echo "<ul>";
-		
+	
+		<?php 
+		if (!is_tree('10')) {
+		echo "<ul>";
+	
 				$post_ancestors = get_post_ancestors($post);
 				if (count($post_ancestors)) {
 				    $top_page = array_pop($post_ancestors);
 				    $children = wp_list_pages('title_li=&child_of='.$top_page.'&echo=0');
 				    $sect_title = get_the_title($top_page);
 				} 
-				
-					//if its the about us page
-						elseif (is_page('10')) {
-							$children=wp_list_pages( 'echo=1&child_of=10&title_li=');
-						}
-						//if its the thriftstore page
+					
+					//if its the thriftstore page
 						elseif (is_page('295')) {
 							$children=wp_list_pages( 'echo=1&child_of=295&title_li=');
 						}
@@ -47,14 +46,44 @@
 						elseif (is_page('606')) {	
 						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
 						}
-				elseif (is_page()) {
+				elseif (is_page() && !is_page(10)) {
 				    $children = wp_list_pages('title_li=&child_of='.$post->ID.'&echo=0&depth=2');
 				    $sect_title = the_title('','', false);}
 			
 				if ($children) {
 				   	echo $children;
 				}
-			?><?php echo "<li class='search'>"; 
+			}
+			if (is_tree('10')) {
+				echo "
+				<span class='about-list-sidebar'>Who we are</span>
+				<ul class='about-list'>
+				<li><a href='/board'>Board of Directors</a></li> 
+				<li><a href='/staff'>Staff</a></li> 
+				<li><a href='/council'>Community Council</a></li> 
+				<li><a href='/volunteers'>Volunteers</a></li>
+				</ul>
+				<span class='about-list-sidebar'>What we do</span>
+				<ul class='about-list'>
+				<li><a href='/mission'>Mission</a></li> 
+				<li><a href='/grants'>Hardware Grants</a></li> 
+				<li><a href='/about/recycle'>Recycle</a></li> 
+				<li><a href='/reuse'>Reuse</a></li> 
+				<li><a href='/education'>Education</a></li> 
+				<li><a href='/training'>Job Skills Training</a></li> 
+				<li><a href='/techsupport'>Tech Support</a></li>
+				</ul>
+				<span class='about-list-sidebar'>How we do it</span>
+				<ul class='about-list'>
+				<li><a href='/open-source'>Open Source</a></li> 
+				<li><a href='/tools'>The Tools We Use</a></li> 
+				<li><a href='/consensus'>Consensus</a></li>
+				</ul>
+				";
+			}
+			?>
+				
+			<?php echo "<li class='search'>"; 
 					
 		include_once TEMPLATEPATH . '/searchform.php' ;
 

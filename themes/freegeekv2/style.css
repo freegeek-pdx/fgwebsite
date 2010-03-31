@@ -396,6 +396,14 @@ width: 40px;
 .about-header {
 	margin:0 0 10px 45px;
 }
+/*  Styles for About us child page sidebars
+-------------------------------------------------*/
+.about-list-sidebar {
+	font-weight:bold;
+}
+#sidebar .about-list {
+	margin-left:10px;
+}
 /* From WordPress Default Theme 
 -------------------------------------------------*/
 	p img {
