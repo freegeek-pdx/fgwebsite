@@ -81,6 +81,7 @@ margin-left: 12px;
 #sidebar ul {
 list-style-type: none;
 list-style-image: none;
+font-weight:normal;
 }
 blockquote {
 border-left: 1px solid #EAEAEA;
@@ -185,8 +186,9 @@ font-weight: bold;
 line-height: 14px;
 margin: 5px 0 20px 0 ;
 }
-#sidebar li {
+#sidebar li a {
 list-style-type: none;
+font-weight:normal;
 }
 #question img {
 text-align: center;

@@ -29,7 +29,7 @@
 	
 		<?php 
 		if (!is_tree('10')) {
-		echo "<ul>";
+		echo "<ul style='font-weight:normal;'>";
 	
 				$post_ancestors = get_post_ancestors($post);
 				if (count($post_ancestors)) {
@@ -48,6 +48,9 @@
 						}
 						elseif (is_page('1129')) {	
 						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						}
+						elseif (is_page('2')) {	
+						    $children=wp_list_pages( 'echo=1&child_of=2&title_li=');  
 						}
 				elseif (is_page() && !is_page(10)) {
 				    $children = wp_list_pages('title_li=&child_of='.$post->ID.'&echo=0&depth=2');

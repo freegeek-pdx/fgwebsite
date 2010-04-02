@@ -30,7 +30,7 @@
 			<li>|</li>
 			<li><a href="<?php bloginfo('url'); ?>/contact">Contact Us</a></li>
 			<li>|</li>
-			<li><a href="#">Site Map</a></li>
+			<li><a href="<?php bloginfo('url'); ?>/sitemap">Site Map</a></li>
 			</ul>
 			</div><!-- id=footer_content -->
 			<!--  <div id="footer_bottom">
