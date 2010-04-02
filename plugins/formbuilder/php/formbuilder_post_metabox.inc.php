@@ -20,13 +20,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-	add_action( 'save_post', 'formbuilder_save_options' );
-	add_action( 'edit_post', 'formbuilder_save_options' );
-	add_action( 'publish_post', 'formbuilder_save_options' );
-	add_action( 'delete_post', 'formbuilder_delete_options' );
+		add_action( 'save_post', 'formbuilder_save_options' );
+		add_action( 'edit_post', 'formbuilder_save_options' );
+		add_action( 'publish_post', 'formbuilder_save_options' );
+		add_action( 'delete_post', 'formbuilder_delete_options' );
 
 	function formbuilder_add_custom_box()
 	{
+		if(formbuilder_user_can('connect'))
+		{
 		// If we are capable of using meta boxes, use it.
 		  if( function_exists( 'add_meta_box' )) {
 
@@ -44,6 +46,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 			add_action( 'edit_page_form', 'formbuilder_post_options' );
 
 		  }
+		}
 	}
 
 

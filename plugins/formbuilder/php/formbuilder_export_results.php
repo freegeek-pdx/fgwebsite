@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	global $user_level;
 
 	if ($user_level >= 7 OR $userdata->wp_capabilities['administrator'] == 1) {
-		include('extensions/formbuilder_xml_db_results.class.php');
+		include(FORMBUILDER_PLUGIN_PATH . "extensions/formbuilder_xml_db_results.class.php");
 		if(!isset($fb_xml_stuff)) $fb_xml_stuff = new formbuilder_xml_db_results();
 		$fb_xml_stuff->export_csv();
 	}

@@ -24,7 +24,7 @@ class formbuilder_xml_db_results
 {
 	
 	// Class variables
-	var $result_limit = 10;
+	var $result_limit = 20;
 
 	
 	// Constructor
@@ -38,10 +38,20 @@ class formbuilder_xml_db_results
 	{
  		global $formbuilder_admin_nav_options;
 		
-		if(!isset($_GET['fbxmlaction'])) $_GET['fbxmlaction'] = '';
+		if(!formbuilder_user_can('create'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
+ 		if(!isset($_GET['fbxmlaction'])) $_GET['fbxmlaction'] = '';
 		
 		switch($_GET['fbxmlaction'])
 		{
+			case "massdelete":
+				$this->show_delete();
+			break;
+			
 			case "showexport":
 				$this->show_export();
 			break;
@@ -95,7 +105,7 @@ class formbuilder_xml_db_results
 				<h3 class="info-box-title hndle"><?php _e('Export Data:', 'formbuilder'); ?> </h3>
 				<div class="fbxml-form-export inside">
 				
-					<form action='<?php echo FORMBUILDER_PLUGIN_URL;?>formbuilder_export_results.php' method='POST'>
+					<form action='<?php echo FORMBUILDER_PLUGIN_URL;?>php/formbuilder_export_results.php' method='POST'>
 						<?php _e('Please select the date range you wish to export data from:', 'formbuilder'); ?><br/><br/>
 						<?php _e('From:', 'formbuilder'); ?> <?php $this->input_date('date_from', date(STD_DATE, time()-(3600*24*30))); ?><br/>
 						<?php _e('To:', 'formbuilder'); ?> <?php $this->input_date('date_to', date(STD_DATE, time())); ?><br/><br/>
@@ -117,6 +127,84 @@ class formbuilder_xml_db_results
 							?>
 						</select><br/><br/>
 						<input type='submit' name='Submit' value='<?php _e('Export', 'formbuilder'); ?>' />
+					</form>
+				
+				</div>
+			</div>
+		</fieldset>
+		<?php
+		
+	}
+	
+	function show_delete()
+	{
+		global $wpdb;
+		
+		if($_POST['confirm_mass_delete'] == 'yes')
+		{
+			$specific_form = false;
+			$where = "WHERE 1";
+			
+			// Configure the Where clause depending on posted data.
+			if(isset($_POST['date_from']) AND isset($_POST['date_to']))
+			{
+				$timestamp_from = $this->output_date($_POST['date_from'], false);
+				$timestamp_to = $this->output_date($_POST['date_to'], true);
+				
+				$where .= " AND timestamp > '$timestamp_from' AND timestamp < '$timestamp_to'";
+			}
+	
+			if(isset($_POST['form_id']) AND $_POST['form_id'] != "" AND eregi('^[0-9]+$', $_POST['form_id']))
+			{
+				$form_id = addslashes(trim($_POST['form_id']));
+				$specific_form = true;
+				$where .= " AND form_id = '" . $form_id . "'";
+			}
+			
+			$sql = "DELETE FROM " . FORMBUILDER_TABLE_RESULTS . " $where;";
+			$result = $wpdb->query($sql);
+			if($result === false)
+				formbuilder_admin_alert('Error: For some reason, we were not able to mass delete the selected messages.  Tried to run sql code: ' . $sql);
+			else
+				formbuilder_admin_alert('Successfully deleted ' . $result . ' records.');
+			
+		}
+		elseif(isset($_POST['date_from']))
+		{
+			formbuilder_admin_alert('You failed to confirm that you wanted to delete the indicated messages.  Mass Delete Aborted.');
+			return;
+		}
+		
+		?>
+		<?php formbuilder_admin_nav('formResults'); ?>
+		<fieldset class="options metabox-holder">
+			<div class="info-box-formbuilder postbox">
+				<h3 class="info-box-title hndle"><font color="red"><?php _e('Mass Delete:', 'formbuilder'); ?></font> </h3>
+				<div class="fbxml-form-export inside">
+				
+					<form action='' method='POST'>
+						<?php _e('Please select the date range you wish to delete messages from:', 'formbuilder'); ?><br/><br/>
+						<?php _e('From:', 'formbuilder'); ?> <?php $this->input_date('date_from', date(STD_DATE, time()-(3600*24*30))); ?><br/>
+						<?php _e('To:', 'formbuilder'); ?> <?php $this->input_date('date_to', date(STD_DATE, time())); ?><br/><br/>
+		
+						<?php _e('Select the form(s) from which you would like to delete messages:', 'formbuilder'); ?><br/>
+						<select name='form_id'>
+							<option value=''><?php _e('All Forms', 'formbuilder'); ?></option>
+							<?php 
+								$sql = 'SELECT * FROM ' . FORMBUILDER_TABLE_FORMS . ' ORDER BY name ASC;';
+								$forms = $wpdb->get_results($sql, ARRAY_A);
+								foreach($forms as $form)
+								{
+									$sql = "SELECT id FROM " . FORMBUILDER_TABLE_RESULTS . " WHERE form_id = '" . $form['id'] . "';";
+									$result = $wpdb->get_col($sql, ARRAY_A);
+									$total_rows = count($result);
+							
+									echo "<option value='" . $form['id'] . "'>" . $form['name'] . "(" . $total_rows . ")</option>";
+								}
+							?>
+						</select><br/><br/>
+						<input type="checkbox" name="confirm_mass_delete" value="yes" /> <font color="red"><strong><?php _e('Check the box to confirm you wish to mass delete the messages indicated above.'); ?></strong></font><br/><br/>
+						<input type='submit' name='Submit' value='<?php _e('Mass Delete', 'formbuilder'); ?>' />
 					</form>
 				
 				</div>
@@ -158,7 +246,13 @@ class formbuilder_xml_db_results
 	function list_results()
 	{
 		global $wpdb;
+		?>
+		<?php formbuilder_admin_nav('formResults'); ?>
+		<fieldset class="options metabox-holder">
+			<div class="info-box-formbuilder postbox">
+				<h3 class="info-box-title hndle"><?php _e('Recent Form Results:', 'formbuilder'); ?></h3>
 		
+		<?php
 		
 		if(isset($_POST['formResultSelected']) AND isset($_POST['formResultSelectedAction']))
 		{
@@ -198,8 +292,13 @@ class formbuilder_xml_db_results
 						}
 						
 						$export_ids_string = implode(",", $export_ids);
-						$url = FORMBUILDER_PLUGIN_URL . "formbuilder_export_results.php?formResults=$export_ids_string";
-						echo "<meta HTTP-EQUIV='REFRESH' content='0; url=" . $url . "'>";
+						$hash = md5($export_ids_string);
+						
+						update_option('formbuilder_db_export_ids', $export_ids_string);
+						
+						$url = FORMBUILDER_PLUGIN_URL . "php/formbuilder_export_results.php?h=$hash";
+						echo "<meta HTTP-EQUIV='REFRESH' content='2; url=" . $url . "'><p>Your export should start automatically in a few seconds.  <a href='$url'>Click here if it does not.</a></p>";
+						return;
 					}
 				break;
 				
@@ -208,31 +307,52 @@ class formbuilder_xml_db_results
 			}
 		}
 		
-		
 		// Check to see if we should display multiple pages.
-		if(isset($_GET['paged']) AND eregi("^[0-9]+$", $_GET['paged'])) $result_page = $_GET['paged'];
-		else $result_page = 1;
+		if(isset($_GET['pageNumber']) AND eregi("^[0-9]+$", $_GET['pageNumber'])) 
+			$result_page = $_GET['pageNumber'];
+		else 
+			$result_page = 1;
 		
-				?>
-		<?php formbuilder_admin_nav('formResults'); ?>
-		<fieldset class="options metabox-holder">
-			<div class="info-box-formbuilder postbox">
-				<h3 class="info-box-title hndle"><?php _e('Recent Form Results:', 'formbuilder'); ?> </h3>
-						
+		$sql = "SELECT id FROM " . FORMBUILDER_TABLE_RESULTS . ";";
+		$result = $wpdb->get_col($sql, ARRAY_A);
+		$total_rows = count($result);
+
+		$paged_nav = fb_get_paged_nav($total_rows, $this->result_limit, false);
+		
+			?>
+					<script type="text/javascript">
+					function checkAll()
+					{
+						var inputs = document.getElementsByTagName('input');
+						var checkboxes = [];
+						for (var i = 0; i < inputs.length; i++) 
+						{
+							if (inputs[i].type == 'checkbox' && inputs[i].value != 'all results') 
+							{
+								if(inputs[i].checked == true)
+								{
+									inputs[i].checked = false;
+								}
+								else
+								{
+									inputs[i].checked = true;
+								}
+							}
+						}
+					}
+					</script>
 						<?php
 		
-					$sql = "SELECT id FROM " . FORMBUILDER_TABLE_RESULTS . ";";
-					$result = $wpdb->get_col($sql, ARRAY_A);
-					$total_rows = count($result);
-		
 				// Iterate through the results and display them line by line.
-				echo "<form action='' method='POST'><table class='widefat'>";
+				echo "<form action='' method='POST' name='formResultsList'><table class='widefat'>";
 				echo "<tr class='fbexporttable'>" .
-						"<td>&nbsp;</td>" .
+						"<td><a href='javascript:;' onclick='checkAll()' title='" . __('Click to toggle all ON or OFF.') . "'>" . __('toggle') . "</a></td>" .
 						"<td><strong>" . __("Date:", 'formbuilder') . "</strong></td>" .
 						"<td>" .
 						"<span class='fbexport'>" .
-						"<a href='" . FB_ADMIN_PLUGIN_PATH . "&fbaction=formResults&fbxmlaction=showexport'>" . __("Export", 'formbuilder') . "</a>" .
+						"<a href='" . FB_ADMIN_PLUGIN_PATH . "&fbaction=formResults&fbxmlaction=massdelete'><strong>" . __("Mass Delete", 'formbuilder') . "</strong></a>" .
+						"&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href='" . FB_ADMIN_PLUGIN_PATH . "&fbaction=formResults&fbxmlaction=showexport'><strong>" . __("Full Export", 'formbuilder') . "</strong></a>" .
+						"&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;Page: $paged_nav" . 
 						"</span>" .
 						"<strong>" . __("Message:", 'formbuilder') . "</strong>" .
 						"</td>" .
@@ -247,41 +367,29 @@ class formbuilder_xml_db_results
 					$form_data = $this->xmltoarray($result['xmldata']);
 					
 					$message = "";
-					foreach($form_data['form'] as $key=>$value) $message .= strtoupper($key) . ": " . $value . "\n";
+					foreach($form_data['form'] as $key=>$value) {
+						$message .= strtoupper($key) . ": " . $value . "\n";
+					}
 					if(strlen($message) > 80) $message = substr($message, 0, 80) . "...";
 		
 					echo "<tr>" .
-							"<td><input type='checkbox' name='formResultSelected[]' value='" . $result['id'] . "'/></td>" .
+							"<td><input type='checkbox' class='fb_stored_messages' name='formResultSelected[]' value='" . $result['id'] . "'/></td>" .
 							"<td><a href='" . FB_ADMIN_PLUGIN_PATH . "&fbaction=formResults" .
 							"&fbxmlaction=showemail&fbxmlid=" . $result['id'] . "'>" . 
 							date("F j, Y, g:i a", $result['timestamp']) . "</a></td>" .
-							"<td>" . __("Message:", 'formbuilder') . $message . "</td>" .
+							"<td>" . $message . "</td>" .
 						"</tr>";
 				}
 				
 				$curpos = $sql_offset+$this->result_limit;
 				
-				echo "<tr>";
-				if($sql_offset > 0)
-					echo "<td align='left'><a href='" . FB_ADMIN_PLUGIN_PATH . "&fbaction=formResults&paged=" . ($result_page - 1) . "'>&lt;-- " . __("previous", 'formbuilder') . "</a></td>";
-				else
-					echo "<td align='left'>&nbsp;</td>";
-				
-				echo "<td align='left'>&nbsp;</td>";
-				
-				if($curpos < $total_rows)
-					echo "<td align='right'><a href='" . FB_ADMIN_PLUGIN_PATH . "&fbaction=formResults&paged=" . ($result_page + 1) . "'>" . __("next", 'formbuilder') . " --&gt;</a></td>";
-				else
-					echo "<td align='right'>&nbsp;</td>";
-				echo "</tr>";
-				
-				echo "<tr><td colspan=3 align='left'>" .
-						"With Selected: <select name='formResultSelectedAction'>" .
+				echo "<tr><td colspan=3 align='left'>With Selected: <select name='formResultSelectedAction'>" .
 							"<option value=''></option>" .
 							"<option value='Export'>Export</option>" .
 							"<option value='Delete'>Delete</option>" .
 						"</select>" .
-						" <input type='submit' value='Go' /></td></tr>";
+						" <input type='submit' value='Go' />" . 
+						"<font style='float: right;'>Page: $paged_nav</font></td></tr>";
 				
 				echo "</table></form>";
 				?>
@@ -313,9 +421,17 @@ class formbuilder_xml_db_results
 			$where .= " AND form_id = '" . $form_id . "'";
 		}
 		
-		if(isset($_GET['formResults']))
+		if(isset($_GET['h']))
 		{
-			$formIDs = explode(",", $_GET['formResults']);
+			$formResults = get_option('formbuilder_db_export_ids');
+			$hash = md5($formResults);
+			if($hash != $_GET['h'])
+			{
+				_e("We're sorry, the export seems to have failed.  Please try again.");
+				exit;
+			}
+			
+			$formIDs = explode(",", $formResults);
 			$where .= " AND (";
 			$first = true;
 			foreach($formIDs as $form_id)
@@ -421,6 +537,8 @@ class formbuilder_xml_db_results
 			}
 			echo "\r\n";
 			$i++;
+			flush();
+			@set_time_limit(30);
 		} while($result != false);
 	}
 	

@@ -23,12 +23,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  	{
  		global $wpdb, $formbuilder_admin_nav_options;
 		$relative_path = FORMBUILDER_PLUGIN_URL;
-		include('html/options_default.inc.php');
+
+		if(!formbuilder_user_can('create'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
+		include(FORMBUILDER_PLUGIN_PATH . "html/options_default.inc.php");
  	}
 
  	function formbuilder_options_newForm()
  	{
 		global $wpdb;
+		if(!formbuilder_user_can('create'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
 		$sql =  "INSERT INTO " . FORMBUILDER_TABLE_FORMS . "(" .
 					"`name`," .
 					"`subject`," .
@@ -64,7 +77,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  	{
  		global $wpdb, $formbuilder_admin_nav_options;
  		
-		if(isset($_POST['formbuilder']) AND is_array($_POST['formbuilder']))
+		if(!formbuilder_user_can('create'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
+ 		if(isset($_POST['formbuilder']) AND is_array($_POST['formbuilder']))
 		{
 			$_POST['formbuilder'] = formbuilder_array_stripslashes($_POST['formbuilder']);
 			$_POST['formbuilderfields'] = formbuilder_array_stripslashes($_POST['formbuilderfields']);
@@ -73,23 +92,35 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 				// No verification currently done on the main form fields.
 
 			// Check to ensure that we can save the form data.  List an error message if not.
-			if(false === $wpdb->update(FORMBUILDER_TABLE_FORMS, $_POST['formbuilder'], array('id'=>$form_id))) $message = "ERROR.  Your form failed to save.";
+			if(false === $wpdb->update(FORMBUILDER_TABLE_FORMS, $_POST['formbuilder'], array('id'=>$form_id))) $errors[] = "ERROR.  Your form failed to save.";
 
 			// Check to see if we have any form fields to save, while making sure there are no existing error messages.
-			if(isset($_POST['formbuilderfields']) AND is_array($_POST['formbuilderfields']) AND !isset($message))
+			if(isset($_POST['formbuilderfields']) AND is_array($_POST['formbuilderfields']) AND !isset($errors))
 			{
 				// Iterate through the form fields, do verification and save them to the database.
 				foreach($_POST['formbuilderfields'] as $key => $value)
 				{
 					// Verify that the field has appropriate data
 					$value['field_name'] = clean_field_name($value['field_name']);
-
-					// Save the form field to the db.
-					if(!isset($message))
+					
+					// Verify that the field has a field name at all
+					if($value['field_name'] == '')
 					{
-						$result = $wpdb->update(FORMBUILDER_TABLE_FIELDS, $value, array('id'=>$key));
-						if(false === $result) $message = __("ERROR.  Problems were detected while saving your form fields.", 'formbuilder');
+						$errors[] = __("ERROR.  You have a field on your form with an empty field name.  All fields MUST have a unique field name.", 'formbuilder');
 					}
+					
+					// Check to ensure that the field name hasn't already been used.
+					if(!isset($tmp_field_names[$value['field_name']]))
+					{
+						$tmp_field_names[$value['field_name']] = true;
+					}
+					else
+					{
+						$errors[] = __("ERROR.  You have a duplicate field '" . $value['field_name'] . "' on your form.  All field names must be unique.", 'formbuilder');
+					}
+
+					$result = $wpdb->update(FORMBUILDER_TABLE_FIELDS, $value, array('id'=>$key));
+					if(false === $result) $errors[] = __("ERROR.  Problems were detected while saving your form fields.", 'formbuilder');
 				}
 			}
 			if(isset($_POST['fieldAction']) AND is_array($_POST['fieldAction']))
@@ -112,7 +143,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 						$rowID = $wpdb->insert_id;
 #						$tableFields->save_row($rowID, array("form_id"=>"$form_id", "display_order"=>$display_order));
 					}
-					echo "<meta http-equiv='refresh' content='0;url=#field_$rowID' />";
+					if(!isset($errors)) echo "<meta http-equiv='refresh' content='0;url=#field_$rowID' />";
 				}
 				if($fieldValue == __("Add Another", 'formbuilder'))
 				{
@@ -143,7 +174,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 					#$rowID = $tableFields->create_row();
 					#$tableFields->save_row($rowID, array("form_id"=>"$form_id", "display_order"=>$actionRow['display_order']));
-					echo "<meta http-equiv='refresh' content='0;url=#field_$rowID' />";
+					if(!isset($errors)) echo "<meta http-equiv='refresh' content='0;url=#field_$rowID' />";
 				}
 				if($fieldValue == __("Delete", 'formbuilder'))
 				{
@@ -173,7 +204,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 							$wpdb->update(FORMBUILDER_TABLE_FIELDS, $row, array('id'=>$tableRowID));
 						}
 					}
-					echo "<meta http-equiv='refresh' content='0;url=#field_" . $relatedRows[0]['id'] . "' />";
+					if(!isset($errors)) echo "<meta http-equiv='refresh' content='0;url=#field_" . $relatedRows[0]['id'] . "' />";
 				}
 				if($fieldValue == __("Move Up", 'formbuilder'))
 				{
@@ -216,7 +247,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #						$tableFields->save_row($fieldKey, $actionRow);
 						$wpdb->update(FORMBUILDER_TABLE_FIELDS, $actionRow, array('id'=>$fieldKey));
 					}
-					echo "<meta http-equiv='refresh' content='0;url=#field_$fieldKey' />";
+					if(!isset($errors)) echo "<meta http-equiv='refresh' content='0;url=#field_$fieldKey' />";
 				}
 				if($fieldValue == __("Move Down", 'formbuilder'))
 				{
@@ -260,18 +291,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #						$tableFields->save_row($fieldKey, $actionRow);
 						$wpdb->update(FORMBUILDER_TABLE_FIELDS, $actionRow, array('id'=>$fieldKey));
 					}
-					echo "<meta http-equiv='refresh' content='0;url=#field_$fieldKey' />";
+					if(!isset($errors)) echo "<meta http-equiv='refresh' content='0;url=#field_$fieldKey' />";
 				}
 			}
-			if(isset($_POST['Save']) AND !isset($message))
+			if(isset($_POST['Save']) AND !isset($errors))
 			{
 				$message = sprintf(__("Your form has been saved.  %sYou may click here to return to the main FormBuilder options page.%s", 'formbuilder'), "<a href='" . FB_ADMIN_PLUGIN_PATH . "'>", "</a>");
 			}
 
 		}
 		
-		$formbuilder_admin_nav_options['edit form'] = "Edit Form";
 		if(isset($message)) echo "<div class='updated'><p><strong>$message</strong></p></div>"; 
+		if(isset($errors)) 
+		{
+			foreach($errors as $error) 
+			{
+				echo "<div class='updated' style='background-color: #FFBBBB; border: 1px solid red; color: red;'><p><strong>$error</strong></p></div>";
+			}
+		} 
 
 		$sql = "SELECT * FROM " . FORMBUILDER_TABLE_FORMS . " WHERE id = '$form_id';";
 		$results = $wpdb->get_results($sql, ARRAY_A);
@@ -381,12 +418,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
 
-		include('html/options_edit_form.inc.php');
+		include(FORMBUILDER_PLUGIN_PATH . "html/options_edit_form.inc.php");
  	}
 
  	function formbuilder_options_copyForm($form_id)
  	{
 		global $wpdb, $formbuilder_admin_nav_options;
+		
+		if(!formbuilder_user_can('create'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
 		
 		// Duplicate the main form table row
 		$sql = "SELECT * FROM " . FORMBUILDER_TABLE_FORMS . " WHERE id = '$form_id' LIMIT 0,1;";
@@ -416,6 +459,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	{
 		global $wpdb, $formbuilder_admin_nav_options;
 		
+		if(!formbuilder_user_can('create'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
 		$sql = "DELETE FROM " . FORMBUILDER_TABLE_FORMS . " WHERE id = '$form_id';";
 		$wpdb->query($sql);
 		
@@ -433,7 +482,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  	{
  		global $wpdb, $formbuilder_admin_nav_options;
 		$relative_path = FORMBUILDER_PLUGIN_URL;
-		include('html/options_settings.inc.php');
+		
+		if(!formbuilder_user_can('manage'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
+		include(FORMBUILDER_PLUGIN_PATH . "html/options_settings.inc.php");
  	}
 
 	
@@ -443,7 +499,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  	{
  		global $wpdb, $formbuilder_admin_nav_options;
  		
-		$formBuilderTextStrings = formbuilder_load_strings();
+		if(!formbuilder_user_can('manage'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
+ 		$formBuilderTextStrings = formbuilder_load_strings();
 		
 		if(isset($_POST['formbuilder_reset_all_text_strings']) AND $_POST['formbuilder_reset_all_text_strings'] == 'yes')
 		{
@@ -460,7 +522,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		}
  		
 		$relative_path = FORMBUILDER_PLUGIN_URL;
-		include('html/options_strings.inc.php');
+		include(FORMBUILDER_PLUGIN_PATH . "html/options_strings.inc.php");
  	}
 
 	

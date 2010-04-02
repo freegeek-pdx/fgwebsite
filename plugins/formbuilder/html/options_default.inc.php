@@ -17,7 +17,7 @@
 			</tr>
 			<?php
 				// Build the list of current forms:
-				$sql = "SELECT * FROM " . FORMBUILDER_TABLE_FORMS;
+				$sql = "SELECT * FROM " . FORMBUILDER_TABLE_FORMS . " ORDER BY `name` ASC";
 				$objForms = $wpdb->get_results($sql);
 				$alt = false;
 
@@ -65,7 +65,7 @@
 			</tr>
 			<?php
 				// Build the list of current forms:
-				$sql = "SELECT * FROM " . FORMBUILDER_TABLE_RESPONSES;
+				$sql = "SELECT * FROM " . FORMBUILDER_TABLE_RESPONSES . " ORDER BY `name` ASC";
 				$objResponses = $wpdb->get_results($sql);
 
 				if(is_array($objResponses)) foreach($objResponses as $autoresponse)

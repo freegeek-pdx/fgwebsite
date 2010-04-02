@@ -2,9 +2,9 @@
 Contributors: truthmedia
 Donate link: http://truthmedia.com/engage/giving
 Tags: form, forms, email, comments, contact, input, spam, form to email, email form, contact form
-Requires at least: 2.5
-Tested up to: 2.9
-Stable tag: 0.82
+Requires at least: 2.7
+Tested up to: 2.9.2
+Stable tag: 0.83
 
 Allows WordPress bloggers to easily create customised forms for use on pages or posts.
 
@@ -68,6 +68,30 @@ Programming and Design by [James Warkentin](http://www.warkensoft.com/about-me/)
 3. Adding new form fields.
 
 == Changelog ==
+
+= 0.83 (unstable) =
+* Alphabetization of forms in list of forms on site.
+* Release update wrapping up all previously developed functionality.
+
+= 0.825 (unstable) =
+* Feature: Better database export controls which should solve some of the timeout problems, as well as adding paginated form results and the ability to mass-delete database records.
+
+= 0.824 (unstable) = 
+* Overhaul: Complete overhaul of the javascript processing systems, replacing jQuery with a smaller, lighter library.
+
+= 0.823 (unstable) = 
+* Bug Fix: Major permissions problem prevented any FormBuilder access on upgrades and new installs.
+
+= 0.822 (unstable) = 
+* Feature: Spammer IP checking installed, checking IP's against http://www.stopforumspam.com/apis.
+* Feature: New field type: unique id.
+* Feature: New permissions system installed, allowing for form controls to be customized for certain user levels.
+* Bug Fix: URL validation was only partially working.
+* Bug Fix: Enabled better field name checking.
+
+= 0.821 (unstable) = 
+* Feature: Akismet spam checking.  Forms to be checked must have at least one 'name' required field and at least one 'email' required field.
+* Feature: New required field type: 'name'  Essentially the same as 'any text' but used specifically for the Akismet spam checking.
 
 = 0.82 =
 * Feature: Added ability to export or delete specific forms from the XML backup database.

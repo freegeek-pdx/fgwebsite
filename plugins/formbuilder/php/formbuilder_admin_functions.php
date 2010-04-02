@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	function formbuilder_admin_css()
 	{
 		?>
-		<link rel='stylesheet' href='<?php echo FORMBUILDER_PLUGIN_URL; ?>formbuilder_styles_admin.css' type='text/css' media='all' />
+		<link rel='stylesheet' href='<?php echo FORMBUILDER_PLUGIN_URL; ?>css/formbuilder_styles_admin.css' type='text/css' media='all' />
 		<?php
 	}
 
@@ -56,10 +56,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		$version = get_option('formbuilder_version');
 		
 		$formbuilder_admin_nav_options = array();
-		$formbuilder_admin_nav_options['forms'] = "Forms";
-		$formbuilder_admin_nav_options['settings'] = "Settings";
-		$formbuilder_admin_nav_options['formResults'] = "Stored Results";
-		$formbuilder_admin_nav_options['strings'] = "Text Translations";
+		if(formbuilder_user_can('manage')) $formbuilder_admin_nav_options['settings'] = "Settings";
+		if(formbuilder_user_can('create')) $formbuilder_admin_nav_options['forms'] = "Forms";
+		if(formbuilder_user_can('create')) $formbuilder_admin_nav_options['formResults'] = "Stored Results";
+		if(formbuilder_user_can('manage'))$formbuilder_admin_nav_options['strings'] = "Text Translations";
 
 		?>
 
@@ -127,7 +127,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 			case "forms":
 			default:
-				formbuilder_options_default();
+				if(!formbuilder_user_can('connect') AND formbuilder_user_can('manage'))
+					formbuilder_options_settings();
+				else
+					formbuilder_options_default();
 			break;
 
 		}

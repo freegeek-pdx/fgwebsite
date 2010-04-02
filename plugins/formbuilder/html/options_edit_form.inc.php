@@ -67,6 +67,7 @@
 											"\\n\\nlarge text area: " . __("Large multi-line text box.", 'formbuilder') .
 											"\\n\\npassword box: " . __("Used for password entry.  Characters are hidden.", 'formbuilder') .
 											"\\n\\ndatestamp: " . __("Date selection field.", 'formbuilder') .
+											"\\n\\nunique id: " . __("Put a unique ID on your forms.", 'formbuilder') .
 											"\\n\\ncheckbox: " . __("Single check box.", 'formbuilder') .
 											"\\n\\nradio buttons: " . __("Radio selection buttons.  Enter one per line in the field value.", 'formbuilder') .
 											"\\n\\nselection dropdown: " . __("Dropdown box.  Enter one value per line in the field value.", 'formbuilder') .
@@ -88,6 +89,7 @@
 									$field['Type'] .= ",'large text area'";
 									$field['Type'] .= ",'password box'";
 									$field['Type'] .= ",'datestamp'";
+									$field['Type'] .= ",'unique id'";
 									$field['Type'] .= ",'checkbox'";
 									$field['Type'] .= ",'radio buttons'";
 									$field['Type'] .= ",'selection dropdown'";
@@ -141,6 +143,7 @@
 									$field['Type'] = "enum('|'";
 
 									$field['Type'] .= ",'any text'";
+									$field['Type'] .= ",'name'";
 									$field['Type'] .= ",'email address'";
 									$field['Type'] .= ",'confirm email'";
 									$field['Type'] .= ",'phone number'";

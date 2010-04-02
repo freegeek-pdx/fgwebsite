@@ -24,6 +24,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  	{
 		global $wpdb;
 
+		if(!formbuilder_user_can('create'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
 		$data['name'] = __("New AutoResponse", 'formbuilder');
 		$data['subject'] = __("This is a new, empty autoresponse that you can now modify to suit your needs.", 'formbuilder');
 		$data['from_email'] = get_option('admin_email');
@@ -36,7 +42,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  	function formbuilder_options_editResponse($response_id)
  	{
  		global $wpdb, $formbuilder_admin_nav_options;
-		// Make a connection to the database.
+
+ 		if(!formbuilder_user_can('create'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
+ 		// Make a connection to the database.
 		$message = "";
 
 		if(isset($_POST['formbuilder']) AND is_array($_POST['formbuilder']))
@@ -72,7 +85,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 		}
 
-		$formbuilder_admin_nav_options['edit response'] = "Edit Autoresponse";
 		if($message) echo "<div class='updated'><p><strong>$message</strong></p></div>"; 
 
 		$result = $wpdb->get_results("SELECT * FROM " . FORMBUILDER_TABLE_RESPONSES . " WHERE id = '" . $response_id . "';", ARRAY_A);
@@ -125,13 +137,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	
 		}
 
-		include('html/options_edit_response.inc.php');
+		include(FORMBUILDER_PLUGIN_PATH . "html/options_edit_response.inc.php");
  	}
 
  	function formbuilder_options_copyResponse($response_id)
  	{
  		global $wpdb;
  		
+		if(!formbuilder_user_can('create'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
  		$sql = "SELECT * FROM " . FORMBUILDER_TABLE_RESPONSES . " WHERE id = '" . $response_id . "';";
  		$results = $wpdb->get_results($sql, ARRAY_A);
  		$fields = $results[0];
@@ -147,6 +165,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	function formbuilder_options_removeResponse($response_id)
 	{
 		global $wpdb;
+		if(!formbuilder_user_can('create'))
+		{
+			formbuilder_admin_alert('You do not have permission to access this area.');
+			return;
+		}
+		
 		$wpdb->query("DELETE FROM " . FORMBUILDER_TABLE_RESPONSES . " WHERE id = '" . $response_id . "';");
 	}
 

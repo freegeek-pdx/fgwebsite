@@ -28,24 +28,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		
 		global $wpdb;
 		
-		if(method_exists($wpdb, 'has_cap'))
+		if ( ! empty($wpdb->charset) )
+			$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+		if ( ! empty($wpdb->collate) )
+			$charset_collate .= " COLLATE $wpdb->collate";
+
+		// Determine database collation.
+		if ( !isset($charset_collate) AND DB_CHARSET != "" ) 
 		{
-			// Determine database collation.
-			if ( $wpdb->has_cap( 'collation' ) ) {
-				if ( ! empty($wpdb->charset) )
-					$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
-				if ( ! empty($wpdb->collate) )
-					$charset_collate .= " COLLATE $wpdb->collate";
-			}
-		}
-		else
-		{
-			// Determine database collation.
-			if ( DB_CHARSET != "" ) {
-				$charset_collate = "DEFAULT CHARACTER SET " . DB_CHARSET;
-				if ( DB_COLLATE != "" )
-					$charset_collate .= " COLLATE " . DB_COLLATE;
-			}
+			$charset_collate = "DEFAULT CHARACTER SET " . DB_CHARSET;
+			if ( DB_COLLATE != "" )
+				$charset_collate .= " COLLATE " . DB_COLLATE;
 		}
 		
 		
@@ -800,6 +793,76 @@ CHANGE `from_name` `from_name` BLOB NOT NULL ';
 				update_option('formbuilder_version', "0.82");
 			}
 			
+			// Upgrade to version 0.821
+			if(get_option('formbuilder_version') < 0.821)
+			{
+				formbuilder_admin_alert("Upgraded FormBuilder to version 0.821", 
+					"Feature: Akismet spam checking.  Forms to be checked must have at least one 'name' required field and at least one 'email' required field.<br/>" . 
+					"Feature: New required field type: 'name'  Essentially the same as 'any text' but used specifically for the Akismet spam checking.<br/>" . 
+					"");
+					
+				update_option('formbuilder_version', "0.821");
+			}
+			
+			// Upgrade to version 0.822
+			if(get_option('formbuilder_version') < 0.822)
+			{
+				$referrer_info = get_option('formBuilder_referrer_info');
+				if(!$referrer_info) {
+					$referrer_info = 'Enabled';
+					update_option('formBuilder_referrer_info', $referrer_info);
+				}
+				
+				formbuilder_admin_alert("Upgraded FormBuilder to version 0.822", 
+					"Feature: Spammer IP checking installed, checking IP's against http://www.stopforumspam.com/apis.<br/>" . 
+					"Feature: New field type: unique id.<br/>" . 
+					"Feature: New permissions system installed, allowing for form controls to be customized for certain user levels.<br/>" . 
+					"Bug Fix: URL validation was only partially working.<br/>" . 
+					"Bug Fix: Enabled better field name checking.<br/>" . 
+				"");
+					
+				update_option('formbuilder_version', "0.822");
+			}
+			
+			// Upgrade to version 0.823
+			if(get_option('formbuilder_version') < 0.823)
+			{
+				formbuilder_admin_alert("Upgraded FormBuilder to version 0.823", 
+					"Bug Fix: Major permissions problem prevented any FormBuilder access on upgrades and new installs.<br/>" . 
+					"");
+					
+				update_option('formbuilder_version', "0.823");
+			}
+			
+			// Upgrade to version 0.824
+			if(get_option('formbuilder_version') < 0.824)
+			{
+				formbuilder_admin_alert("Upgraded FormBuilder to version 0.824", 
+					"Overhaul: Complete overhaul of the javascript processing systems, replacing jQuery with a smaller, lighter library.<br/>" . 
+					"");
+					
+				update_option('formbuilder_version', "0.824");
+			}
+			
+			// Upgrade to version 0.825
+			if(get_option('formbuilder_version') < 0.825)
+			{
+				formbuilder_admin_alert("Upgraded FormBuilder to version 0.825", 
+					"Feature: Better database export controls which should solve some of the timeout problems, as well as adding paginated form results and the ability to mass-delete database records.<br/>" . 
+					"");
+					
+				update_option('formbuilder_version', "0.825");
+			}
+			
+			// Upgrade to version 0.83
+			if(get_option('formbuilder_version') < 0.83)
+			{
+				formbuilder_admin_alert("Upgraded FormBuilder to version 0.83",  
+					"");
+					
+				update_option('formbuilder_version', "0.83");
+			}
+			
 			
 			
 			/* For a future version
@@ -912,6 +975,21 @@ CHANGE `from_name` `from_name` BLOB NOT NULL ';
 			
 			// Set blacklist checking to be disabled.
 			update_option('formbuilder_blacklist', 'Disabled');
+			
+			// Set blacklist checking to be disabled.
+			update_option('formbuilder_greylist', 'Disabled');
+			
+			// Set blacklist checking to be disabled.
+			update_option('formbuilder_excessive_links', 'Disabled');
+			
+			// Set blacklist checking to be disabled.
+			update_option('formbuilder_spammer_ip_checking', 'Disabled');
+			
+			// Set blacklist checking to be disabled.
+			update_option('formbuilder_akismet', 'Disabled');
+			
+			// Set referrer info to be collected by default.
+			update_option('formBuilder_referrer_info', 'Enabled');
 
 			formbuilder_admin_alert("Finished Installing FormBuilder " . FORMBUILDER_VERSION_NUM, 
 				"Thanks for installing FormBuilder.  We hope you like it.  Feel free to visit our blog " .
@@ -950,6 +1028,16 @@ CHANGE `from_name` `from_name` BLOB NOT NULL ';
 			delete_option('formbuilder_db_xml');
 			delete_option('formbuilder_alternate_email_handling');
 			delete_option('formbuilder_blacklist');
+			delete_option('formbuilder_greylist');
+			delete_option('formbuilder_permissions');
+			delete_option('formBuilder_referrer_info');
+			delete_option('formbuilder_spammer_ip_checking');
+			delete_option('formbuilder_akismet');
+			delete_option('formbuilder_excessive_links');
+			delete_option('formBuilder_IP_Capture');
+			delete_option('formBuilder_javascript_compat');
+			delete_option('formbuilder_db_export_ids');
+			
 			
 
 			// Remove formbuilder tables

@@ -23,8 +23,6 @@
 
 if(!class_exists("CaptchaSecurityImages")) {
 	
-	session_start();
-
 	class CaptchaSecurityImages {
 	
 		var $font = './monofont.ttf';
@@ -64,6 +62,9 @@ if(!class_exists("CaptchaSecurityImages")) {
 			$y = ($height - $textbox[5])/2;
 			imagettftext($image, $font_size, 0, $x, $y, $text_color, $this->font , $code) or die(__('Error in imagettftext function', 'formbuilder'));
 			/* output captcha image to browser */
+		
+			session_start();
+
 			header('Content-Type: image/jpeg');
 			imagejpeg($image);
 			imagedestroy($image);

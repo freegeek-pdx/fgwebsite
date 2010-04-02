@@ -4,7 +4,7 @@ Plugin Name: FormBuilder
 Plugin URI: http://truthmedia.com/wordpress/formbuilder
 Description: The FormBuilder plugin allows the administrator to create contact forms of a variety of types for use on their WordPress blog.  The FormBuilder has built-in spam protection and can be further protected by installing the Akismet anti-spam plugin.  Uninstall instructions can be found <a href="http://truthmedia.com/wordpress/formbuilder/documentation/uninstall/">here</a>.  Forms can be included on your pages and posts either by selecting the appropriate form in the dropdown below the content editing box, or by adding them directly to the content with [formbuilder:#] where # is the ID number of the form to be included.
 Author: TruthMedia Internet Group
-Version: 0.82
+Version: 0.83
 Author URI: http://truthmedia.com/
 
 
@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 	
-	define("FORMBUILDER_VERSION_NUM", "0.82");
+	define("FORMBUILDER_VERSION_NUM", "0.83");
 
 	// Define FormBuilder Related Tables
 	global $table_prefix;
@@ -105,12 +105,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	// Determine whether we're in HTTPS mode or not, and change URL's accordingly.
 	if(isset($_SERVER['HTTPS']) AND $_SERVER['HTTPS'] == 'on') 
 	{
-		define('FORMBUILDER_SITE_URL', str_replace('http://', 'https://', get_bloginfo('siteurl')));
+		define('FORMBUILDER_SITE_URL', str_replace('http://', 'https://', get_bloginfo('url')));
 		define('FORMBUILDER_BLOG_URL', str_replace('http://', 'https://', get_bloginfo('wpurl')));
 	}
 	else 
 	{
-		define('FORMBUILDER_SITE_URL', get_bloginfo('siteurl'));
+		define('FORMBUILDER_SITE_URL', get_bloginfo('url'));
 		define('FORMBUILDER_BLOG_URL', get_bloginfo('wpurl'));
 	}
 	define("FORMBUILDER_PLUGIN_URL", FORMBUILDER_BLOG_URL . str_replace(ABSOLUTE_PATH, "/", FORMBUILDER_PLUGIN_PATH));
@@ -124,14 +124,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
 	// Require support files.
-	require_once("formbuilder_autoresponse_functions.inc.php");
-	require_once("formbuilder_post_metabox.inc.php");
-	require_once("formbuilder_activation_script.inc.php");
-	require_once("captcha/CaptchaSecurityImages.php");
-	require_once("extensions/formbuilder_xml_db_results.class.php");
+	require_once(FORMBUILDER_PLUGIN_PATH . "php/formbuilder_autoresponse_functions.inc.php");
+	require_once(FORMBUILDER_PLUGIN_PATH . "php/formbuilder_post_metabox.inc.php");
+	require_once(FORMBUILDER_PLUGIN_PATH . "php/formbuilder_activation_script.inc.php");
+	require_once(FORMBUILDER_PLUGIN_PATH . "captcha/CaptchaSecurityImages.php");
+	require_once(FORMBUILDER_PLUGIN_PATH . "extensions/formbuilder_xml_db_results.class.php");
 
 	// Activate debugging object.
-	require_once("class/Object.class.php");
+	require_once(FORMBUILDER_PLUGIN_PATH . "class/Object.class.php");
 	$fbdbg = new Object();
 
 	// Global Filters and Actions
@@ -152,7 +152,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	function formbuilder_admin_menu()
 	{
 		// Add admin management pages
-		add_management_page(__('FormBuilder Management', 'formbuilder'), __('FormBuilder', 'formbuilder'), 7, FORMBUILDER_FILENAME, 'formbuilder_options_page');
+		add_management_page(__('FormBuilder Management', 'formbuilder'), __('FormBuilder', 'formbuilder'), 2, FORMBUILDER_FILENAME, 'formbuilder_options_page');
 
 		// Additional Filters and Actions
 		add_filter('admin_head', 'formbuilder_admin_head');
@@ -162,8 +162,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 	function formbuilder_admin_head() {
 		// Include additional function for admin system.
-		include_once("formbuilder_admin_functions.php");
-		include_once("formbuilder_admin_pages.inc.php");
+		include_once(FORMBUILDER_PLUGIN_PATH . "php/formbuilder_admin_functions.php");
+		include_once(FORMBUILDER_PLUGIN_PATH . "php/formbuilder_admin_pages.inc.php");
 		
 		// Display the admin related CSS
 		formbuilder_admin_css();
@@ -264,7 +264,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		// Only load the custom css if it is enabled.
 		if($custom_css == "Enabled")
 		{
-			$css_path = FORMBUILDER_PLUGIN_URL . "formbuilder_styles.css";
+			$css_path = FORMBUILDER_PLUGIN_URL . "css/formbuilder_styles.css";
 			?>
 			<link rel='stylesheet' href='<?php echo $css_path; ?>' type='text/css' media='all' />
 			<?php
@@ -272,7 +272,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
 		// Load any additional css needed for the site.
-		if(file_exists(FORMBUILDER_PLUGIN_PATH . "additional_styles.css"))
+		if(file_exists(WP_CONTENT_DIR . "/additional_styles.css"))
+		{
+			$css_path = WP_CONTENT_DIR . "/additional_styles.css";
+			?>
+			<!-- ADDITIONAL CSS CUSTOMIZATION -->
+			<link rel='stylesheet' href='<?php echo $css_path; ?>' type='text/css' media='all' />
+			<!-- END ADDITIONAL CSS CUSTOMIZATION -->
+			<?php
+		}
+		elseif(file_exists(FORMBUILDER_PLUGIN_PATH . "additional_styles.css"))
 		{
 			$css_path = FORMBUILDER_PLUGIN_URL . "additional_styles.css";
 			?>
@@ -303,16 +312,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		if($fb_do_js_manually)
 		{
 			?>
-
-				<script type='text/javascript' src='<?php echo FORMBUILDER_PLUGIN_URL; ?>js/jquery-1.3.2.min.js'></script>
-				<script type='text/javascript' src='<?php echo FORMBUILDER_PLUGIN_URL; ?>js/jquery.datePicker-2.1.2.js'></script>
-				<script type='text/javascript' src='<?php echo FORMBUILDER_PLUGIN_URL; ?>js/date.js'></script>
-				<script type='text/javascript' src='<?php echo FORMBUILDER_PLUGIN_URL; ?>js/javascript.js'></script>
-			
-			
+			<script type='text/javascript' src='<?php echo FORMBUILDER_PLUGIN_URL; ?>js/jx_compressed.js'></script>
+			<script type='text/javascript' src='<?php echo FORMBUILDER_PLUGIN_URL; ?>js/compat-javascript.js'></script>
 			<?php
 		}
-
 
 	
 	}
@@ -321,35 +324,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		global $fb_do_js_manually, $wp_version;
 		$plugin_dir = basename(dirname(__FILE__));
 		load_plugin_textdomain( 'formbuilder', 'wp-content/plugins/' . $plugin_dir . '/lang', $plugin_dir . '/lang' );
-
+	
 		if(function_exists('wp_enqueue_script') AND $wp_version >= '2.6')
 		{
-			wp_enqueue_script(
-				'formbuilder_jquery_datePicker',
-				FORMBUILDER_PLUGIN_URL . 'js/jquery.datePicker-2.1.2.js', 
-				array('jquery', 'jquery-ui-core', 'jquery-ui-tabs'), 
-				FORMBUILDER_VERSION_NUM
-			);
-
 			wp_enqueue_script( 
-				'formbuilder_dates', 
-				FORMBUILDER_PLUGIN_URL . 'js/date.js', 
+				'jx_compressed.js', 
+				FORMBUILDER_PLUGIN_URL . 'js/jx_compressed.js', 
 				array(), 
 				FORMBUILDER_VERSION_NUM
 			);
 			
 			wp_enqueue_script( 
 				'formbuilder_js', 
-				FORMBUILDER_PLUGIN_URL . 'js/javascript.js', 
+				FORMBUILDER_PLUGIN_URL . 'js/compat-javascript.js', 
 				array(), 
 				FORMBUILDER_VERSION_NUM
 			);
-			
 		}
 		else
 		{
 			$fb_do_js_manually = true;
 		}
+
+		session_start();
 
 	}
 
@@ -409,6 +406,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 		switch($field['required_data']) 
 		{
+			case "name":
 			case "any text":
 				$pattern = ".+";
 			break;
@@ -418,11 +416,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 				if(eregi($pattern, $field['value']))
 				{
 					$last_email_address = $field['value'];
+					$_SESSION['formbuilder']['last_email_address'] = $last_email_address;
 				}
 			break;
 	
 			case "confirm email":
 				$pattern = FORMBUILDER_PATTERN_EMAIL;
+				if(isset($_SESSION['formbuilder']['last_email_address'])) $last_email_address = $_SESSION['formbuilder']['last_email_address']; 
 				if($field['value'] != $last_email_address)
 				{
 					$post_errors = true;
@@ -438,7 +438,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 			break;
 	
 			case "valid url":
-				$pattern = '^\s*(http|https|ftp)://([^:/]+)(:\d+)?(/[^\#\s]+)(\#(\S*))?\s*$';
+				$pattern = '^\s*(http|https|ftp)://([^:/]+)\.([^:/\.]{2,7})(:\d+)?(/?[^\#\s]+)?(\#(\S*))?\s*$';
 			break;
 			
 			case "single word":
@@ -446,7 +446,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 			break;
 			
 			case "datestamp (dd/mm/yyyy)":
-				$pattern = "^[0-9]{2}/[0-9]{2}/[0-9]{4}$";
+				$pattern = "^([0-9]{2}/[0-9]{2}/[0-9]{4})|([0-9]{4}\-[0-9]{2}\-[0-9]{2})$";
 			break;
 			
 			default:
@@ -473,7 +473,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		$formBuilderTextStrings = formbuilder_load_strings();
 		
 		$siteurl = get_option('siteurl');
-		$relative_path = str_replace(ABSPATH, "/", FORMBUILDER_PLUGIN_PATH);
+		$relative_path = str_replace(ABSOLUTE_PATH, "/", FORMBUILDER_PLUGIN_PATH);
 		$page_path = $siteurl . $relative_path;
 
 				$sql = "SELECT * FROM " . FORMBUILDER_TABLE_FORMS . " WHERE id='$form_id';";
@@ -517,7 +517,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 					if(strpos($form['action_target'], "?") === false)
 						$form['action_target'] .= "?" . htmlspecialchars(SID);
 					else
-						$form['action_target'] .= "&" . htmlspecialchars(SID);
+						$form['action_target'] .= "&amp;" . htmlspecialchars(SID);
 				}
 
 				if($module_status !== false)
@@ -695,22 +695,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 								case "small text area":
 									$formLabel = "<div class='$formLabelCSS'>" . decode_html_entities($field['field_label'], ENT_NOQUOTES, get_option('blog_charset')) . " </div>";
 									$formInput = "<div class='formBuilderSmallTextarea'><textarea name='" . $field['name'] . "' rows='4' cols='50' " .
-											"id='field$divID' onblur=\"fb_ajaxRequest('" . $page_path . "formbuilder_parser.php', " .
-											"'formid=" . $form['id'] . "&amp;fieldid=" . $field['id'] . "&amp;val='+jQuery('[name=field$divID]').val(), 'formBuilderErrorSpace$divID')\" >" .
+											"id='field$divID' onblur=\"fb_ajaxRequest('" . $page_path . "php/formbuilder_parser.php', " .
+											"'formid=" . $form['id'] . "&amp;fieldid=" . $field['id'] . "&amp;val='+document.getElementById('field$divID').value, 'formBuilderErrorSpace$divID')\" >" .
 											$field['value'] . "</textarea></div>";
 								break;
 
 								case "large text area":
 									$formLabel = "<div class='$formLabelCSS'>" . decode_html_entities($field['field_label'], ENT_NOQUOTES, get_option('blog_charset')) . " </div>";
 									$formInput = "<div class='formBuilderLargeTextarea'><textarea name='" . $field['name'] . "' rows='10' cols='80' " .
-											"id='field$divID' onblur=\"fb_ajaxRequest('" . $page_path . "formbuilder_parser.php', " .
-											"'formid=" . $form['id'] . "&amp;fieldid=" . $field['id'] . "&amp;val='+jQuery('[name=field$divID]').val(), " .
+											"id='field$divID' onblur=\"fb_ajaxRequest('" . $page_path . "php/formbuilder_parser.php', " .
+											"'formid=" . $form['id'] . "&amp;fieldid=" . $field['id'] . "&amp;val='+document.getElementById('field$divID').value, " .
 											"'formBuilderErrorSpace$divID')\" >" . $field['value'] . "</textarea></div>";
 								break;
 
 								case "password box":
 									$formLabel = "<div class='$formLabelCSS'>" . decode_html_entities($field['field_label'], ENT_NOQUOTES, get_option('blog_charset')) . " </div>";
-									$formInput = "<div class='formBuilderInput'><input type='password' name='" . $field['name'] . "' value='" . $field['value'] . "' id='field$divID' onblur=\"fb_ajaxRequest('" . $page_path . "formbuilder_parser.php', 'formid=" . $form['id'] . "&amp;fieldid=" . $field['id'] . "&amp;val='+jQuery('[name=field$divID]').val(), 'formBuilderErrorSpace$divID')\" /></div>";
+									$formInput = "<div class='formBuilderInput'><input type='password' name='" . $field['name'] . "' value='" . $field['value'] . "' id='field$divID' onblur=\"fb_ajaxRequest('" . $page_path . "php/formbuilder_parser.php', 'formid=" . $form['id'] . "&amp;fieldid=" . $field['id'] . "&amp;val='+document.getElementById('field$divID').value, 'formBuilderErrorSpace$divID')\" /></div>";
 								break;
 
 								case "checkbox":
@@ -853,9 +853,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 									
 									$previous_page_insert = "";
 									if($page_id > 1)
-									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['previous'] . "' onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' . " />";
+									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['previous'] . "' onclick=" . '"   fb_toggleLayer(\'formbuilder-page-' . $page_id . '\');  fb_toggleLayer(\'formbuilder-page-' . ($page_id - 1) . '\');  "' . " />";
 									
-									$formInput .= "$previous_page_insert <input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['next'] . "' onclick=" . '"  jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id + 1) . '\').show();  "' . " />" .
+									$formInput .= "$previous_page_insert <input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['next'] . "' onclick=" . '"  fb_toggleLayer(\'formbuilder-page-' . $page_id . '\');  fb_toggleLayer(\'formbuilder-page-' . ($page_id + 1) . '\');  "' . " />" .
 											"</div>";
 
 									$page_id++;
@@ -871,7 +871,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 									$previous_page_insert = "";
 									if($page_id > 1)
-									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['previous'] . "' onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' . " />";
+									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['previous'] . "' onclick=" . '"   fb_toggleLayer(\'formbuilder-page-' . $page_id . '\');  fb_toggleLayer(\'formbuilder-page-' . ($page_id - 1) . '\');  "' . " />";
 									
 									$formInput = "<div class='formBuilderSubmit'>$previous_page_insert<input type='submit' name='" . $field['name'] . "' value='" . decode_html_entities($field['field_label'], ENT_NOQUOTES, get_option('blog_charset')) . "' /></div>";
 
@@ -883,7 +883,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 									$previous_page_insert = "";
 									if($page_id > 1)
-									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['previous'] . "' onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' . " />";
+									$previous_page_insert = "<input type='button' name='formbuilder_page_break' value='" . $formBuilderTextStrings['previous'] . "' onclick=" . '"   fb_toggleLayer(\'formbuilder-page-' . $page_id . '\');  fb_toggleLayer(\'formbuilder-page-' . ($page_id - 1) . '\');  "' . " />";
 									
 									$formInput = "<div class='formBuilderSubmit'>$previous_page_insert<input type='image' name='" . $field['name'] . "' src='" . decode_html_entities($field['field_label'], ENT_NOQUOTES, get_option('blog_charset')) . "' value='" . $field['value'] . "' alt='" . $field['value'] . "' /></div>";
 
@@ -892,12 +892,34 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 								case "datestamp":
 									$formLabel = "<div class='$formLabelCSS'>" . decode_html_entities($field['field_label'], ENT_NOQUOTES, get_option('blog_charset')) . " </div>";
-									$formInput = "<div class='formBuilderDateStamp'><input class='fb-date-pick' type='text' name='" . $field['name'] . "' value='" . $field['value'] . "' id='field$divID' onblur=\"fb_ajaxRequest('" . $page_path . "formbuilder_parser.php', 'formid=" . $form['id'] . "&amp;fieldid=" . $field['id'] . "&amp;val='+jQuery('[id=field$divID]').val(), 'formBuilderErrorSpace$divID')\"/></div>";
+									if(!$calendar_loaded) 
+									{
+										$calendar_loading_code = "<script src=\"" . $page_path . "js/calendar.js\" type=\"text/javascript\"></script>";
+										$calendar_loaded = true;
+									}
+									else
+									{
+										$calendar_loading_code = "";
+									}
+									$formInput = "<div class='formBuilderDateStamp'><input type='text' name='" . $field['name'] . "' value='" . $field['value'] . "' id='field$divID' />
+										$calendar_loading_code
+										<script type=\"text/javascript\">
+										fb_calendar.set(\"field$divID\");
+										</script>
+									</div>";
+									
+									break;
+
+								case "unique id":
+									$unique = uniqid();
+									$formLabel = "";
+									$formInput = "<div class='formBuilderHiddenField'><input type='hidden' name='" . $field['name'] . "' value='" . uniqid() . "' /></div>";
+									$divClass = "formBuilderHidden";
 								break;
 
 								default:
 									$formLabel = "<div class='$formLabelCSS'>" . decode_html_entities($field['field_label'], ENT_NOQUOTES, get_option('blog_charset')) . " </div>";
-									$formInput = "<div class='formBuilderInput'><input type='text' name='" . $field['name'] . "' value='" . $field['value'] . "' id='field$divID' onblur=\"fb_ajaxRequest('" . $page_path . "formbuilder_parser.php', 'formid=" . $form['id'] . "&amp;fieldid=" . $field['id'] . "&amp;val='+jQuery('[id=field$divID]').val(), 'formBuilderErrorSpace$divID')\"/></div>";
+									$formInput = "<div class='formBuilderInput'><input type='text' name='" . $field['name'] . "' value='" . $field['value'] . "' id='field$divID' onblur=\"fb_ajaxRequest('" . $page_path . "php/formbuilder_parser.php', 'formid=" . $form['id'] . "&amp;fieldid=" . $field['id'] . "&amp;val='+document.getElementById('field$divID').value, 'formBuilderErrorSpace$divID')\"/></div>";
 								break;
 							}
 
@@ -923,18 +945,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 						}
 					}
 					
-					// Hidden fields to include referer, and page uri
-					if(isset($_SERVER['HTTP_REFERER'])) $formDisplay .= "<input type='hidden' name='REFERER' value='" . $_SERVER['HTTP_REFERER'] . "' />";
-					if(isset($_SERVER['HTTP_HOST']) AND isset($_SERVER['REQUEST_URI'])) $formDisplay .= "<input type='hidden' name='PAGE' value='http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "' />";
-
+					$referrer_info = get_option('formBuilder_referrer_info');
+					if($referrer_info == 'Enabled')
+					{
+						// Hidden fields to include referer, and page uri
+						if(isset($_SERVER['HTTP_REFERER'])) $formDisplay .= "<input type='hidden' name='REFERER' value='" . $_SERVER['HTTP_REFERER'] . "' />";
+						if(isset($_SERVER['HTTP_HOST']) AND isset($_SERVER['REQUEST_URI'])) $formDisplay .= "<input type='hidden' name='PAGE' value='http://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "' />";
+					}
+					
 					// Submit Button
 					if(!$submit_button_set) {
 						$previous_page_insert = "";
 						if($page_id > 1)
 						$previous_page_insert = "<input type='button' name='formbuilder_page_break' " .
 							"value='" . $formBuilderTextStrings['previous'] . "' " .
-							"onclick=" . '"   jQuery(\'#formbuilder-page-' . $page_id . '\').hide();  ' .
-							'jQuery(\'#formbuilder-page-' . ($page_id - 1) . '\').show();  "' .	" />";
+							"onclick=" . '"   fb_toggleLayer(\'formbuilder-page-' . $page_id . '\');  ' .
+							'  fb_toggleLayer(\'formbuilder-page-' . ($page_id - 1) . '\');  "' .	" />";
 			
 						$formDisplay .= "\n<div class='formBuilderSubmit'>$previous_page_insert<input type='submit' name='Submit' value='" . $formBuilderTextStrings['send'] . "' /></div>";
 					}
@@ -991,6 +1017,36 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 									break;
 								}
 							}
+						}
+					}
+					
+					// Check posted form data to ensure that we don't have any greylisted material
+					$formbuilder_spammer_ip_checking = get_option('formbuilder_spammer_ip_checking');
+					if($formbuilder_spammer_ip_checking == "Enabled")
+					{
+						if(isset($_POST['formBuilderForm']['FormBuilderID'])) 
+						{
+							$response = formbuilder_check_spammer_ip($_SERVER['REMOTE_ADDR']);
+							if($response > 0)
+							{
+								$form['subject'] = "POSSIBLE SPAMMER IP: " . $form['subject'];
+								break;
+							}
+						}
+					}
+					
+					// Check posted form data for Akismet Spam
+					$akismet_enabled = get_option('formbuilder_akismet');
+					if($akismet_enabled == "Enabled" AND function_exists('akismet_http_post'))
+					{
+						if(isset($_POST['formBuilderForm']['FormBuilderID'])) 
+						{
+							
+							if(formbuilder_check_akismet($allFields) == 'true')
+							{
+								$form['subject'] = "POSSIBLE AKISMET SPAM: " . $form['subject'];
+							}
+
 						}
 					}
 					
@@ -1136,9 +1192,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		$ip_capture = get_option('formBuilder_IP_Capture');
 		if($ip_capture == 'Enabled' AND isset($_SERVER['REMOTE_ADDR'])) $xml .= "\r\n<IP>" . $_SERVER['REMOTE_ADDR'] . "</IP>";
 
-		// Add Page and Referer urls to the bottom of the email.
-		if(isset($_POST['PAGE'])) $xml .= "\r\n<Page>" . $_POST['PAGE'] . "</Page>";
-		if(isset($_POST['REFERER'])) $xml .= "\r\n<Referrer>" . $_POST['REFERER'] . "</Referrer>";
+		$referrer_info = get_option('formBuilder_referrer_info');
+		if($referrer_info == 'Enabled')
+		{
+			// Add Page and Referer urls to the bottom of the email.
+			if(isset($_POST['PAGE'])) $xml .= "\r\n<Page>" . $_POST['PAGE'] . "</Page>";
+			if(isset($_POST['REFERER'])) $xml .= "\r\n<Referrer>" . $_POST['REFERER'] . "</Referrer>";
+		}
 
 		$xml .= "\r\n</$xml_container>";
 		
@@ -1212,10 +1272,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		$ip_capture = get_option('formBuilder_IP_Capture');
 		if($ip_capture == 'Enabled' AND isset($_SERVER['REMOTE_ADDR'])) $email_msg .= "IP: " . $_SERVER['REMOTE_ADDR'] . "\r\n";
 
-		// Add Page and Referer urls to the bottom of the email.
-		if(isset($_POST['PAGE'])) $email_msg .= "PAGE: " . $_POST['PAGE'] . "\r\n";
-		if(isset($_POST['REFERER'])) $email_msg .= "REFERER: " . $_POST['REFERER'] . "\r\n";
-
+		$referrer_info = get_option('formBuilder_referrer_info');
+		if($referrer_info == 'Enabled')
+		{
+			// Add Page and Referer urls to the bottom of the email.
+			if(isset($_POST['PAGE'])) $email_msg .= "PAGE: " . $_POST['PAGE'] . "\r\n";
+			if(isset($_POST['REFERER'])) $email_msg .= "REFERER: " . $_POST['REFERER'] . "\r\n";
+		}
 
 
 		// Set autoresponse information if required and send it out.
@@ -1405,6 +1468,72 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		return(false);
 	}
 	
+	function formbuilder_check_spammer_ip($ip)
+	{
+		$url = "http://www.stopforumspam.com/api?ip=" . $ip;
+		$response = wp_remote_request($url);
+		
+		$xml = $response['body'];
+		return(preg_match('|<response success="true".+<appears>yes</appears>|isu', $xml));
+	}
+	
+	function formbuilder_check_akismet($allFields = array())
+	{
+		// Code largely taken from Akismet WordPress plugin.
+		global $wpdb, $akismet_api_host, $akismet_api_port, $wpcom_api_key;
+		if(!function_exists('akismet_http_post') OR !$wpcom_api_key) return(false);
+		
+		$c = array();
+
+		$ignore = array( 'HTTP_COOKIE' );
+		foreach ( $_SERVER as $key => $value )
+			if ( !in_array( $key, $ignore ) )
+				$c["$key"] = $value;
+
+		$c['user_ip']    = preg_replace( '/[^0-9., ]/', '', $_SERVER['REMOTE_ADDR'] );
+		$c['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+		$c['referrer']   = $_SERVER['HTTP_REFERER'];
+		$c['permalink']   = get_permalink();
+		$c['comment_type']   = 'comment form';
+		$c['blog']       = get_option('home');
+		$c['blog_lang']  = get_locale();
+		$c['blog_charset'] = get_option('blog_charset');
+		
+		$c['comment_content'] = '';
+		foreach($allFields as $key=>$field)
+		{
+			if(!$c['comment_author'] AND (strtolower($field['field_name']) == 'name' OR $field['required_data'] == "name"))
+			{
+				$c['comment_author'] = $field['value'];
+			}
+			
+			if(!$c['comment_author_email'] AND (strtolower($field['field_name']) == 'email' OR $field['required_data'] == "email address"))
+			{
+				$c['comment_author_email'] = $field['value'];
+			}
+			
+			if($field['field_type'] == 'small text area' 
+			OR $field['field_type'] == 'large text area')
+			{
+				$c['comment_content'] .= $field['value'] . "\n";
+			}
+		}
+		$c['comment_content'] = trim($c['comment_content']);
+		
+		if(!$c['comment_author'] OR !$c['comment_author_email'] OR !$c['comment_content']) return(false);
+		
+#		echo "<pre>Query Vars: "; print_r($c); echo "<br/></pre>";
+		$query_string = '';
+		foreach ( $c as $key => $data )
+		$query_string .= $key . '=' . urlencode( stripslashes($data) ) . '&';
+		
+#		echo "<pre>Query: $query_string<br/>\n</pre>";
+	
+		$response = akismet_http_post($query_string, $akismet_api_host, '/1.1/comment-check', $akismet_api_port);
+#		echo "<pre>Response: "; print_r($response); echo "<br/></pre>";
+		return $response[1];
+	}
+	
 	function formbuilder_load_strings()
 	{
 
@@ -1435,5 +1564,144 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		
 		return($formBuilderTextStrings);
 	}
+	
+	function formbuilder_user_can($capability)
+	{
+		$fb_permissions = get_option('formbuilder_permissions');
+		
+		if(!$fb_permissions AND $_GET['fbaction'] != 'uninstall') 
+		{
+			$fb_permissions[level_10] = array(
+				'connect' => 'yes',
+				'create' => 'yes',
+				'manage' => 'yes'
+			);
+			
+			$fb_permissions[level_7] = array(
+				'connect' => 'yes',
+				'create' => 'yes',
+				'manage' => 'no'
+			);
+			
+			$fb_permissions[level_2] = array(
+				'connect' => 'yes',
+				'create' => 'no',
+				'manage' => 'no'
+			);
+			
+			update_option('formbuilder_permissions', $fb_permissions);
+		}
+	
+		if(current_user_can('level_10'))
+			$level = 'level_10';
+		elseif(current_user_can('level_7'))
+			$level = 'level_7';
+		elseif(current_user_can('level_2'))
+			$level = 'level_2';
+		else
+			$level = 'level_0';
+		
+		if($fb_permissions[$level][$capability] == 'yes')
+			return(true);
+		else
+			return(false);
+	}
 
+	/**
+	 * Get a paginated navigation bar
+	 * 
+	 * This function will create and return the HTML for a paginated navigation bar
+	 * based on the total number of results passed in $num_results, and the value 
+	 * found in $_GET['pageNumber'].  The programmer simply needs to call this function
+	 * with the appropriate value in $num_results, and use the value in $_GET['pageNumber']
+	 * to determine which results should be shown.
+	 * Creates a list of pages in the form of:
+	 * 1 .. 5 6 7 .. 50 51 .. 100
+	 * (in this case, you would be viewing page 6)
+	 * 
+	 * @global   int     $_GET['pageNumber'] is the current page of results being displayed.
+	 * @param    int     $num_results is the total number of results to be paged through.
+	 * @param    int     $num_per_page is the number of results to be shown per page.
+	 * @param    bool    $show set to true to write output to browser.
+	 * 
+	 * @return   string  Returns the HTML code to display the nav bar. 
+	 * 
+	 */
+	function fb_get_paged_nav($num_results, $num_per_page=10, $show=false)
+	{
+	    // Set this value to true if you want all pages to be shown,
+	    // otherwise the page list will be shortened.
+	    $full_page_list = false; 
+	        
+	    // Get the original URL from the server.
+	    $url = $_SERVER['REQUEST_URI'];
+	    
+	    // Initialize the output string.
+	    $output = '';
+	    
+	    // Remove query vars from the original URL.
+	    if(preg_match('#^([^\?]+)(.*)$#isu', $url, $regs))
+	        $url = $regs[1];
+	    
+	    // Shorten the get variable.
+	    $q = $_GET;
+	    
+	    // Determine which page we're on, or set to the first page.
+	    if(isset($q['pageNumber']) AND is_numeric($q['pageNumber'])) $page = $q['pageNumber'];
+	    else $page = 1;
+	    
+	    // Determine the total number of pages to be shown.
+	    $total_pages = ceil($num_results / $num_per_page);
+	    
+	    // Begin to loop through the pages creating the HTML code.
+	    for($i=1; $i<=$total_pages; $i++)
+	    {
+	        // Assign a new page number value to the pageNumber query variable.
+	        $q['pageNumber'] = $i;
+	        
+	        // Initialize a new array for storage of the query variables.
+	        $tmp = array();
+	        foreach($q as $key=>$value)
+	            $tmp[] = "$key=$value";
+	        
+	        // Create a new query string for the URL of the page to look at.
+	        $qvars = implode("&amp;", $tmp);
+	        
+	        // Create the new URL for this page.
+	        $new_url = $url . '?' . $qvars;
+	        
+	        // Determine whether or not we're looking at this page.
+	        if($i != $page)
+	        {
+	            // Determine whether or not the page is worth showing a link for.
+	            // Allows us to shorten the list of pages.
+	            if($full_page_list == true
+	                OR $i == $page-1
+	                OR $i == $page+1
+	                OR $i == 1
+	                OR $i == $total_pages
+	                OR $i == floor($total_pages/2)
+	                OR $i == floor($total_pages/2)+1
+	                )
+	                {
+	                    $output .= "<a href='$new_url'>$i</a> ";
+	                }
+	                else
+	                    $output .= '. ';
+	        }
+	        else
+	        {
+	            // This is the page we're looking at.
+	            $output .= "<strong>$i</strong> ";
+	        }
+	    }
+	    
+	    // Remove extra dots from the list of pages, allowing it to be shortened.
+	    $output = ereg_replace('(\. ){2,}', ' .. ', $output);
+	    
+	    // Determine whether to show the HTML, or just return it.
+	    if($show) echo $output;
+	    
+	    return($output);
+	}
 ?>
