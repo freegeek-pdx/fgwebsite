@@ -46,6 +46,9 @@
 						elseif (is_page('606')) {	
 						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
 						}
+						elseif (is_page('1129')) {	
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						}
 				elseif (is_page() && !is_page(10)) {
 				    $children = wp_list_pages('title_li=&child_of='.$post->ID.'&echo=0&depth=2');
 				    $sect_title = the_title('','', false);}
