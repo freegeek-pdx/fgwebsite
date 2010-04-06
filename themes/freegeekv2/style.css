@@ -303,7 +303,10 @@ display: inline;
 .clear {
 clear: both;
 }
-
+#cc {
+	float:right;
+	margin-right:40px;
+}
 /* padding for all main containers
 --------------------------------------------------- */
 	#header ul, #subnav {
