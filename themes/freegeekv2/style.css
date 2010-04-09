@@ -398,8 +398,14 @@ width: 40px;
 #about-page-section ul {
 	list-style-type:none;
 }
-.about-header {
-	margin:0 0 10px 9px;
+.about-header-first {
+	margin:0 0 10px 58px;
+}
+.about-header-second {
+	margin:0 0 10px 18px;
+}
+.about-header-third {
+	margin:0 0 10px 18px;
 }
 /*  Styles for About us child page sidebars
 -------------------------------------------------*/
