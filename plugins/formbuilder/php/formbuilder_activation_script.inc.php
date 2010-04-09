@@ -863,6 +863,19 @@ CHANGE `from_name` `from_name` BLOB NOT NULL ';
 				update_option('formbuilder_version', "0.83");
 			}
 			
+			// Upgrade to version 0.84
+			if(get_option('formbuilder_version') < 0.84)
+			{
+				formbuilder_admin_alert("Upgraded FormBuilder to version 0.84",  
+					"Feature: Enabled autodetection of forms to cut down on HTML bloat.<br/>\n" .
+					"Clean Up: Sorted field types and required field types alphabetically when editing forms.<br/>\n" .
+					"Bug Fix: Fixed CAPTCHA bug.<br/>\n" .
+					"Bug Fix: Removed requirement for field name on comments and page breaks.<br/>\n" .
+				"");
+					
+				update_option('formbuilder_version', "0.84");
+			}
+			
 			
 			
 			/* For a future version

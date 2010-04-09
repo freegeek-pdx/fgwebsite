@@ -21,7 +21,7 @@
 * http://www.gnu.org/licenses/gpl.html
 */
 
-	require_once(FORMBUILDER_PLUGIN_PATH . 'captcha/CaptchaSecurityImages.php');
+	require_once('CaptchaSecurityImages.php');
 	
 	$captcha = new CaptchaSecurityImages(120, 40, 6);
 

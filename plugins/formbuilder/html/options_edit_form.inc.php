@@ -61,52 +61,16 @@
 								if($field['Field'] == "field_type") {
 									$field['Title'] = __('Select the type of field that you wish to have shown in this location.', 'formbuilder');
 									$field['HelpText'] = 
-											__("Select the type of field that you wish to have shown in this location.  Most of them require a field name and label.  Field value is optional.", 'formbuilder') . "\\n" .
-											"\\n\\nsingle line text box: " . __("Standard single line text box.", 'formbuilder') .
-											"\\n\\nsmall text area: " . __("Small multi-line text box.", 'formbuilder') .
-											"\\n\\nlarge text area: " . __("Large multi-line text box.", 'formbuilder') .
-											"\\n\\npassword box: " . __("Used for password entry.  Characters are hidden.", 'formbuilder') .
-											"\\n\\ndatestamp: " . __("Date selection field.", 'formbuilder') .
-											"\\n\\nunique id: " . __("Put a unique ID on your forms.", 'formbuilder') .
-											"\\n\\ncheckbox: " . __("Single check box.", 'formbuilder') .
-											"\\n\\nradio buttons: " . __("Radio selection buttons.  Enter one per line in the field value.", 'formbuilder') .
-											"\\n\\nselection dropdown: " . __("Dropdown box.  Enter one value per line in the field value.", 'formbuilder') .
-											"\\n\\nhidden field: " . __("A hidden field on the form.  The data will appear in the email.", 'formbuilder') .
-											"\\n\\ncomments area: " . __("Special field just for text on the form.  Put the text in the field value.", 'formbuilder') .
-											"\\n\\nfollowup page: " . __("Special field just for indicating a followup url, once the form has been submitted.  Put the url you want people to be redirected to in the field value.", 'formbuilder') .
-											"\\n\\nrecipient selection: " . __("A special selection dropdown allowing the visitor to specify an alternate form recipient.  Enter values in the form of email@domain.com|Destination Name.", 'formbuilder') .
-											"\\n\\ncaptcha field: " . __("Special field on the form for displaying CAPTCHAs.  Field name is used for identifying the field.  Field label is used to give the visitor further instruction on what to fill out.", 'formbuilder') .
-											"\\n\\nspam blocker: " . __("Special field on the form.  Read more on the FormBuilder admin page.  Only needs a field name.", 'formbuilder') .
-											"\\n\\npage break: " . __("Allows you to break your form into multiple pages.  Needs field name and field label.", 'formbuilder') .
-											"\\n\\nreset button: " . __("Allows you to put a customized reset button anywhere on the form.  Needs field name and field label.", 'formbuilder') .
-											"\\n\\nsubmit button: " . __("Allows you to put a customized submit button anywhere on the form.  Needs field name and field label.", 'formbuilder') .
-											"\\n\\nsubmit image: " . __("Allows you to put a customized submit image anywhere on the form.  Needs field name and field label.  Field label must be the PATH TO THE IMAGE to be used for the submit button.", 'formbuilder') .
-											"";
+											__("Select the type of field that you wish to have shown in this location.  Most of them require a field name and label.  Field value is optional.", 'formbuilder') . "\\n";
+									foreach($all_field_types as $field_type_name=>$field_type_help)
+									{
+										$field['Type'] .= "'" . $field_type_name . "',";
+										$field['HelpText'] .= "\\n\\n" . $field_type_name . ": " . $field_type_help;
+									}
+									
 
 									// Alter field_type field from text area to enum to allow for selection box.
-									$field['Type'] = "enum('single line text box'";
-									$field['Type'] .= ",'small text area'";
-									$field['Type'] .= ",'large text area'";
-									$field['Type'] .= ",'password box'";
-									$field['Type'] .= ",'datestamp'";
-									$field['Type'] .= ",'unique id'";
-									$field['Type'] .= ",'checkbox'";
-									$field['Type'] .= ",'radio buttons'";
-									$field['Type'] .= ",'selection dropdown'";
-									$field['Type'] .= ",'hidden field'";
-									$field['Type'] .= ",'comments area'";
-									$field['Type'] .= ",'followup page'";
-									$field['Type'] .= ",'recipient selection'";
-									
-									if(function_exists('imagecreate')) 
-										$field['Type'] .= ",'captcha field'";
-									
-									$field['Type'] .= ",'spam blocker'";
-									$field['Type'] .= ",'page break'";
-									$field['Type'] .= ",'reset button'";
-									$field['Type'] .= ",'submit button'";
-									$field['Type'] .= ",'submit image'";
-									$field['Type'] .= ")";
+									$field['Type'] = "enum(" . trim($field['Type'], ' ,') . ")";
 
 								}
 
@@ -139,20 +103,15 @@
 									$field['Title'] = __("If you want this field to be required, select the type of data it should look for.", 'formbuilder');
 									$field['HelpText'] = __("If you want this field to be required, select the type of data it should look for.", 'formbuilder');
 
-									// Alter required data field from text area to enum to allow for selection box.
-									$field['Type'] = "enum('|'";
-
-									$field['Type'] .= ",'any text'";
-									$field['Type'] .= ",'name'";
-									$field['Type'] .= ",'email address'";
-									$field['Type'] .= ",'confirm email'";
-									$field['Type'] .= ",'phone number'";
-									$field['Type'] .= ",'any number'";
-									$field['Type'] .= ",'valid url'";
-									$field['Type'] .= ",'single word'";
-									$field['Type'] .= ",'datestamp (dd/mm/yyyy)'";
-
-									$field['Type'] .= ")";
+									foreach($all_required_types as $field_type_name=>$field_type_help)
+									{
+										$field['Type'] .= "'" . $field_type_name . "',";
+										$field['HelpText'] .= "\\n\\n" . $field_type_name . ": " . $field_type_help;
+									}
+									
+									// Alter field_type field from text area to enum to allow for selection box.
+									$field['Type'] = "enum('|'," . trim($field['Type'], ' ,') . ")";
+									
 								}
 
 								if($field['Field'] == "error_message") {

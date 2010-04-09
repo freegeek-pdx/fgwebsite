@@ -104,21 +104,29 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 					$value['field_name'] = clean_field_name($value['field_name']);
 					
 					// Verify that the field has a field name at all
-					if($value['field_name'] == '')
+					if(!$value['field_name'])
 					{
-						$errors[] = __("ERROR.  You have a field on your form with an empty field name.  All fields MUST have a unique field name.", 'formbuilder');
+						if($value['field_type'] != 'comments area'
+						AND $value['field_type'] != 'page break'
+						) 
+						{
+							$errors[] = sprintf(__("ERROR.  You have a field on your form with an empty field name.  The field is a '%s'  All fields MUST have a unique field name.", 'formbuilder'), $value['field_type']);
+						}
 					}
 					
 					// Check to ensure that the field name hasn't already been used.
-					if(!isset($tmp_field_names[$value['field_name']]))
+					if($value['field_name'])
 					{
-						$tmp_field_names[$value['field_name']] = true;
+						if(!isset($tmp_field_names[$value['field_name']]))
+						{
+							$tmp_field_names[$value['field_name']] = true;
+						}
+						else
+						{
+							$errors[] = __("ERROR.  You have a duplicate field '" . $value['field_name'] . "' on your form.  All field names must be unique.", 'formbuilder');
+						}
 					}
-					else
-					{
-						$errors[] = __("ERROR.  You have a duplicate field '" . $value['field_name'] . "' on your form.  All field names must be unique.", 'formbuilder');
-					}
-
+					
 					$result = $wpdb->update(FORMBUILDER_TABLE_FIELDS, $value, array('id'=>$key));
 					if(false === $result) $errors[] = __("ERROR.  Problems were detected while saving your form fields.", 'formbuilder');
 				}
@@ -414,9 +422,43 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		}
 
 
+		$all_field_types = array(
+			'single line text box'=>__("Standard single line text box.", 'formbuilder'),
+			'small text area'=>__("Small multi-line text box.", 'formbuilder'),
+			'large text area'=>__("Large multi-line text box.", 'formbuilder'),
+			'password box'=>__("Used for password entry.  Characters are hidden.", 'formbuilder'),
+			'datestamp'=>__("Date selection field.", 'formbuilder'),
+			'unique id'=>__("Put a unique ID on your forms.", 'formbuilder'),
+			'checkbox'=>__("Single check box.", 'formbuilder'),
+			'radio buttons'=>__("Radio selection buttons.  Enter one per line in the field value.", 'formbuilder'),
+			'selection dropdown'=>__("Dropdown box.  Enter one value per line in the field value.", 'formbuilder'),
+			'hidden field'=>__("A hidden field on the form.  The data will appear in the email.", 'formbuilder'),
+			'comments area'=>__("Special field just for text on the form.  Put the text in the field value.", 'formbuilder'),
+			'followup page'=>__("Special field just for indicating a followup url, once the form has been submitted.  Put the url you want people to be redirected to in the field value.", 'formbuilder'),
+			'recipient selection'=>__("A special selection dropdown allowing the visitor to specify an alternate form recipient.  Enter values in the form of email@domain.com|Destination Name.", 'formbuilder'),
+			'spam blocker'=>__("Special field on the form.  Read more on the FormBuilder admin page.  Only needs a field name.", 'formbuilder'),
+			'page break'=>__("Allows you to break your form into multiple pages.  Needs field name and field label.", 'formbuilder'),
+			'reset button'=>__("Allows you to put a customized reset button anywhere on the form.  Needs field name and field label.", 'formbuilder'),
+			'submit button'=>__("Allows you to put a customized submit button anywhere on the form.  Needs field name and field label.", 'formbuilder'),
+			'submit image'=>__("Allows you to put a customized submit image anywhere on the form.  Needs field name and field label.  Field label must be the PATH TO THE IMAGE to be used for the submit button.", 'formbuilder'),
+		);
+		if(function_exists('imagecreate')) 
+			$all_field_types['captcha field'] = __("Special field on the form for displaying CAPTCHAs.  Field name is used for identifying the field.  Field label is used to give the visitor further instruction on what to fill out.", 'formbuilder');
 
-
-
+		$all_required_types = array(
+			'any text'=>__("Requires some sort of text in this field.", 'formbuilder'),
+			'name'=>__("Requires a name.", 'formbuilder'),
+			'email address'=>__("Requires an email address.", 'formbuilder'),
+			'confirm email'=>__("Requires an email address", 'formbuilder'),
+			'phone number'=>__("Requires a phone number.", 'formbuilder'),
+			'any number'=>__("Requires some sort of number.", 'formbuilder'),
+			'valid url'=>__("Requires a valid URL.", 'formbuilder'),
+			'single word'=>__("Requires a single word.", 'formbuilder'),
+			'datestamp (dd/mm/yyyy)'=>__("Requires a date stamp in the form of (dd/mm/yyyy)", 'formbuilder'),
+		);
+			
+		ksort($all_field_types);
+		ksort($all_required_types);
 
 		include(FORMBUILDER_PLUGIN_PATH . "html/options_edit_form.inc.php");
  	}
@@ -632,4 +674,3 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		}
 		return($slash_array);
 	}
-?>

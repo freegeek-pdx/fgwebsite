@@ -4,7 +4,7 @@ Plugin Name: FormBuilder
 Plugin URI: http://truthmedia.com/wordpress/formbuilder
 Description: The FormBuilder plugin allows the administrator to create contact forms of a variety of types for use on their WordPress blog.  The FormBuilder has built-in spam protection and can be further protected by installing the Akismet anti-spam plugin.  Uninstall instructions can be found <a href="http://truthmedia.com/wordpress/formbuilder/documentation/uninstall/">here</a>.  Forms can be included on your pages and posts either by selecting the appropriate form in the dropdown below the content editing box, or by adding them directly to the content with [formbuilder:#] where # is the ID number of the form to be included.
 Author: TruthMedia Internet Group
-Version: 0.83
+Version: 0.84
 Author URI: http://truthmedia.com/
 
 
@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 	
-	define("FORMBUILDER_VERSION_NUM", "0.83");
+	define("FORMBUILDER_VERSION_NUM", "0.84");
 
 	// Define FormBuilder Related Tables
 	global $table_prefix;
@@ -38,6 +38,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	define("FORMBUILDER_TABLE_PAGES", $table_prefix . "formbuilder_pages");
 	define("FORMBUILDER_TABLE_RESPONSES", $table_prefix . "formbuilder_responses");
 	define("FORMBUILDER_TABLE_RESULTS", $table_prefix . "formbuilder_results");
+	
+	
+	/*
+	 Place the following in the wp-config.php file to force FB to remain
+	 active.  You should only need to do this if you have added FB
+	 to the template manually.
+	 
+	if(!defined("FORMBUILDER_IN_TEMPLATE"))
+		define("FORMBUILDER_IN_TEMPLATE", true);
+	 
+	 */
+	
+	
+	
+	
+	if(!defined("FORMBUILDER_IN_TEMPLATE"))
+		define("FORMBUILDER_IN_TEMPLATE", false);
 
 	// IIS compatibility
 	if(!isset($_SERVER['REQUEST_URI'])) 
@@ -135,16 +152,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	$fbdbg = new Object();
 
 	// Global Filters and Actions
-	add_filter('init', 'formbuilder_init');
+	add_filter('template_redirect', 'formbuilder_init');
 
-	add_filter('the_content', 'formbuilder_main');
-	add_filter('the_content_rss', 'formbuilder_strip_content');
-	add_filter('the_excerpt', 'formbuilder_strip_content');
-	add_filter('the_excerpt_rss', 'formbuilder_strip_content');
-
-	add_filter('wp_head', 'formbuilder_css');
-
-	
 	// Admin Specific Filters and Actions
 	add_action('admin_menu', 'formbuilder_admin_menu');
 	add_action('admin_menu', 'formbuilder_add_custom_box');
@@ -169,9 +178,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		formbuilder_admin_css();
 	}
 
-
-
-
 	//
 	function formbuilder_plugin_notice( $plugin ) {
 		$version = get_option('formbuilder_version');
@@ -194,6 +200,88 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	
 
 
+
+	/**
+	 * FormBuilder initialization function.  Set's up javascripts as well as determining what components to activate.
+	 * @return unknown_type
+	 */
+	function formbuilder_init() {
+		global $fb_do_js_manually, $wp_version;
+		$plugin_dir = basename(dirname(__FILE__));
+		load_plugin_textdomain( 'formbuilder', 'wp-content/plugins/' . $plugin_dir . '/lang', $plugin_dir . '/lang' );
+		
+		if(fb_is_active())
+		{
+
+			add_filter('the_content', 'formbuilder_main');
+			add_filter('the_content_rss', 'formbuilder_strip_content');
+			add_filter('the_excerpt', 'formbuilder_strip_content');
+			add_filter('the_excerpt_rss', 'formbuilder_strip_content');
+		
+			add_filter('wp_head', 'formbuilder_css');
+	
+			if(function_exists('wp_enqueue_script') AND $wp_version >= '2.6')
+			{
+				wp_enqueue_script( 
+					'jx_compressed.js', 
+					FORMBUILDER_PLUGIN_URL . 'js/jx_compressed.js', 
+					array(), 
+					FORMBUILDER_VERSION_NUM
+				);
+				
+				wp_enqueue_script( 
+					'formbuilder_js', 
+					FORMBUILDER_PLUGIN_URL . 'js/compat-javascript.js', 
+					array(), 
+					FORMBUILDER_VERSION_NUM
+				);
+			}
+			else
+			{
+				$fb_do_js_manually = true;
+			}
+	
+			session_start();
+		}
+
+	}
+	
+	/**
+	 * Function to determine whether FB should run or not.
+	 * @return unknown_type
+	 */
+	function fb_is_active()
+	{
+		global $wp_query, $wpdb, $FB_ACTIVE;
+		if($FB_ACTIVE == true) return(true);
+		
+		// Allows placing of a constant variable in the wp-config.php file
+		// named FORMBUILDER_IN_TEMPLATE in order to force FB to remain active.
+		if(defined("FORMBUILDER_IN_TEMPLATE") 
+		AND FORMBUILDER_IN_TEMPLATE == true) return(true);
+		
+		// Detect whether or not there are forms to be displayed on the page.
+		$FB_ACTIVE = false;
+		$results = $wpdb->get_results("SELECT * FROM " . FORMBUILDER_TABLE_PAGES, ARRAY_A);
+		if($results) 
+		{
+			foreach($results as $formPage)
+			{
+				$formPages[$formPage['post_id']] = $formPage['form_id'];
+			}
+		}
+		
+		foreach($wp_query->posts as $p)
+		{
+			if(isset($formPages[$p->ID]) 
+			OR formbuilder_check_content($p->post_content)) {
+				$FB_ACTIVE = true;
+				return(true);
+			}
+		}
+		
+		return(false);
+	}
 
 	function formbuilder_main($content = '') {
 		global $post, $_SERVER, $wpdb;
@@ -318,36 +406,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 		}
 
 	
-	}
-
-	function formbuilder_init() {
-		global $fb_do_js_manually, $wp_version;
-		$plugin_dir = basename(dirname(__FILE__));
-		load_plugin_textdomain( 'formbuilder', 'wp-content/plugins/' . $plugin_dir . '/lang', $plugin_dir . '/lang' );
-	
-		if(function_exists('wp_enqueue_script') AND $wp_version >= '2.6')
-		{
-			wp_enqueue_script( 
-				'jx_compressed.js', 
-				FORMBUILDER_PLUGIN_URL . 'js/jx_compressed.js', 
-				array(), 
-				FORMBUILDER_VERSION_NUM
-			);
-			
-			wp_enqueue_script( 
-				'formbuilder_js', 
-				FORMBUILDER_PLUGIN_URL . 'js/compat-javascript.js', 
-				array(), 
-				FORMBUILDER_VERSION_NUM
-			);
-		}
-		else
-		{
-			$fb_do_js_manually = true;
-		}
-
-		session_start();
-
 	}
 
 	// This function should take any string of text and convert it to a readable variable name.
@@ -1704,4 +1762,5 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 	    
 	    return($output);
 	}
+	
 ?>

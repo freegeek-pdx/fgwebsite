@@ -26,7 +26,9 @@ enough to use for the most difficult job.
 * Built-in anti-spam capabilities.
 * Optional CAPTCHA technology.
 * Translatable.
-* Multi-language support.
+* Multi-language forms support.
+* Akismet and spammer IP checking
+* Permissions control
 * and LOTS more...
 
 Created by the [TruthMedia Internet Group](http://truthmedia.com)
@@ -68,6 +70,12 @@ Programming and Design by [James Warkentin](http://www.warkensoft.com/about-me/)
 3. Adding new form fields.
 
 == Changelog ==
+
+= 0.84 =
+* Feature: Enabled autodetection of forms to cut down on HTML bloat.
+* Clean Up: Sorted field types and required field types alphabetically when editing forms.
+* Bug Fix: Fixed CAPTCHA bug.
+* Bug Fix: Removed requirement for field name on comments and page breaks.
 
 = 0.83 (unstable) =
 * Alphabetization of forms in list of forms on site.
