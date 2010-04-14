@@ -75,7 +75,7 @@
 					}}
 					
 		//  Handle news  pages read more about this link.			
-			if (is_term('news') && !empty($fg_cat_id)) {
+			if (is_page('Press Releases') || is_page('Events') || is_page('Media Coverage') || is_page('Awards') || is_page('News') || is_page('Internships') || is_page('Tech Support') || is_page('Thrift Store') && !empty($fg_cat_id)) {
 			$category_news_link = get_category_link( $fg_cat_id );
 				echo '<a href="' . $category_news_link . '" class="news-read-all">Read All Posts... </a>';
 			}

@@ -33,8 +33,7 @@
 					<?php _e('Filed under: '); ?> <?php the_category(', ') ?>
 				<?php the_content("Read More..."); ?>
 				</div>		
-				<p class="postmeta"> 
-				</p>
+			
 				
 				
 			
