@@ -73,7 +73,12 @@
 						print '<a href="' . get_permalink() .'"><h3 id="post-' . get_the_ID() .'">' . the_title( '','',false ) . '</h3></a>';
 						the_excerpt();
 					}}
-			
+					
+		//  Handle news  pages read more about this link.			
+			if (is_term('news') && !empty($fg_cat_id)) {
+			$category_news_link = get_category_link( $fg_cat_id );
+				echo '<a href="' . $category_news_link . '" class="news-read-all">Read All Posts... </a>';
+			}
 // Footer
 // ========================================================
 	require_once TEMPLATEPATH . '/footer.php';

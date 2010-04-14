@@ -5,7 +5,7 @@
 		<?php $post = $posts[0]; // Thanks Kubrick for this code ?>
 		
 		<?php if (is_category()) { ?>				
-		<h2><?php _e('Past '); echo single_cat_title(); ?></h2>
+		<h2><?php _e('All Previous '); echo single_cat_title(); ?></h2>
 		
  	  	<?php } elseif (is_day()) { ?>
 		<h2><?php _e('Archive for '); the_time('F j, Y'); ?></h2>
@@ -28,18 +28,15 @@
 				<h2 class="posttitle" id="post-<?php the_ID(); ?>"><a href="<?php the_permalink() ?>" rel="bookmark" title="<?php _e('Permanent link to'); ?> <?php the_title(); ?>"><?php the_title(); ?></a></h2>
 			
 				<div class="postentry">
-				
+					
+					Posted: <?php the_time('F j, Y') ?> <br/>
+					<?php _e('Filed under: '); ?> <?php the_category(', ') ?>
 				<?php the_content("Read More..."); ?>
 				</div>		
 				<p class="postmeta"> 
-				<?php the_time('F j, Y') ?> 
-				&#183; <?php _e('Filed under'); ?> <?php the_category(', ') ?>
-				<?php edit_post_link(__('Edit'), ' &#183; ', ''); ?>
 				</p>
 				
-				<!--
-				<?php trackback_rdf(); ?>
-				-->
+				
 			
 			</div>
 				
@@ -59,9 +56,9 @@
 		<?php include (TEMPLATEPATH . '/searchform.php'); ?>
 
 	<?php endif; ?>
-<!--
+
 <?php get_sidebar(); ?>
--->
+
 <?php 	// Footer
 	// ========================================================
 		require_once TEMPLATEPATH . '/footer.php'; ?>

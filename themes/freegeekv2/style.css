@@ -415,6 +415,16 @@ width: 40px;
 #sidebar .about-list {
 	margin-left:10px;
 }
+/*  News pages read all button 
+-----------------------------------------------*/
+.news-read-all {
+	-moz-border-radius:5px 5px 5px 5px;
+	background:none repeat scroll 0 0 #013e51;
+	display:block;
+	margin:40px 0 0 300px;
+	padding:10px;
+	width:110px;
+}
 /* From WordPress Default Theme 
 -------------------------------------------------*/
 	p img {
