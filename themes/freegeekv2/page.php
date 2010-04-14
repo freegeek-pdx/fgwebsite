@@ -79,4 +79,4 @@
 	require_once TEMPLATEPATH . '/footer.php';
 	
 ?>
-<a href="http://fglime.chasing-daylight.com/index.php?sid=47239&lang=en"><span class="feedback">Feedback</span></a>
+<a href="<?php bloginfo( 'url' ); ?>/contact/web-feedback/"><span class="feedback">Feedback</span></a>
