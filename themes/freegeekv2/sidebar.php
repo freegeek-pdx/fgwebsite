@@ -42,13 +42,26 @@
 						elseif (is_page('295')) {
 							$children=wp_list_pages( 'echo=1&child_of=295&title_li=');
 						}
-						//if its the news page
+						//if its the news page and some children.
 						elseif (is_page('606')) {	
 						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
 						}
 						elseif (is_page('1129')) {	
 						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
 						}
+						elseif (is_page('1121')) {	
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						}
+						elseif (is_page('1123')) {	
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						}
+						elseif (is_page('1137')) {	
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						}
+						elseif (is_page('284')) {	
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						}
+						// About
 						elseif (is_page('2')) {	
 						    $children=wp_list_pages( 'echo=1&child_of=2&title_li=');  
 						}
