@@ -416,12 +416,14 @@ width: 40px;
 /*  News pages read all button 
 -----------------------------------------------*/
 .news-read-all {
-	-moz-border-radius:5px 5px 5px 5px;
-	background:none repeat scroll 0 0 #013e51;
-	display:block;
-	margin:40px 0 0 300px;
-	padding:10px;
-	width:110px;
+			
+	    background:#ddd;
+			box-shadow:#999 1px 1px 1px;
+			padding:5px 10px;
+			border:1px solid #999;
+			-moz-border-radius: 6px;
+			-webkit-border-radius: 6px;
+			border-radius: 6px;
 }
 /* From WordPress Default Theme 
 -------------------------------------------------*/
