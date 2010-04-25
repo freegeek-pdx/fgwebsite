@@ -396,7 +396,13 @@ width: 40px;
 	width:220px;
 }
 #about-page-section ul {
+	background:none repeat scroll 0 0 #EEEEEE;
+	border-bottom:1px solid #999999;
+	border-top:1px solid #999999;
 	list-style-type:none;
+	margin:0;
+	padding:10px;
+	width:140px;
 }
 .about-header-first {
 	margin:0 0 10px 58px;
