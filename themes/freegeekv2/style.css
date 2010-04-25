@@ -187,8 +187,10 @@ line-height: 14px;
 margin: 5px 0 20px 0 ;
 }
 #sidebar li {
-list-style-type: none;
-font-weight:normal;
+	border-bottom:1px solid #999999;
+	font-weight:normal;
+	list-style-type:none;
+	padding:7px;
 }
 #question img {
 text-align: center;
