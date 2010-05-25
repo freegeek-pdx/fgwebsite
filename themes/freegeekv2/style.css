@@ -199,6 +199,29 @@ margin-left: 20px;
 #sidebar .search {
 margin: 10px 0;
 }
+/**      Contact Us Page special classes  **/
+.contact-block {
+		float: left;
+		width: 230px;
+		background: #eee;
+		margin: 10px 10px 10px 0pt;
+		padding: 10px;
+		height: 160px;
+	}
+	.theblock p {
+		margin: 10px 0;
+	}
+	.dark-button {
+		background: #999;
+		color: #fff;
+		padding: 5px 10px;
+		margin: 10px 0;
+		clear:both;
+		
+		-moz-border-radius: 6px;
+		-webkit-border-radius: 6px;
+		border-radius: 6px;
+	}
 /** FREEGEEK CUSTOM from art of blog **/
 
 #contentCap_top {
