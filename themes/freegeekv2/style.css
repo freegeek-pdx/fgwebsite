@@ -81,7 +81,7 @@ margin-left: 12px;
 #sidebar ul {
 list-style-type: none;
 list-style-image: none;
-font-weight:normal;
+font-weight: normal;
 }
 blockquote {
 border-left: 1px solid #EAEAEA;
@@ -187,10 +187,10 @@ line-height: 14px;
 margin: 5px 0 20px 0 ;
 }
 #sidebar li {
-	border-bottom:1px solid #999999;
-	font-weight:normal;
-	list-style-type:none;
-	padding:7px;
+border-bottom: 1px solid #999999;
+font-weight: normal;
+list-style-type: none;
+padding: 7px;
 }
 #question img {
 text-align: center;
@@ -201,27 +201,26 @@ margin: 10px 0;
 }
 /**      Contact Us Page special classes  **/
 .contact-block {
-		float: left;
-		width: 230px;
-		background: #eee;
-		margin: 10px 10px 10px 0pt;
-		padding: 10px;
-		height: 160px;
-	}
+float: left;
+width: 230px;
+background-color: #eee;
+margin: 10px 10px 10px 0pt;
+padding: 10px;
+height: 160px;
+}
 	.theblock p {
-		margin: 10px 0;
-	}
+margin: 10px 0;
+}
 	.dark-button {
-		background: #999;
-		color: #fff;
-		padding: 5px 10px;
-		margin: 10px 0;
-		clear:both;
-		
-		-moz-border-radius: 6px;
-		-webkit-border-radius: 6px;
-		border-radius: 6px;
-	}
+background-color: #999;
+color: #fff;
+padding: 5px 10px;
+margin: 10px 0;
+clear: both;
+-moz-border-radius: 6px;
+-webkit-border-radius: 6px;
+border-radius: 6px;
+}
 /** FREEGEEK CUSTOM from art of blog **/
 
 #contentCap_top {
@@ -329,8 +328,8 @@ display: inline;
 clear: both;
 }
 #cc {
-	float:right;
-	margin-right:40px;
+float: right;
+margin-right: 40px;
 }
 /* padding for all main containers
 --------------------------------------------------- */
@@ -414,41 +413,40 @@ width: 40px;
 /*  Styles for About us page
 -------------------------------------------------*/		
 #about-page-section {
-	margin:0 0 0 80px;
+margin: 0 0 0 80px;
 }
 .about-column {
-	float:left;
-	width:220px;
+float: left;
+width: 220px;
 }
 #about-page-section ul {
-	background:none repeat scroll 0 0 #EEEEEE;
-	border-bottom:1px solid #999999;
-	border-top:1px solid #999999;
-	list-style-type:none;
-	margin:0;
-	padding:10px;
-	width:140px;
+background: none repeat scroll 0 0 #EEEEEE;
+border-bottom: 1px solid #999999;
+border-top: 1px solid #999999;
+list-style-type: none;
+margin: 0;
+padding: 10px;
+width: 140px;
 }
 
 /*  Styles for About us child page sidebars
 -------------------------------------------------*/
 .about-list-sidebar {
-	font-weight:bold;
+font-weight: bold;
 }
 #sidebar .about-list {
-	margin-left:10px;
+margin-left: 10px;
 }
 /*  News pages read all button 
 -----------------------------------------------*/
 .news-read-all {
-			
-	    background:#ddd;
-			box-shadow:#999 1px 1px 1px;
-			padding:5px 10px;
-			border:1px solid #999;
-			-moz-border-radius: 6px;
-			-webkit-border-radius: 6px;
-			border-radius: 6px;
+background: #ddd;
+box-shadow: #999 1px 1px 1px;
+padding: 5px 10px;
+border: 1px solid #999;
+-moz-border-radius: 6px;
+-webkit-border-radius: 6px;
+border-radius: 6px;
 }
 /* From WordPress Default Theme 
 -------------------------------------------------*/
