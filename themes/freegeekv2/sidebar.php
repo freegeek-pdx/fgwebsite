@@ -29,7 +29,7 @@
 	
 		<?php 
 		if (!is_tree('10')) {
-		echo "<ul style='font-weight:normal;'>";
+	
 	
 				$post_ancestors = get_post_ancestors($post);
 				if (count($post_ancestors)) {
