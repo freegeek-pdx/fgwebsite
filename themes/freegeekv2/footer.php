@@ -26,10 +26,12 @@
 			<!-- <li><a href="#">Media Center</a></li> -->
 			<li><a href="<?php bloginfo('url'); ?>/about/FAQ">FAQ</a></li>
 			<li>|</li>
-			<li><a href="<?php bloginfo('url'); ?>/terms">Privacy/Terms</a></li>
-			<li>|</li>
+			<!-- <li><a href="<?php bloginfo('url'); ?>/terms">Privacy/Terms</a></li>
+			<li>|</li> -->
 			<li><a href="<?php bloginfo('url'); ?>/contact">Contact Us</a></li>
 			<li>|</li>
+				<li><a href="<?php bloginfo('url'); ?>/about/directions">Directions</a></li>
+				<li>|</li>
 			<li><a href="<?php bloginfo('url'); ?>/sitemap">Site Map</a></li>
 			</ul>
 			<span id="cc">
