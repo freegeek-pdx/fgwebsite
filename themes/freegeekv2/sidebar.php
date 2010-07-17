@@ -30,48 +30,50 @@
 		<?php 
 		if (!is_tree('10')) {
 	
-	
 				$post_ancestors = get_post_ancestors($post);
 				if (count($post_ancestors)) {
 				    $top_page = array_pop($post_ancestors);
-				    $children = wp_list_pages('title_li=&child_of='.$top_page.'&echo=0');
+				    $children = wp_list_pages('title_li=&child_of='.$top_page.'&echo=0&depth=1');
 				    $sect_title = get_the_title($top_page);
+
 				} 
 					
 					//if its the thriftstore page
 						elseif (is_page('295')) {
-							$children=wp_list_pages( 'echo=1&child_of=295&title_li=');
+							$children=wp_list_pages( 'echo=1&child_of=295&title_li=&depth=1');
 						}
 						//if its the news page and some children.
 						elseif (is_page('606')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
 						}
 						elseif (is_page('1129')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
 						}
 						elseif (is_page('1121')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
 						}
 						elseif (is_page('1123')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
 						}
 						elseif (is_page('1137')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
 						}
 						elseif (is_page('284')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=');  
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
 						}
 						// About
 						elseif (is_page('2')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=2&title_li=');  
+						    $children=wp_list_pages( 'echo=1&child_of=2&title_li=&depth=1');  
 						}
 				elseif (is_page() && !is_page(10)) {
-				    $children = wp_list_pages('title_li=&child_of='.$post->ID.'&echo=0&depth=2');
+
+				    $children = wp_list_pages('title_li=&child_of='.$post->ID.'&echo=0&depth=1');
 				    $sect_title = the_title('','', false);}
 			
 				if ($children) {
 				   	echo $children;
 				}
+
 			}
 			if (is_tree('10')) {
 				echo "
