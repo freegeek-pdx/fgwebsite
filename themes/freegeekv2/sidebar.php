@@ -91,12 +91,12 @@
 				<li><a href='/about/recycle'>Recycle</a></li> 
 				<li><a href='/reuse'>Reuse</a></li> 
 				<li><a href='/education'>Education</a></li> 
-				<li><a href='/training'>Job Skills Training</a></li> 
 				<li><a href='/techsupport'>Tech Support</a></li>
+				<li><a href='/media'>Media Info</a></li> 
 				</ul>
 				<span class='about-list-sidebar'>How we do it</span>
 				<ul class='about-list'>
-				<li><a href='/open-source'>Open Source</a></li> 
+				<li><a href='/open-source'>Free & Open Source</a></li> 
 				<li><a href='/tools'>The Tools We Use</a></li> 
 				<li><a href='/consensus'>Consensus</a></li>
 				</ul>
