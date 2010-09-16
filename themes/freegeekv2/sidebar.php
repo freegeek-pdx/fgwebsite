@@ -26,7 +26,7 @@
 
 	<?php endif; ?>
 
-	
+<div id="sidebar_links">	
 		<?php 
 		if (!is_tree('10')) {
 	
@@ -103,7 +103,7 @@
 				";
 			}
 			?>
-				
+</div>				
 			<?php echo "<li class='search'>"; 
 					
 		include_once TEMPLATEPATH . '/searchform.php' ;
