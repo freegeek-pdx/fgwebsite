@@ -84,4 +84,4 @@
 	require_once TEMPLATEPATH . '/footer.php';
 	
 ?>
-<a href="<?php bloginfo( 'url' ); ?>/contact/web-feedback/"><span class="feedback">Feedback</span></a>
+

@@ -31,5 +31,5 @@
 	print '<p><a href="/about">' . __( 'Click here for more news.' ) . '</a></p>';	
 	require_once TEMPLATEPATH . '/footer.php';
 ?>
-<a href="<?php bloginfo( 'url' ); ?>/contact/web-feedback/"><span class="feedback">Feedback</span></a>
+
 	
