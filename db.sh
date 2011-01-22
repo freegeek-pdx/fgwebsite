@@ -5,9 +5,11 @@ set -e
 config() {
     TEMPF=$(tempfile)
     sudo cat /etc/wordpress/config-*.php | grep DB_ | grep define | cut -d "'" -f 2,4 | sed "s/'/=/" | sort -u > "$TEMPF"
-    cat "$TEMPF"
-    echo
     . "$TEMPF"
+    URL=$(echo "SELECT option_value FROM wp_options WHERE option_name = 'siteurl';" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME | tail -1)
+    cat "$TEMPF"
+    echo "URL=$URL"
+    echo
     rm "$TEMPF"
 }
 
@@ -25,6 +27,7 @@ case "$1" in
 	config
 	set -x
 	mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME < "$2"
+	echo "UPDATE wp_options SET option_value = '$URL' WHERE option_name = 'siteurl';" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
 	;;
     dump)
 	config
