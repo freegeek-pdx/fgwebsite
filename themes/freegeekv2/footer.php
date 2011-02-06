@@ -34,10 +34,12 @@
 				<li>|</li>
 			<li><a href="<?php bloginfo('url'); ?>/sitemap">Site Map</a></li>
 			</ul>
+<!--
 			<span id="cc">
 				<a href="http://creativecommons.org/"><img src="
 			 <?php bloginfo('url'); ?>/wp-content/themes/freegeekv2/images/cc.png" alt="Creative Commons"/></a>
 			</span>
+-->
 			</div><!-- id=footer_content -->
 			 <div id="footer_bottom">	
 			</div> 
