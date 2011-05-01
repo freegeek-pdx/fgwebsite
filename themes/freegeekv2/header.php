@@ -108,7 +108,7 @@
   <div id="header" onclick="location.href=' <?php bloginfo('url'); ?>';" style="cursor: pointer;"><?php show_media_header(); ?>
 
 
-<div id="headerText"><a href="/etc/directions" class="addr">1731 SE 10th Avenue, Portland, OR</a>        <a href="/etc/directions" class="hour">Tuesday - Saturday 11am - 7pm</a></div>
+<div id="headerText"><a href="/etc/directions" class="addr">1731 SE 10th Avenue, Portland, OR</a>        <a href="/etc/directions" class="hour">Tuesday - Saturday 11am - 7pm</a><br /><a href="/free-geek-is-changing-hours/" class="hour">AS OF JUNE 14th, OUR HOURS WILL BE 10 AM - 6 PM</a></div>
 	</div>
 
  <div id="contentCap_top">
