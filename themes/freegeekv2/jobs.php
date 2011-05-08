@@ -32,7 +32,7 @@ if (have_posts()){
 			
 			
 	   print 'We are not currently hiring for any positions. We post all positions here as soon as they come up, so check back often. ';
-	print 'You can also subscribe to a <a href="http://testwww.freegeek.org/?cat=15&feed=rss2">feed</a> of upcoming jobs here at Free Geek.';
+	print 'You can also subscribe to a <a href="http://www.freegeek.org/?cat=15&feed=rss2">feed</a> of upcoming jobs here at Free Geek.';
 	
 	 } else {	
 	  while ($myposts->have_posts()) : $myposts->the_post(); 
