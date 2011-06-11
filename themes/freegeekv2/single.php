@@ -21,8 +21,6 @@
 			
 		</div>
 		
-		<?php comments_template(); ?>
-				
 	<?php endwhile; else : ?>
 
 		<h2><?php _e('Not Found'); ?></h2>
