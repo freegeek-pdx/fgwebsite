@@ -1,6 +1,7 @@
 *
 
 !db.sh
+!pull_from_oahu.sh
 !/header-images/
 !/themes/
 !/plugins/
