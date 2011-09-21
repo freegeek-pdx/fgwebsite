@@ -81,7 +81,7 @@
 				<ul class='about-list'>
 				<li><a href='/board'>Board of Directors</a></li> 
 				<li><a href='/staff'>Staff</a></li> 
-				<li><a href='/council'>Community Council</a></li> 
+
 				<li><a href='/volunteers'>Volunteers</a></li>
 				</ul>
 				<span class='about-list-sidebar'>What we do</span>
