@@ -43,23 +43,8 @@
 							$children=wp_list_pages( 'echo=1&child_of=295&title_li=&depth=1');
 						}
 						//if its the news page and some children.
-						elseif (is_page('606')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
-						}
-						elseif (is_page('1129')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
-						}
-						elseif (is_page('1121')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
-						}
-						elseif (is_page('1123')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
-						}
-						elseif (is_page('1137')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
-						}
-						elseif (is_page('284')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
+						elseif (is_page('606') || is_page('1129') || is_page('1121') || is_page('1123') || is_page('1137') || is_page('284')) {	
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1&exclude=1131') + wp_list_pages('echo=1&include=24&title_li=&depth=1');  
 						}
 						// About
 						elseif (is_page('2')) {	
