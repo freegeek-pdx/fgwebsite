@@ -10,13 +10,9 @@ Maybe you want to go back to the home<a href='/'> page</a>? <br/>
 Or maybe you can find it by searching the site?</p><br/>
 	<?php include (TEMPLATEPATH . "/searchform.php"); ?>
 	
-	
-	
-		<?php require_once TEMPLATEPATH . '/sidebar.php'; ?>
 		
 	<?php	
 	// Footer
 	// ========================================================
 	require_once TEMPLATEPATH . '/footer.php';
 	?>
-	<a href="http://fglime.chasing-daylight.com/index.php?sid=47239&lang=en"><span class="feedback">Feedback</span></a>
