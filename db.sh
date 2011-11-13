@@ -7,8 +7,10 @@ config() {
     sudo cat /etc/wordpress/config-*.php | grep DB_ | grep define | cut -d "'" -f 2,4 | sed "s/'/=/" | sort -u > "$TEMPF"
     . "$TEMPF"
     URL=$(echo "SELECT option_value FROM wp_options WHERE option_name = 'siteurl';" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME | tail -1)
+    NEWS_URL="${URL}/newsletter"
     cat "$TEMPF"
     echo "URL=$URL"
+    echo "NEWS_URL=$NEWS_URL"
     echo
     rm "$TEMPF"
 }
@@ -27,7 +29,7 @@ case "$1" in
 	config
 	set -x
 	mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME < "$2"
-	echo "UPDATE wp_options SET option_value = '$URL' WHERE option_name = 'siteurl';" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
+	echo "UPDATE wp_options SET option_value = '$URL' WHERE option_name = 'siteurl'; UPDATE news_wp_options SET option_value = '$NEWS_URL' WHERE option_name = 'siteurl';" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
 	;;
     dump)
 	config
