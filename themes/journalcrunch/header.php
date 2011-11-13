@@ -55,7 +55,7 @@
 		<!-- Begin #header -->
 		<div id="header">
 			<!-- Begin #logo -->
-			 <div id="logo"><a href="<?php bloginfo('url'); ?>/"><img src="<?php echo get_option('journal_logo_img'); ?>" alt="<?php echo get_option('journal_logo_alt'); ?>" /></a></div>
+			 <div id="logo"><a href="<?php bloginfo('url'); ?>/"><?php if(function_exists('show_media_header')){ show_media_header();} ?></a></div>
 			<!-- End #logo -->
 			<!-- Begin #topMenu -->
 			<?php wp_nav_menu( array( 'theme_location' => 'main-menu', 'container_id' => 'topMenu', 'container_class' => 'ddsmoothmenu', 'fallback_cb'=>'primarymenu') );?>
