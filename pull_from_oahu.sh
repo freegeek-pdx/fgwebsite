@@ -12,7 +12,7 @@ if [ "$HOSTNAME" = "$REMOTE" -o "$HOSTNAME" = "$LOCAL" ]; then
     exit 1
 fi
 
-#ssh "$REMOTE" /usr/share/wordpress/wp-content/db.sh dump file.sql
+ssh "$REMOTE" /usr/share/wordpress/wp-content/db.sh dump file.sql
 scp "${REMOTE}:file.sql" ./
 scp file.sql "${LOCAL}:"
 ssh "$LOCAL" /usr/share/wordpress/wp-content/db.sh load file.sql
