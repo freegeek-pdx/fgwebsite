@@ -5,6 +5,10 @@ set -e
 # TODO: rsync or otherwise combine the uploaded files and then fix the FIXMEs below
 # they are saved in /usr/share/wordpress/wp-content/uploads
 
+# for files common between them, need to take the most recent if they are not the same
+# this list can be found by:
+# comm <(ssh oahu.freegeek.org find /usr/share/wordpress/wp-content/uploads | sort) <(ssh press find /usr/share/wordpress/wp-content/uploads | sort)
+
 config() {
     TEMPF=$(tempfile)
     sudo cat /etc/wordpress/config-*.php | grep DB_ | grep define | cut -d "'" -f 2,4 | sed "s/'/=/" | sort -u > "$TEMPF"
