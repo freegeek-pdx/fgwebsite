@@ -33,7 +33,7 @@ usage() {
 if [ -z "$1" -o -z "$2" ]; then
     if [ "$1" ne "mysql" ]; then
 	usage
-    end
+    fi
 fi    
 
 parse_sql_dump() {
@@ -44,20 +44,28 @@ parse_sql_dump() {
     fi
 }
 
+do_mysql() {
+    MYSQL="mysql"
+    if [ -n "$1" ]; then
+	MYSQL="$1"
+    fi
+    $MYSQL -u $DB_USER -p$DB_PASSWORD $DB_NAME
+}
+
 case "$1" in
     load)
 	config
-	parse_sql_dump | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
+	parse_sql_dump | do_mysql
 	# handled with the sed, now
-	# echo "UPDATE wp_options SET option_value = '$URL' WHERE option_name = 'siteurl'; UPDATE news_wp_options SET option_value = '$NEWS_URL' WHERE option_name = 'siteurl';" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
+	# echo "UPDATE wp_options SET option_value = '$URL' WHERE option_name = 'siteurl'; UPDATE news_wp_options SET option_value = '$NEWS_URL' WHERE option_name = 'siteurl';" | do_mysql
 	;;
     dump)
 	config
-	mysqldump -u $DB_USER -p$DB_PASSWORD $DB_NAME > "$2"
+	do_mysql mysqldump > "$2"
 	;;
     mysql)
 	config
-	mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
+	do_mysql
 	;;
     *)
 	usage
