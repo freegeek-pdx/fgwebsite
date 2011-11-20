@@ -6,13 +6,23 @@ config() {
     TEMPF=$(tempfile)
     sudo cat /etc/wordpress/config-*.php | grep DB_ | grep define | cut -d "'" -f 2,4 | sed "s/'/=/" | sort -u > "$TEMPF"
     . "$TEMPF"
+    # not used outside of config() anymore
     URL=$(echo "SELECT option_value FROM wp_options WHERE option_name = 'siteurl';" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME | tail -1)
-    NEWS_URL="${URL}/newsletter"
+#    NEWS_URL="${URL}/newsletter"
+    BASE_URL="$(basename "$URL")"
+    if [ "$BASE_URL" eq "www.freegeek.org" ]; then
+	OTHER_URL="testwww.freegeek.org"
+    elif [ "$BASE_URL" eq "testwww.freegeek.org" ]; then
+	OTHER_URL="www.freegeek.org"
+    else
+	echo "ERROR: Unknown BASE_URL: $BASE_URL"
+	exit 1
+    fi
     cat "$TEMPF"
-    echo "URL=$URL"
-    echo "NEWS_URL=$NEWS_URL"
+    echo "BASE_URL=$BASE_URL"
     echo
     rm "$TEMPF"
+    set -x
 }
 
 usage() {
@@ -21,20 +31,25 @@ usage() {
 }
 
 if [ -z "$1" -o -z "$2" ]; then
-    usage
+    if [ "$1" ne "mysql" ]; then
+	usage
+    end
 fi    
 
 case "$1" in
     load)
 	config
-	set -x
-	mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME < "$2"
-	echo "UPDATE wp_options SET option_value = '$URL' WHERE option_name = 'siteurl'; UPDATE news_wp_options SET option_value = '$NEWS_URL' WHERE option_name = 'siteurl';" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
+	sed "s/${OTHER_URL}/${BASE_URL}/g" "$2" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
+	# handled with the sed, now
+	# echo "UPDATE wp_options SET option_value = '$URL' WHERE option_name = 'siteurl'; UPDATE news_wp_options SET option_value = '$NEWS_URL' WHERE option_name = 'siteurl';" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
 	;;
     dump)
 	config
-	set -x
 	mysqldump -u $DB_USER -p$DB_PASSWORD $DB_NAME > "$2"
+	;;
+    mysql)
+	config
+	mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
 	;;
     *)
 	usage
