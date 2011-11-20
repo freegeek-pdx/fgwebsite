@@ -36,10 +36,18 @@ if [ -z "$1" -o -z "$2" ]; then
     end
 fi    
 
+parse_sql_dump() {
+    if echo "$BASE_URL" | grep -q "$OTHER_URL"; then
+	sed -e "s/${BASE_URL}/${OTHER_URL}/g" -e "s/${OTHER_URL}/${BASE_URL}/g" "$2"
+    else
+	sed "s/${OTHER_URL}/${BASE_URL}/g" "$2"
+    fi
+}
+
 case "$1" in
     load)
 	config
-	sed "s/${OTHER_URL}/${BASE_URL}/g" "$2" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
+	parse_sql_dump | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
 	# handled with the sed, now
 	# echo "UPDATE wp_options SET option_value = '$URL' WHERE option_name = 'siteurl'; UPDATE news_wp_options SET option_value = '$NEWS_URL' WHERE option_name = 'siteurl';" | mysql -u $DB_USER -p$DB_PASSWORD $DB_NAME
 	;;
