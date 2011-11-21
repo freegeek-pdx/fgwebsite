@@ -2,13 +2,6 @@
 
 set -e
 
-# TODO: rsync or otherwise combine the uploaded files and then fix the FIXMEs below
-# they are saved in /usr/share/wordpress/wp-content/uploads
-
-# for files common between them, need to take the most recent if they are not the same
-# this list can be found by:
-# comm <(ssh oahu.freegeek.org find /usr/share/wordpress/wp-content/uploads | sort) <(ssh press find /usr/share/wordpress/wp-content/uploads | sort)
-
 config() {
     TEMPF=$(tempfile)
     sudo cat /etc/wordpress/config-*.php | grep DB_ | grep define | cut -d "'" -f 2,4 | sed "s/'/=/" | sort -u > "$TEMPF"
@@ -44,8 +37,6 @@ if [ -z "$1" -o -z "$2" ]; then
 fi    
 
 parse_sql_dump() {
-    cat "$1"   # FIXME
-    return     # FIXME
     if echo "$BASE_URL" | grep -q "$OTHER_URL"; then
 	sed -e "s/${BASE_URL}/${OTHER_URL}/g" -e "s/${OTHER_URL}/${BASE_URL}/g" "$1"
     else
@@ -65,7 +56,8 @@ case "$1" in
     load)
 	config
 	parse_sql_dump "$2" | do_mysql
-	echo "UPDATE wp_options SET option_value = '$URL' WHERE option_name = 'siteurl'; UPDATE news_wp_options SET option_value = '$NEWS_URL' WHERE option_name = 'siteurl';" | do_mysql # FIXME: handled with the sed, now
+        # handled with the sed, now
+	# echo "UPDATE wp_options SET option_value = '$URL' WHERE option_name = 'siteurl'; UPDATE news_wp_options SET option_value = '$NEWS_URL' WHERE option_name = 'siteurl';" | do_mysql
 	;;
     dump)
 	config
