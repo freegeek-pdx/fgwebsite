@@ -38,9 +38,9 @@ fi
 
 parse_sql_dump() {
     if echo "$BASE_URL" | grep -q "$OTHER_URL"; then
-	sed -e "s/${BASE_URL}/${OTHER_URL}/g" -e "s/${OTHER_URL}/${BASE_URL}/g" "$1"
+	sed -e "s/oahu.freegeek.org/www.freegeek.org/g" -e "s/${BASE_URL}/${OTHER_URL}/g" -e "s/${OTHER_URL}/${BASE_URL}/g" "$1"
     else
-	sed "s/${OTHER_URL}/${BASE_URL}/g" "$1"
+	sed -e "s/oahu.freegeek.org/www.freegeek.org/g" -e "s/${OTHER_URL}/${BASE_URL}/g" "$1"
     fi
 }
 
