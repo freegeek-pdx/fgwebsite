@@ -54,9 +54,14 @@
 	<div id="wrapper">
 		<!-- Begin #header -->
 		<div id="header">
+
 			<!-- Begin #logo -->
-			 <div id="logo"><a href="<?php bloginfo('url'); ?>/"><?php if(function_exists('show_media_header')){ show_media_header();} ?></a></div>
+			 <div id="logo"><a href="<?php bloginfo('url'); ?>/"><?php if(function_exists('show_media_header')){ show_media_header();} ?>
+<!-- Manual logo insertion --><img src="http://i.imgur.com/F9Q2e.png">
+<!-- /Manual logo insertion -->
+</a></div>
 			<!-- End #logo -->
+
 			<!-- Begin #topMenu -->
 			<?php wp_nav_menu( array( 'theme_location' => 'main-menu', 'container_id' => 'topMenu', 'container_class' => 'ddsmoothmenu', 'fallback_cb'=>'primarymenu') );?>
 			<!-- End #topMenu -->

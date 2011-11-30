@@ -14,7 +14,7 @@
 				}else{
 					echo 'Just go to Theme Options Page and edit copyright text';
 				}?> 
-				<div id="site5bottom"><a href="http://www.site5.com/p/php-hosting/">PHP Web Hosting</a></div>
+				
 		</div>
 		<!-- END COPYRIGHT -->	
 		</div>
