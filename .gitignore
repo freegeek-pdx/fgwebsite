@@ -1,6 +1,7 @@
 *
 
 !db.sh
+!htaccess
 !pull_from_oahu.sh
 !wp-cache-config.php
 !/header-images/
