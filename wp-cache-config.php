@@ -5,9 +5,11 @@ WP-Cache Config Sample File
 See wp-cache.php for author details.
 */
 
+$cache_schedule_interval = ''; //Added by WP-Cache Manager
+$cache_gc_email_me = 0; //Added by WP-Cache Manager
 $cache_time_interval = '3600'; //Added by WP-Cache Manager
 $cache_scheduled_time = '00:00'; //Added by WP-Cache Manager
-$cache_schedule_type = 'interval'; //Added by WP-Cache Manager
+$cache_schedule_type = 'time'; //Added by WP-Cache Manager
 $cache_page_secret = 'd585981e90f8317d49c87cf931cb46e4'; //Added by WP-Cache Manager
 $wp_cache_slash_check = 1; //Added by WP-Cache Manager
 $cache_badbehaviour_file = ''; //Added by WP-Cache Manager
