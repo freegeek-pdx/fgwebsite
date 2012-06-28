@@ -11,7 +11,7 @@
 	</div>
 	<div class='Qtwo'>
 	<a href='<?php bloginfo( 'url' ); ?>/donate/what-we-take/'><img src='<?php bloginfo( 'template_url' ); ?>/images/donate.jpg' alt='Donate your used hardware.'/>
-	</a><p class='question-text'><a href='<?php bloginfo( 'url' ); ?>/donate/what-we-take/'>I have a donation</a></p>
+	</a><p class='question-text'><a href='<?php bloginfo( 'url' ); ?>/donate/what-we-take/'>I have a donation</a></p>s this.
 	</div>
 	<div class='Qthree'>
 	<a href='<?php bloginfo( 'url' ); ?>/etc/get-involved'><img src='<?php bloginfo( 'template_url' ); ?>/images/volunteer.jpg' alt='Volunteer with us.'/></a>
@@ -94,36 +94,38 @@
 		include_once TEMPLATEPATH . '/searchform.php' ;
 
 		echo "</li> </ul>"; ?>
-<!-- Twitter sidebar -->
+<!-- Social links sidebar -->
+<a href="https://www.facebook.com/freegeekmothership" title="Like us on Facebook and keep up with the Free Geek community"><img src="http://testwww.freegeek.org/wp-content/uploads/2012/06/FaceBook_256x256.png" alt="Like us on Facebook" height="170" width="170"></a>
+
 <script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
 <script>
 new TWTR.Widget({
   version: 2,
   type: 'profile',
-  rpp: 3,
+  rpp: 4,
   interval: 30000,
   width: 'auto',
-  height: 300,
+  height: 250,
   theme: {
     shell: {
-      background: '#333333',
+      background: '#013e51',
       color: '#ffffff'
     },
     tweets: {
-      background: '#000000',
-      color: '#ffffff',
-      links: '#4aed05'
+      background: '#ffffff',
+      color: '#2a3845',
+      links: '#993300'
     }
   },
   features: {
-    scrollbar: false,
+    scrollbar: true,
     loop: false,
-    live: false,
+    live: true,
     behavior: 'all'
   }
 }).render().setUser('FreeGeekPDX').start();
 </script>
-<!-- End Twitter sidebar -->
+<!-- End social links sidebar -->
 
 	</body>
 </html>
