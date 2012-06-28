@@ -94,5 +94,38 @@
 		include_once TEMPLATEPATH . '/searchform.php' ;
 
 		echo "</li> </ul>"; ?>
+<!-- Social links sidebar -->
+<a href="https://www.facebook.com/freegeekmothership" title="Like us on Facebook and keep up with the Free Geek community"><img src="http://testwww.freegeek.org/wp-content/uploads/2012/06/FaceBook_256x256.png" alt="Like us on Facebook" height="170" width="170"></a>
+
+<script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+<script>
+new TWTR.Widget({
+  version: 2,
+  type: 'profile',
+  rpp: 4,
+  interval: 30000,
+  width: 'auto',
+  height: 250,
+  theme: {
+    shell: {
+      background: '#013e51',
+      color: '#ffffff'
+    },
+    tweets: {
+      background: '#ffffff',
+      color: '#2a3845',
+      links: '#993300'
+    }
+  },
+  features: {
+    scrollbar: true,
+    loop: false,
+    live: true,
+    behavior: 'all'
+  }
+}).render().setUser('FreeGeekPDX').start();
+</script>
+<!-- End social links sidebar -->
+
 	</body>
 </html>
