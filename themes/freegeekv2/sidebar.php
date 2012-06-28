@@ -11,7 +11,7 @@
 	</div>
 	<div class='Qtwo'>
 	<a href='<?php bloginfo( 'url' ); ?>/donate/what-we-take/'><img src='<?php bloginfo( 'template_url' ); ?>/images/donate.jpg' alt='Donate your used hardware.'/>
-	</a><p class='question-text'><a href='<?php bloginfo( 'url' ); ?>/donate/what-we-take/'>I have a donation</a></p>s this.
+	</a><p class='question-text'><a href='<?php bloginfo( 'url' ); ?>/donate/what-we-take/'>I have a donation</a></p>
 	</div>
 	<div class='Qthree'>
 	<a href='<?php bloginfo( 'url' ); ?>/etc/get-involved'><img src='<?php bloginfo( 'template_url' ); ?>/images/volunteer.jpg' alt='Volunteer with us.'/></a>
