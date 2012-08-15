@@ -43,23 +43,8 @@
 							$children=wp_list_pages( 'echo=1&child_of=295&title_li=&depth=1');
 						}
 						//if its the news page and some children.
-						elseif (is_page('606')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
-						}
-						elseif (is_page('1129')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
-						}
-						elseif (is_page('1121')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
-						}
-						elseif (is_page('1123')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
-						}
-						elseif (is_page('1137')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
-						}
-						elseif (is_page('284')) {	
-						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1');  
+						elseif (is_page('606') || is_page('1129') || is_page('1121') || is_page('1123') || is_page('1137') || is_page('284')) {	
+						    $children=wp_list_pages( 'echo=1&child_of=606&title_li=&depth=1&exclude=1131') + wp_list_pages('echo=1&include=24&title_li=&depth=1');  
 						}
 						// About
 						elseif (is_page('2')) {	
@@ -81,7 +66,7 @@
 				<ul class='about-list'>
 				<li><a href='/board'>Board of Directors</a></li> 
 				<li><a href='/staff'>Staff</a></li> 
-				<li><a href='/council'>Community Council</a></li> 
+
 				<li><a href='/volunteers'>Volunteers</a></li>
 				</ul>
 				<span class='about-list-sidebar'>What we do</span>
@@ -109,5 +94,38 @@
 		include_once TEMPLATEPATH . '/searchform.php' ;
 
 		echo "</li> </ul>"; ?>
+<!-- Social links sidebar -->
+<a href="https://www.facebook.com/freegeekmothership" title="Like us on Facebook and keep up with the Free Geek community"><img src="http://testwww.freegeek.org/wp-content/uploads/2012/06/FaceBook_256x256.png" alt="Like us on Facebook" height="170" width="170"></a>
+
+<script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
+<script>
+new TWTR.Widget({
+  version: 2,
+  type: 'profile',
+  rpp: 4,
+  interval: 30000,
+  width: 'auto',
+  height: 250,
+  theme: {
+    shell: {
+      background: '#013e51',
+      color: '#ffffff'
+    },
+    tweets: {
+      background: '#ffffff',
+      color: '#2a3845',
+      links: '#993300'
+    }
+  },
+  features: {
+    scrollbar: true,
+    loop: false,
+    live: true,
+    behavior: 'all'
+  }
+}).render().setUser('FreeGeekPDX').start();
+</script>
+<!-- End social links sidebar -->
+
 	</body>
 </html>

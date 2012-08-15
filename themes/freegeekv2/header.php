@@ -1,4 +1,3 @@
-
 <?php
 	
 	// Try to add options
@@ -130,5 +129,3 @@
 			echo "<div id=\"content_gradient\">";
 			} ?>
          <div id="content">
-
-

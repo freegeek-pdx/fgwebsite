@@ -41,7 +41,7 @@
 		foreach ( $latest_post as $post ) {
 			setup_postdata($post);
 			$more = 0; # VERY IMPORTANT!!!! We need to reset $more to zero so that the 'more tag' will function properly.
-			print '<h3 id="post-' . get_the_ID() .'">' . the_title( '','',false ) . '</h3>';
+			print '<h1 id="post-' . get_the_ID() .'">' . the_title( '','',false ) . '</h3>';
 			the_content( 'Read More...' );
 		}}
 	
@@ -52,7 +52,7 @@
 		foreach ( $latest_post as $post ) {
 			setup_postdata($post);
 			$more = 0; # VERY IMPORTANT!!!! We need to reset $more to zero so that the 'more tag' will function properly.
-			print '<h3 id="post-' . get_the_ID() .'">' . the_title( '','',false ) . '</h3>';
+			print '<h1 id="post-' . get_the_ID() .'">' . the_title( '','',false ) . '</h3>';
 			the_content( 'Read More...' );
 		}}
 // for just category titles
@@ -61,7 +61,7 @@
 		//print it out
 			foreach ( $latest_post as $post ) {
 				setup_postdata($post);
-				print '<a href="' . get_permalink() .'"><h3 id="post-' . get_the_ID() .'">' . the_title( '','',false ) . '</h3></a>';
+				print '<a href="' . get_permalink() .'"><h1 id="post-' . get_the_ID() .'">' . the_title( '','',false ) . '</h3></a>';
 			}}
 // for shortening posts
 			elseif(!empty( $fg_shorten_posts) && !empty($fg_cat_id) && !empty($fg_numberposts) ){
@@ -70,7 +70,7 @@
 					foreach ( $latest_post as $post ) {
 						setup_postdata($post);
 						$more = 0; # VERY IMPORTANT!!!! We need to reset $more to zero so that the 'more tag' will function properly.
-						print '<a href="' . get_permalink() .'"><h3 id="post-' . get_the_ID() .'">' . the_title( '','',false ) . '</h3></a>';
+						print '<a href="' . get_permalink() .'"><h1 id="post-' . get_the_ID() .'">' . the_title( '','',false ) . '</h3></a>';
 						the_excerpt();
 					}}
 					
