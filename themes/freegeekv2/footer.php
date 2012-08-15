@@ -1,6 +1,7 @@
 </div>
 				</div><!-- id=content -->
 
+<?php
 	$fg_include_sidebar = true;
 	
 	$fg_single_column = get_post_meta( $post->ID, 'fg_single_column', true );
@@ -16,6 +17,7 @@
 		$fg_subnav_id = 'subnav';
 		$fg_footer_id = 'footer';
 	}
+?>
 
 		<?php if ( $fg_include_sidebar ) : ?>
 			<div id="sidebar_gradient">
