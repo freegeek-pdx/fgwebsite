@@ -1,6 +1,21 @@
 </div>
 				</div><!-- id=content -->
 
+	$fg_include_sidebar = true;
+	
+	$fg_single_column = get_post_meta( $post->ID, 'fg_single_column', true );
+	
+	// One column or 2?
+	if ( $fg_single_column == true ){
+		$fg_main_id = 'main_one_column';
+		$fg_subnav_id = 'subnav_one_column';
+		$fg_footer_id = 'footer_one_column';
+		$fg_include_sidebar = false;
+	}else{
+		$fg_main_id = 'main';
+		$fg_subnav_id = 'subnav';
+		$fg_footer_id = 'footer';
+	}
 
 		<?php if ( $fg_include_sidebar ) : ?>
 			<div id="sidebar_gradient">
