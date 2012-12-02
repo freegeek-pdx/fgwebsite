@@ -558,9 +558,7 @@ margin: 0
 display: list-item;                /* 1. */
 	list-style-image: url(images/header.jpg); /* 2. */
 	list-style-position: inside;       /* 3. */
-	letter-spacing: -1000em;           /* 4. */
-	font-size: 1pt;                    /* 5. */
-	color: #fff                       /* 5. */
+	color: #000;                       /* 5. */
 }
 #nav {
 display: none
@@ -585,4 +583,6 @@ display: none
 .mast_text {
 page-break-before: avoid;
 }
-
+#headerText a {
+color: #000;
+}
