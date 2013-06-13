@@ -83,7 +83,6 @@
 				<ul class='about-list'>
 				<li><a href='/foss'>Free & Open Source</a></li> 
 				<li><a href='/tools'>The Tools We Use</a></li> 
-				<li><a href='/consensus'>Consensus</a></li>
 				</ul>
 				";
 			}
