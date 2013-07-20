@@ -2,6 +2,7 @@
 
 !db.sh
 !htaccess
+!backup-wordpress
 !pull_from_oahu.sh
 !wp-cache-config.php
 !/header-images/

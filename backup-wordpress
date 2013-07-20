@@ -1,0 +1,9 @@
+#!/bin/sh
+
+dumpfile=/usr/local/backup/mysqldump.sql
+WP_PASSWORD=$(cat /etc/wordpress-password)
+nice mysqldump -uwordpress -p$WP_PASSWORD --all-databases > $dumpfile
+wordpress_junk=/usr/share/wordpress/wp-content
+wordpress_junk2=/var/lib/wordpress/wp-content
+rsync -qaWR $wordpress_junk /usr/local/backup/
+rsync -qaWR $wordpress_junk2 /usr/local/backup/
