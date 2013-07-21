@@ -2,7 +2,9 @@
 
 dumpfile=/usr/local/backup/mysqldump.sql
 WP_PASSWORD=$(cat /etc/wordpress-password)
-nice mysqldump --events -uwordpress -p$WP_PASSWORD --all-databases > $dumpfile
+MAINT_PW=$(sudo grep password /etc/mysql/debian.cnf  | head -1 | awk '{print $3}')
+MAINT_U=$(sudo grep user /etc/mysql/debian.cnf  | head -1 | awk '{print $3}')
+nice mysqldump --events -u$MAINT_U -p$MAINT_PW --all-databases > $dumpfile
 wordpress_junk=/usr/share/wordpress/wp-content
 wordpress_junk2=/var/lib/wordpress/wp-content
 rsync -qaWR $wordpress_junk /usr/local/backup/
