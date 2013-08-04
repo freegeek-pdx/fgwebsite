@@ -2,6 +2,9 @@
 
 set -e
 
+ALTNAME="kauai"
+#ALTNAME="testwww"
+
 config() {
     TEMPF=$(tempfile)
     sudo cat /etc/wordpress/config-*.php | grep DB_ | grep define | cut -d "'" -f 2,4 | sed "s/'/=/" | sort -u > "$TEMPF"
@@ -11,8 +14,8 @@ config() {
     NEWS_URL="${URL}/newsletter"
     BASE_URL="$(basename "$URL")"
     if [ "$BASE_URL" = "www.freegeek.org" ]; then
-	OTHER_URL="testwww.freegeek.org"
-    elif [ "$BASE_URL" = "testwww.freegeek.org" ]; then
+	OTHER_URL="${ALTNAME}.freegeek.org"
+    elif [ "$BASE_URL" = "${ALTNAME}.freegeek.org" ]; then
 	OTHER_URL="www.freegeek.org"
     else
 	echo "ERROR: Unknown BASE_URL: $BASE_URL"
