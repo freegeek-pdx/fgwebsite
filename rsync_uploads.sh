@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# TODO: doesn't catch timthumb
+
 set -e 
 DIR=~/rsync_uploads/
 if [ ! -d $DIR ]; then
