@@ -1,360 +1,573 @@
 <?php
 
-if ( !defined('ABSPATH') || !current_user_can('manage_options') )
-	wp_die('Cheatin&#8217; uh?');
-
-if ( isset( $_POST['tadv_uninstall'] ) ) {
-	check_admin_referer( 'tadv-uninstall' );
-
-	delete_option('tadv_options');
-	delete_option('tadv_toolbars');
-	delete_option('tadv_plugins');
-	delete_option('tadv_btns1');
-	delete_option('tadv_btns2');
-	delete_option('tadv_btns3');
-	delete_option('tadv_btns4');
-	delete_option('tadv_allbtns');
-?>
-<div class="updated" style="margin-top:30px;">
-<p><?php _e('All options have been removed from the database. You can', 'tadv'); ?> <a href="plugins.php"><?php _e('deactivate TinyMCE Advanced', 'tadv'); ?></a> <?php _e('or', 'tadv'); ?> <a href=""> <?php _e('reload this page', 'tadv'); ?></a> <?php _e('to reset them to the default values.', 'tadv'); ?></p>
-</div>
-<?php
-return;
+if ( ! defined( 'TADV_ADMIN_PAGE' ) ) {
+	exit;
 }
 
-if ( ! isset($GLOBALS['wp_version']) || version_compare($GLOBALS['wp_version'], '2.8', '<') ) { // if less than 2.8 ?>
-<div class="error" style="margin-top:30px;">
-<p><?php _e('This plugin requires WordPress version 2.8 or newer. Please upgrade your WordPress installation or download an', 'tadv'); ?> <a href="http://wordpress.org/extend/plugins/tinymce-advanced/download/"><?php _e('older version of the plugin.', 'tadv'); ?></a></p>
-</div>
-<?php
-return;
+// TODO
+if ( ! current_user_can( 'manage_options' ) ) {
+	wp_die('Access denied');
 }
 
-$update_tadv_options = false;
-$imgpath = WP_PLUGIN_URL . '/tinymce-advanced/images/';
+load_plugin_textdomain( 'tinymce-advanced', false, 'tinymce-advanced/langs' );
+$message = '';
 
-$tadv_toolbars = get_option('tadv_toolbars');
-if ( ! is_array($tadv_toolbars) ) {
-	@include_once( WP_PLUGIN_DIR . '/tinymce-advanced/tadv_defaults.php');
-	$tadv_options = array( 'advlink' => 1, 'advimage' => 1, 'importcss' => 0, 'contextmenu' => 0, 'fix_autop' => 0 );
-} else {
-	$tadv_options = get_option('tadv_options');
-	$tadv_toolbars['toolbar_1'] = isset($tadv_toolbars['toolbar_1']) ? (array) $tadv_toolbars['toolbar_1'] : array();
-	$tadv_toolbars['toolbar_2'] = isset($tadv_toolbars['toolbar_2']) ? (array) $tadv_toolbars['toolbar_2'] : array();
-	$tadv_toolbars['toolbar_3'] = isset($tadv_toolbars['toolbar_3']) ? (array) $tadv_toolbars['toolbar_3'] : array();
-	$tadv_toolbars['toolbar_4'] = isset($tadv_toolbars['toolbar_4']) ? (array) $tadv_toolbars['toolbar_4'] : array();
+// TODO admin || SA
+if ( ! $this->check_minimum_supported_version() ) {
+	?>
+	<div class="wrap">
+	<div class="error">
+	<p><?php printf(
+		__( 'This plugin requires WordPress version 4.0 or newer. Please upgrade your WordPress ' .
+			'installation or download an %solder version of the plugin%s.', 'tinymce-advanced' ),
+		'<a href="//wordpress.org/extend/plugins/tinymce-advanced/download/">',
+		'</a>'
+	); ?></p>
+	</div>
+	</div>
+	<?php
+
+	return;
 }
+
+$imgpath = TADV_URL . 'images/';
+$tadv_options_updated = false;
+$settings = $admin_settings = array();
 
 if ( isset( $_POST['tadv-save'] ) ) {
 	check_admin_referer( 'tadv-save-buttons-order' );
+	$options_array = $admin_settings_array = $disabled_plugins = $plugins_array = array();
 
-	$tb1 = $tb2 = $tb3 = $tb4 = $btns = array();
-	parse_str( $_POST['toolbar_1order'], $tb1 );
-	parse_str( $_POST['toolbar_2order'], $tb2 );
-	parse_str( $_POST['toolbar_3order'], $tb3 );
-	parse_str( $_POST['toolbar_4order'], $tb4 );
+	// User settings
+	for ( $i = 1; $i < 5; $i++ ) {
+		$tb = 'tb' . $i;
 
-	$tadv_toolbars['toolbar_1'] = (array) $tb1['pre'];
-	$tadv_toolbars['toolbar_2'] = (array) $tb2['pre'];
-	$tadv_toolbars['toolbar_3'] = (array) $tb3['pre'];
-	$tadv_toolbars['toolbar_4'] = (array) $tb4['pre'];
+		if ( $i > 1 && ! empty( $_POST[$tb] ) && is_array( $_POST[$tb] ) &&
+			( $wp_adv = array_search( 'wp_adv', $_POST[$tb] ) ) !== false ) {
+			// Remove the "Toolbar toggle" button from row 2, 3 or 4.
+			unset( $_POST[$tb][$wp_adv] );
+		}
 
-	update_option( 'tadv_toolbars', $tadv_toolbars );
+		$buttons = $this->parse_buttons( $tb );
+		// Layer plugin buttons??
+		$buttons = str_replace( 'insertlayer', 'insertlayer,moveforward,movebackward,absolute', $buttons );
+		$settings['toolbar_' . $i] = $buttons;
+	}
 
-	$tadv_options['advlink'] = $_POST['advlink'] ? 1 : 0;
-	$tadv_options['advimage'] = $_POST['advimage'] ? 1 : 0;
-	$tadv_options['contextmenu'] = $_POST['contextmenu'] ? 1 : 0;
-	$tadv_options['importcss'] = $_POST['importcss'] ? 1 : 0;
-	$tadv_options['fix_autop'] = $_POST['fix_autop'] ? 1 : 0;
-	$update_tadv_options = true;
+	if ( ! empty( $_POST['advlist'] ) ) {
+		$options_array[] = 'advlist';
+	}
+
+	if ( ! empty( $_POST['contextmenu'] ) ) {
+		$options_array[] = 'contextmenu';
+	}
+
+	if ( ! empty( $_POST['advlink'] ) ) {
+		$options_array[] = 'advlink';
+	}
+
+	if ( ! empty( $_POST['menubar'] ) ) {
+		$options_array[] = 'menubar';
+		$plugins_array = array( 'anchor', 'code', 'insertdatetime', 'nonbreaking', 'print', 'searchreplace',
+			'table', 'visualblocks', 'visualchars' );
+	}
+
+	// Admin settings, TODO
+	if ( ! empty( $_POST['importcss'] ) ) {
+		$admin_settings_array[] = 'importcss';
+	}
+
+	if ( ! empty( $_POST['textpattern'] ) ) {
+		$admin_settings_array[] = 'textpattern';
+	}
+
+	if ( ! empty( $_POST['no_autop'] ) ) {
+		$admin_settings_array[] = 'no_autop';
+	}
+
+	if ( ! empty( $_POST['paste_images'] ) ) {
+		$admin_settings_array[] = 'paste_images';
+	}
+
+	if ( ! empty( $_POST['fontsize_formats'] ) ) {
+		$admin_settings_array[] = 'fontsize_formats';
+	}
+
+	if ( ! empty( $_POST['editorstyle'] ) ) {
+		$admin_settings_array[] = 'editorstyle';
+	}
+
+	if ( ! empty( $_POST['disabled_plugins'] ) && is_array( $_POST['disabled_plugins'] ) ) {
+		foreach( $_POST['disabled_plugins'] as $plugin ) {
+			if ( in_array( $this->all_plugins, $plugin, true ) ) {
+				$disabled_plugins[] = $plugin;
+			}
+		}
+	}
+
+	// Admin options
+	$admin_settings['options'] = implode( ',', $admin_settings_array );
+	$admin_settings['disabled_plugins'] = implode( ',', $disabled_plugins );
+
+	$this->admin_settings = $admin_settings;
+	update_option( 'tadv_admin_settings', $admin_settings );
+
+	// User options
+	// TODO allow editors, authors and contributors some access
+	$this->settings = $settings;
+	$this->load_settings();
+
+	// Special case
+	if ( in_array( 'image', $this->used_buttons, true ) ) {
+		$options_array[] = 'image';
+	}
+
+	$settings['options'] = implode( ',', $options_array );
+	$this->settings = $settings;
+	$this->load_settings();
+
+	// Merge the submitted plugins and from the buttons
+	$settings['plugins'] = implode( ',', $this->get_plugins( $plugins_array ) );
+	$this->settings = $settings;
+	$this->plugins = $settings['plugins'];
+
+	// Save the new settings
+	update_option( 'tadv_settings', $settings );
+
+} elseif ( isset( $_POST['tadv-restore-defaults'] ) ) {
+	// TODO admin || SA
+	$this->admin_settings = $this->default_admin_settings;
+	update_option( 'tadv_admin_settings', $this->default_admin_settings );
+
+	// can 'save_posts' ?
+	$this->settings = $this->default_settings;
+	update_option( 'tadv_settings', $this->default_settings );
+
+	$message = '<div class="updated"><p>' .  __('Default settings restored.', 'tinymce-advanced') . '</p></div>';
+} elseif ( isset( $_POST['tadv-export-settings'] ) ) {
+	$this->load_settings();
+	$output = array( 'settings' => $this->settings );
+	// TODO admin || SA
+	$output['admin_settings'] = $this->admin_settings;
+
+	?>
+	<div class="wrap">
+	<h2><?php _e('TinyMCE Advanced Settings Export', 'tinymce-advanced'); ?></h2>
+
+	<div class="tadv-import-export">
+	<p>
+	<?php
+
+	_e( 'The settings are exported as a JSON encoded string. Please copy the content ' .
+		'and save it in a <b>text</b> (.txt) file, using a plain text editor like Notepad. ' .
+		'It is important that the export is not changed in any way, no spaces, line breaks, etc.', 'tinymce-advanced' );
+
+	?>
+	</p>
+
+	<form action="">
+		<p><textarea readonly="readonly" id="tadv-export"><?php echo json_encode( $output ); ?></textarea></p>
+		<p><button type="button" class="button" id="tadv-export-select"><?php _e( 'Select All', 'tinymce-advanced' ); ?></button></p>
+	</form>
+	<p><a href=""><?php _e('Back to Editor Settings', 'tinymce-advanced'); ?></a></p>
+	</div>
+	</div>
+	<?php
+
+	return;
+} elseif ( isset( $_POST['tadv-import-settings'] ) ) {
+	// TODO ! admin && ! SA
+	?>
+	<div class="wrap">
+	<h2><?php _e('TinyMCE Advanced Settings Import', 'tinymce-advanced'); ?></h2>
+
+	<div class="tadv-import-export">
+	<p><?php
+		_e( 'The settings are imported from a JSON encoded string. Please paste ' .
+			'the exported string in the textarea below.', 'tinymce-advanced' );
+	?></p>
+
+	<form action="" method="post">
+		<p><textarea id="tadv-import" name="tadv-import"></textarea></p>
+		<p>
+			<button type="button" class="button" id="tadv-import-verify"><?php _e( 'Verify', 'tinymce-advanced' ); ?></button>
+			<input type="submit" class="button button-primary alignright" name="tadv-import-submit" value="<?php
+				_e( 'Import', 'tinymce-advanced' ); ?>" />
+		</p>
+		<?php wp_nonce_field('tadv-import'); ?>
+		<p id="tadv-import-error"></p>
+	</form>
+	<p><a href=""><?php _e('Back to Editor Settings', 'tinymce-advanced'); ?></a></p>
+	</div>
+	</div>
+	<?php
+
+	return;
+} elseif ( isset( $_POST['tadv-import-submit'] ) && ! empty( $_POST['tadv-import'] ) && is_string( $_POST['tadv-import'] ) ) {
+	check_admin_referer( 'tadv-import' );
+	$import = json_decode( trim( wp_unslash( $_POST['tadv-import'] ) ), true );
+	$settings = $admin_settings = array();
+
+	if ( is_array( $import ) ) {
+		if ( ! empty( $import['settings'] ) ) {
+			$settings = $this->sanitize_settings( $import['settings'] );
+		}
+
+		if ( ! empty( $import['admin_settings'] ) ) {
+			$admin_settings = $this->sanitize_settings( $import['admin_settings'] );
+		}
+	}
+
+	if ( empty( $settings ) ) {
+		$message = '<div class="error"><p>' .  __('Importing of settings failed.', 'tinymce-advanced') . '</p></div>';
+	} else {
+		$this->admin_settings = $admin_settings;
+		update_option( 'tadv_admin_settings', $admin_settings );
+
+		// User options
+		// TODO allow editors, authors and contributors some access
+		$this->settings = $settings;
+		$this->load_settings();
+
+		// Merge the submitted plugins and from the buttons
+		if ( ! empty( $settings['plugins'] ) ) {
+			$settings['plugins'] = implode( ',', $this->get_plugins( explode( ',', $settings['plugins'] ) ) );
+		}
+
+		$this->plugins = $settings['plugins'];
+
+		// Save the new settings
+		update_option( 'tadv_settings', $settings );
+	}
 }
 
-$hidden_row = 0;
-$i = 0;
-foreach ( $tadv_toolbars as $toolbar ) {
-	$l = false;
-	$i++;
+$this->load_settings();
 
-	if ( empty($toolbar) ) {
-		$btns["toolbar_$i"] = array();
+if ( empty( $this->toolbar_1 ) && empty( $this->toolbar_2 ) && empty( $this->toolbar_3 ) && empty( $this->toolbar_4 ) ) {
+	$message = '<div class="error"><p>' .
+		__('ERROR: All toolbars are empty. Default settings loaded.', 'tinymce-advanced') .
+		'</p></div>';
+
+	$this->admin_settings = $this->default_admin_settings;
+	$this->settings = $this->default_settings;
+	$this->load_settings();
+}
+
+$used_buttons = array_merge( $this->toolbar_1, $this->toolbar_2, $this->toolbar_3, $this->toolbar_4 );
+$all_buttons = $this->get_all_buttons();
+
+?>
+<div class="wrap" id="contain">
+<h2><?php _e('Editor Settings', 'tinymce-advanced'); ?></h2>
+<?php
+
+if ( isset( $_POST['tadv-save'] ) && empty( $message ) ) {
+	?><div class="updated" id="message"><p><?php _e( 'Settings saved.', 'tinymce-advanced' ); ?></p></div><?php
+} else {
+	echo $message;
+}
+
+?>
+<form id="tadvadmin" method="post" action="">
+
+<p class="tadv-submit">
+	<input class="button-primary button-large" type="submit" name="tadv-save" value="<?php _e('Save Changes', 'tinymce-advanced'); ?>" />
+</p>
+
+<div id="tadvzones">
+
+<p><?php _e( 'New in TinyMCE 4.0/WordPress 3.9 is the editor menu. When it is enabled, ' .
+	'most buttons are also available as menu items.', 'tinymce-advanced' ); ?></p>
+
+<p><label>
+<input type="checkbox" name="menubar" id="menubar" <?php if ( $this->check_setting( 'menubar' ) ) { echo ' checked="checked"'; } ?>>
+<?php _e('Enable the editor menu.', 'tinymce-advanced'); ?>
+</label></p>
+
+<div id="tadv-mce-menu" class="mce-container mce-menubar mce-toolbar mce-first mce-stack-layout-item
+	<?php if ( $this->check_setting( 'menubar' ) ) { echo ' enabled'; } ?>">
+	<div class="mce-container-body mce-flow-layout">
+		<div class="mce-widget mce-btn mce-menubtn mce-first mce-flow-layout-item">
+			<button type="button">
+				<span class="tadv-translate">File</span>
+				<i class="mce-caret"></i>
+			</button>
+		</div>
+		<div class="mce-widget mce-btn mce-menubtn mce-flow-layout-item">
+			<button type="button">
+				<span class="tadv-translate">Edit</span>
+				<i class="mce-caret"></i>
+			</button>
+		</div>
+		<div class="mce-widget mce-btn mce-menubtn mce-flow-layout-item">
+			<button type="button">
+				<span class="tadv-translate">Insert</span>
+				<i class="mce-caret"></i>
+			</button>
+		</div>
+		<div class="mce-widget mce-btn mce-menubtn mce-flow-layout-item mce-toolbar-item">
+			<button type="button">
+				<span class="tadv-translate">View</span>
+				<i class="mce-caret"></i>
+			</button>
+		</div>
+		<div class="mce-widget mce-btn mce-menubtn mce-flow-layout-item">
+			<button type="button">
+				<span class="tadv-translate">Format</span>
+				<i class="mce-caret"></i>
+			</button>
+		</div>
+		<div class="mce-widget mce-btn mce-menubtn mce-flow-layout-item">
+			<button type="button">
+				<span class="tadv-translate">Table</span>
+				<i class="mce-caret"></i>
+			</button>
+		</div>
+		<div class="mce-widget mce-btn mce-menubtn mce-last mce-flow-layout-item">
+			<button type="button">
+				<span class="tadv-translate">Tools</span>
+				<i class="mce-caret"></i>
+			</button>
+		</div>
+	</div>
+</div>
+
+<?php
+
+$mce_text_buttons = array( 'styleselect', 'formatselect', 'fontselect', 'fontsizeselect' );
+
+for ( $i = 1; $i < 5; $i++ ) {
+	$toolbar = "toolbar_$i";
+
+	?>
+	<div class="tadvdropzone mce-toolbar">
+	<ul id="tb<?php echo $i; ?>" class="container">
+	<?php
+
+	foreach( $this->$toolbar as $button ) {
+		if ( strpos( $button, 'separator' ) !== false || in_array( $button, array( 'moveforward', 'movebackward', 'absolute' ) ) ) {
+			continue;
+		}
+
+		if ( isset( $all_buttons[$button] ) ) {
+			$name = $all_buttons[$button];
+			unset( $all_buttons[$button] );
+		} else {
+			// error?..
+			continue;
+		}
+
+		?><li class="tadvmodule" id="<?php echo $button; ?>">
+			<?php
+
+			if ( in_array( $button, $mce_text_buttons, true ) ) {
+				?>
+				<div class="tadvitem mce-widget mce-btn mce-menubtn mce-fixed-width mce-listbox">
+					<div class="the-button">
+						<span class="descr"><?php echo $name; ?></span>
+						<i class="mce-caret"></i>
+						<input type="hidden" class="tadv-button" name="tb<?php echo $i; ?>[]" value="<?php echo $button; ?>" />
+					</div>
+				</div>
+				<?php
+			} else {
+				?>
+				<div class="tadvitem">
+					<i class="mce-ico mce-i-<?php echo $button; ?>" title="<?php echo $name; ?>"></i>
+					<span class="descr"><?php echo $name; ?></span>
+					<input type="hidden" class="tadv-button" name="tb<?php echo $i; ?>[]" value="<?php echo $button; ?>" />
+				</div>
+				<?php
+			}
+
+			?>
+		</li><?php
+
+	}
+
+	?>
+	</ul></div>
+	<?php
+}
+
+?>
+</div>
+
+<p><?php _e('Drag buttons from the unused buttons below and drop them in the toolbars above, ' .
+	'or drag the buttons in the toolbars to rearrange them.', 'tinymce-advanced'); ?></p>
+
+<div id="unuseddiv">
+<h3><?php _e('Unused Buttons', 'tinymce-advanced'); ?></h3>
+<ul id="unused" class="container">
+<?php
+
+foreach( $all_buttons as $button => $name ) {
+	if ( strpos( $button, 'separator' ) !== false ) {
 		continue;
 	}
 
-	foreach( $toolbar as $k => $v ) {
-		if ( strpos($v, 'separator') !== false ) $toolbar[$k] = 'separator';
-		if ( 'layer' == $v ) $l = $k;
-		if ( empty($v) ) unset($toolbar[$k]);
-	}
-	if ( $l ) array_splice( $toolbar, $l, 1, array('insertlayer', 'moveforward', 'movebackward', 'absolute') );
+	?><li class="tadvmodule" id="<?php echo $button; ?>">
+		<?php
 
-	$btns["toolbar_$i"] = $toolbar;
-}
-extract($btns);
+		if ( in_array( $button, $mce_text_buttons, true ) ) {
+			?>
+			<div class="tadvitem mce-widget mce-btn mce-menubtn mce-fixed-width mce-listbox">
+				<div class="the-button">
+					<span class="descr"><?php echo $name; ?></span>
+					<i class="mce-caret"></i>
+					<input type="hidden" class="tadv-button" name="tb<?php echo $i; ?>[]" value="<?php echo $button; ?>" />
+				</div>
+			</div>
+			<?php
+		} else {
+			?>
+			<div class="tadvitem">
+				<i class="mce-ico mce-i-<?php echo $button; ?>" title="<?php echo $name; ?>"></i>
+				<span class="descr"><?php echo $name; ?></span>
+				<input type="hidden" class="tadv-button" name="tb<?php echo $i; ?>[]" value="<?php echo $button; ?>" />
+			</div>
+			<?php
+		}
 
-if ( empty($toolbar_1) && empty($toolbar_2) && empty($toolbar_3) && empty($toolbar_4) ) {
-	?><div class="error" id="message"><p><?php _e('All toolbars are empty! Default buttons loaded.', 'tadv'); ?></p></div><?php
+		?>
+	</li><?php
 
-	@include_once( WP_PLUGIN_DIR . '/tinymce-advanced/tadv_defaults.php');
-	$allbtns = array_merge( $tadv_btns1, $tadv_btns2, $tadv_btns3, $tadv_btns4 );
-} else {
-	$allbtns = array_merge( $toolbar_1, $toolbar_2, $toolbar_3, $toolbar_4 );
-}
-	if ( in_array('advhr', $allbtns) ) $plugins[] = 'advhr';
-	if ( in_array('insertlayer', $allbtns) ) $plugins[] = 'layer';
-	if ( in_array('visualchars', $allbtns) ) $plugins[] = 'visualchars';
-
-	if ( in_array('nonbreaking', $allbtns) ) $plugins[] = 'nonbreaking';
-	if ( in_array('styleprops', $allbtns) ) $plugins[] = 'style';
-	if ( in_array('emotions', $allbtns) ) $plugins[] = 'emotions';
-	if ( in_array('insertdate', $allbtns) ||
-		in_array('inserttime', $allbtns) ) $plugins[] = 'insertdatetime';
-
-	if ( in_array('tablecontrols', $allbtns) ) $plugins[] = 'table';
-	if ( in_array('print', $allbtns) ) $plugins[] = 'print';
-	if ( in_array('iespell', $allbtns) ) $plugins[] = 'iespell';
-	if ( in_array('search', $allbtns) ||
-		in_array('replace', $allbtns) ) $plugins[] = 'searchreplace';
-
-	if ( in_array('cite', $allbtns) ||
-		in_array('ins', $allbtns) ||
-		in_array('del', $allbtns) ||
-		in_array('abbr', $allbtns) ||
-		in_array('acronym', $allbtns) ||
-		in_array('attribs', $allbtns) ) $plugins[] = 'xhtmlxtras';
-
-	if ( $tadv_options['advlink'] == '1' ) $plugins[] = 'advlink';
-	if ( $tadv_options['advimage'] == '1' ) $plugins[] = 'advimage';
-	if ( $tadv_options['contextmenu'] == '1' ) $plugins[] = 'contextmenu';
-
-$buttons = array( 'Kitchen Sink' => 'wp_adv', 'Quote' => 'blockquote', 'Bold' => 'bold', 'Italic' => 'italic', 'Strikethrough' => 'strikethrough', 'Underline' => 'underline', 'Bullet List' => 'bullist', 'Numbered List' => 'numlist', 'Outdent' => 'outdent', 'Indent' => 'indent', 'Allign Left' => 'justifyleft', 'Center' => 'justifycenter', 'Alligh Right' => 'justifyright', 'Justify' => 'justifyfull', 'Cut' => 'cut', 'Copy' => 'copy', 'Paste' => 'paste', 'Link' => 'link', 'Remove Link' => 'unlink', 'Insert Image' => 'image', 'More Tag' => 'wp_more', 'Split Page' => 'wp_page', 'Search' => 'search', 'Replace' => 'replace', '<!--fontselect-->' => 'fontselect', '<!--fontsizeselect-->' => 'fontsizeselect', 'Help' => 'wp_help', 'Full Screen' => 'fullscreen', '<!--styleselect-->' => 'styleselect', '<!--formatselect-->' => 'formatselect', 'Text Color' => 'forecolor', 'Back Color' => 'backcolor', 'Paste as Text' => 'pastetext', 'Paste from Word' => 'pasteword', 'Remove Format' => 'removeformat', 'Clean Code' => 'cleanup', 'Check Spelling' => 'spellchecker', 'Character Map' => 'charmap', 'Print' => 'print', 'Undo' => 'undo', 'Redo' => 'redo', 'Table' => 'tablecontrols', 'Citation' => 'cite', 'Inserted Text' => 'ins', 'Deleted Text' => 'del', 'Abbreviation' => 'abbr', 'Acronym' => 'acronym', 'XHTML Attribs' => 'attribs', 'Layer' => 'layer', 'Advanced HR' => 'advhr', 'View HTML' => 'code', 'Hidden Chars' => 'visualchars', 'NB Space' => 'nonbreaking', 'Sub' => 'sub', 'Sup' => 'sup', 'Visual Aids' => 'visualaid', 'Insert Date' => 'insertdate', 'Insert Time' => 'inserttime', 'Anchor' => 'anchor', 'Style' => 'styleprops', 'Smilies' => 'emotions', 'Insert Movie' => 'media', 'IE Spell' => 'iespell' );
-
-if ( function_exists('moxiecode_plugins_url') ) {
-	if ( moxiecode_plugins_url('imagemanager') ) $buttons['MCFileManager'] = 'insertimage';
-	if ( moxiecode_plugins_url('filemanager') ) $buttons['MCImageManager'] = 'insertfile';
 }
 
-$tadv_allbtns = array_values($buttons);
-$tadv_allbtns[] = 'separator';
-$tadv_allbtns[] = '|';
-
-if ( get_option('tadv_plugins') != $plugins ) update_option( 'tadv_plugins', $plugins );
-if ( get_option('tadv_btns1') != $toolbar_1 ) update_option( 'tadv_btns1', $toolbar_1 );
-if ( get_option('tadv_btns2') != $toolbar_2 ) update_option( 'tadv_btns2', $toolbar_2 );
-if ( get_option('tadv_btns3') != $toolbar_3 ) update_option( 'tadv_btns3', $toolbar_3 );
-if ( get_option('tadv_btns4') != $toolbar_4 ) update_option( 'tadv_btns4', $toolbar_4 );
-if ( get_option('tadv_allbtns') != $tadv_allbtns ) update_option( 'tadv_allbtns', $tadv_allbtns );
-
-for ( $i = 1; $i < 21; $i++ )
-	$buttons["s$i"] = "separator$i";
-
-if ( isset($_POST['tadv-save']) ) {	?>
-	<div class="updated" id="message"><p><?php _e('Options saved', 'tadv'); ?></p></div>
-<?php } ?>
-
-<div class="wrap" id="contain">
-
-	<h2><?php _e('TinyMCE Buttons Arrangement', 'tadv'); ?></h2>
-
-	<form id="tadvadmin" method="post" action="" onsubmit="">
-	<p><?php _e('Drag and drop buttons onto the toolbars below.', 'tadv'); ?></p>
-
-	<div id="tadvzones">
-		<input id="toolbar_1order" name="toolbar_1order" value="" type="hidden" />
-		<input id="toolbar_2order" name="toolbar_2order" value="" type="hidden" />
-		<input id="toolbar_3order" name="toolbar_3order" value="" type="hidden" />
-		<input id="toolbar_4order" name="toolbar_4order" value="" type="hidden" />
-		<input name="tadv-save" value="1" type="hidden" />
-
-	<div class="tadvdropzone">
-	<ul style="position: relative;" id="toolbar_1" class="container">
-<?php
-if ( is_array($tadv_toolbars['toolbar_1']) ) {
-	$tb1 = array();
-	foreach( $tadv_toolbars['toolbar_1'] as $k ) {
-		$t = array_intersect( $buttons, (array) $k );
-		$tb1 += $t;
-	}
-
-	foreach( $tb1 as $name => $btn ) {
-		if ( strpos( $btn, 'separator' ) !== false ) { ?>
-
-	<li class="separator" id="pre_<?php echo $btn; ?>">
-	<div class="tadvitem"> </div></li>
-<?php	} else { ?>
-
-	<li class="tadvmodule" id="pre_<?php echo $btn; ?>">
-	<div class="tadvitem"><img src="<?php echo $imgpath . $btn . '.gif'; ?>" title="<?php echo $name; ?>" />
-	<span class="descr"> <?php echo $name; ?></span></div></li>
-<?php   }
-	}
-	$buttons = array_diff( $buttons, $tb1 );
-} ?>
-	</ul></div>
-	<br class="clear" />
-
-	<div class="tadvdropzone">
-	<ul style="position: relative;" id="toolbar_2" class="container">
-<?php
-if ( is_array($tadv_toolbars['toolbar_2']) ) {
-	$tb2 = array();
-	foreach( $tadv_toolbars['toolbar_2'] as $k ) {
-		$t = array_intersect( $buttons, (array) $k );
-		$tb2 = $tb2 + $t;
-	}
-	foreach( $tb2 as $name => $btn ) {
-		if ( strpos( $btn, 'separator' ) !== false ) { ?>
-
-	<li class="separator" id="pre_<?php echo $btn; ?>">
-	<div class="tadvitem"> </div></li>
-<?php	} else { ?>
-
-	<li class="tadvmodule" id="pre_<?php echo $btn; ?>">
-	<div class="tadvitem"><img src="<?php echo $imgpath . $btn . '.gif'; ?>" title="<?php echo $name; ?>" />
-	<span class="descr"> <?php echo $name; ?></span></div></li>
-<?php   }
-	}
-	$buttons = array_diff( $buttons, $tb2 );
-} ?>
-	</ul></div>
-	<br class="clear" />
-
-	<div class="tadvdropzone">
-	<ul style="position: relative;" id="toolbar_3" class="container">
-<?php
-if ( is_array($tadv_toolbars['toolbar_3']) ) {
-	$tb3 = array();
-	foreach( $tadv_toolbars['toolbar_3'] as $k ) {
-		$t = array_intersect( $buttons, (array) $k );
-		$tb3 += $t;
-	}
-	foreach( $tb3 as $name => $btn ) {
-		if ( strpos( $btn, 'separator' ) !== false ) { ?>
-
-	<li class="separator" id="pre_<?php echo $btn; ?>">
-	<div class="tadvitem"> </div></li>
-<?php	} else { ?>
-
-	<li class="tadvmodule" id="pre_<?php echo $btn; ?>">
-	<div class="tadvitem"><img src="<?php echo $imgpath . $btn . '.gif'; ?>" title="<?php echo $name; ?>" />
-	<span class="descr"> <?php echo $name; ?></span></div></li>
-<?php   }
-	}
-	$buttons = array_diff( $buttons, $tb3 );
-} ?>
-	</ul></div>
-	<br class="clear" />
-
-	<div class="tadvdropzone">
-	<ul style="position: relative;" id="toolbar_4" class="container">
-<?php
-if ( is_array($tadv_toolbars['toolbar_4']) ) {
-	$tb4 = array();
-	foreach( $tadv_toolbars['toolbar_4'] as $k ) {
-		$t = array_intersect( $buttons, (array) $k );
-		$tb4 += $t;
-	}
-	foreach( $tb4 as $name => $btn ) {
-		if ( strpos( $btn, 'separator' ) !== false ) { ?>
-
-	<li class="separator" id="pre_<?php echo $btn; ?>">
-	<div class="tadvitem"> </div></li>
-<?php	} else { ?>
-
-	<li class="tadvmodule" id="pre_<?php echo $btn; ?>">
-	<div class="tadvitem"><img src="<?php echo $imgpath . $btn . '.gif'; ?>" title="<?php echo $name; ?>" />
-	<span class="descr"> <?php echo $name; ?></span></div></li>
-<?php   }
-	}
-	$buttons = array_diff( $buttons, $tb4 );
-} ?>
-	</ul></div>
-	<br class="clear" />
-	</div>
-
-	<div id="tadvWarnmsg">&nbsp;
-	<span id="too_long" style="display:none;"><?php _e('Adding too many buttons will make the toolbar too long and will not display correctly in TinyMCE!', 'tadv'); ?></span>
-	</div>
-
-	<div id="tadvpalettediv">
-	<ul style="position: relative;" id="tadvpalette">
-<?php
-if ( is_array($buttons) ) {
-	foreach( $buttons as $name => $btn ) {
-		if ( strpos( $btn, 'separator' ) !== false ) { ?>
-
-	<li class="separator" id="pre_<?php echo $btn; ?>">
-	<div class="tadvitem"> </div></li>
-<?php	} else { ?>
-
-	<li class="tadvmodule" id="pre_<?php echo $btn; ?>">
-	<div class="tadvitem"><img src="<?php echo $imgpath . $btn . '.gif'; ?>" title="<?php echo $name; ?>" />
-	<span class="descr"> <?php echo $name; ?></span></div></li>
-<?php   }
-	}
-} ?>
-	</ul>
-	</div>
-
-	<table class="clear" style="margin:10px 0"><tr><td style="padding:2px 12px 8px;">
-		Also enable:
-		<label for="advlink" class="tadv-box"><?php _e('Advanced Link', 'tadv'); ?> &nbsp;
-		<input type="checkbox" class="tadv-chk"  name="advlink" id="advlink" <?php if ( $tadv_options['advlink'] == '1' ) echo ' checked="checked"'; ?> /></label> &bull;
-
-		<label for="advimage" class="tadv-box"><?php _e('Advanced Image', 'tadv'); ?> &nbsp;
-		<input type="checkbox" class="tadv-chk"  name="advimage" id="advimage" <?php if ( $tadv_options['advimage'] == '1' ) echo ' checked="checked"'; ?> /></label> &bull;
-		<label for="contextmenu" class="tadv-box"><?php _e('Context Menu', 'tadv'); ?> &nbsp;
-
-		<input type="checkbox" class="tadv-chk"  name="contextmenu" id="contextmenu" <?php if ( $tadv_options['contextmenu'] == '1' ) echo ' checked="checked"'; ?> /></label>
-		<?php _e('(to show the context menu in Firefox and use the spellchecker, hold down the Ctrl key).', 'tadv'); ?>
-		</td></tr>
-
-		<tr><td style="border:1px solid #CD0000;padding:2px 12px 8px;">
-		<p style="font-weight:bold;color:#CD0000;"><?php _e('Advanced', 'tadv'); ?></p><?php
-
-		if ( function_exists('mceopt_admin') )
-			echo '<p><a href="' . admin_url('options-general.php?page=tinymce-options/tinymce-options.php') . '">' . __('Manage TinyMCE Options', 'tadv') . '</a></p>'; ?>
-
-		<p><label for="importcss" class="tadv-box"><?php _e('Import the current theme CSS classes', 'tadv'); ?> &nbsp;
-		<input type="checkbox" class="tadv-chk"  name="importcss" id="importcss" <?php if ( $tadv_options['importcss'] == '1' ) echo ' checked="checked"'; ?> /></label></p>
-		<p style="font-size:11px;"><?php _e('Custom CSS styles can be added in', 'tadv'); ?> <a href="plugin-editor.php?file=tinymce-advanced/css/tadv-mce.css&amp;plugin=tinymce-advanced/tinymce-advanced.php"> <?php _e('/wp-content/plugins/tinymce-advanced/css/tadv-mce.css.', 'tadv'); ?></a> <?php _e('They will be imported and used in TinyMCE. Only CSS classes will be used, also <strong>div.my-class</strong> would not work, but <strong>.my-class</strong> will.', 'tadv'); ?></p>
-		<p><label for="fix_autop" class="tadv-box"><?php _e('Stop removing the &lt;p&gt; and &lt;br /&gt; tags when saving and show them in the HTML editor', 'tadv'); ?> &nbsp;
-		<input type="checkbox" class="tadv-chk"  name="fix_autop" id="fix_autop" <?php if ( $tadv_options['fix_autop'] == '1' ) echo ' checked="checked"'; ?> /></label></p>
-		<p style="font-size:11px;"><?php _e('This will make it possible to use more advanced HTML without the back-end filtering affecting it much. It also preserves empty new lines in the editor by padding them with &lt;br /&gt; tags.', 'tadv'); ?></p>
-		</td></tr>
-<?php
-	$mce_locale = ( '' == get_locale() ) ? 'en' : strtolower( substr(get_locale(), 0, 2) );
-	if ( $mce_locale != 'en' ) {
-		if ( ! @file_exists(WP_PLUGIN_DIR . '/tinymce-advanced/mce/advlink/langs/' . $mce_locale . '_dlg.js') ) { ?>
-		<tr><td style="padding:2px 12px 8px;">
-		<p style="font-weight:bold;"><?php _e('Language Settings', 'tadv'); ?></p>
-		<p><?php _e('Your WordPress language is set to', 'tadv'); ?> <strong><?php echo get_locale(); ?></strong>. <?php _e('However there is no matching language installed for TinyMCE plugins. This plugin includes several translations: German, French, Italian, Spanish, Portuguese, Russian, Japanese and Chinese. More translations are available at the', 'tadv'); ?> <a href="http://services.moxiecode.com/i18n/"><?php _e('TinyMCE web site.', 'tadv'); ?></a></p>
-		</td></tr>
-<?php	}
-	} // end mce_locale
 ?>
-	</table>
+</ul>
+</div>
 
-<p>
+<p class="tadv-more-plugins"><?php _e( 'Also enable:' ); ?>
+	<label>
+	<input type="checkbox" name="advlist" id="advlist" <?php if ( $this->check_setting('advlist') ) echo ' checked="checked"'; ?> />
+	<?php _e('List Style Options', 'tinymce-advanced'); ?>
+	</label>
+
+	<label>
+	<input type="checkbox" name="contextmenu" id="contextmenu" <?php
+		if ( $this->check_setting('contextmenu') ) echo ' checked="checked"'; ?> />
+	<?php _e('Context Menu', 'tinymce-advanced'); ?>
+	</label>
+
+	<label>
+	<input type="checkbox" name="advlink" id="advlink" <?php if ( $this->check_setting('advlink') ) echo ' checked="checked"'; ?> />
+	<?php _e('Link (replaces the Insert/Edit Link dialog)', 'tinymce-advanced'); ?>
+	</label>
+</p>
+
+<?php
+
+if ( ! is_multisite() || current_user_can( 'manage_sites' ) ) {
+
+	?>
+	<div class="advanced-options">
+	<h3><?php _e('Advanced Options', 'tinymce-advanced'); ?></h3>
+	<?php
+
+	if ( ! is_multisite() && ! current_theme_supports( 'editor-style' ) ) {
+
+		?>
+		<div>
+			<label><input type="checkbox" name="editorstyle" id="editorstyle" <?php
+				if ( $this->check_admin_setting( 'editorstyle' ) ) echo ' checked="checked"'; ?> />
+			<?php _e('Import editor-style.css.', 'tinymce-advanced'); ?></label>
+			<p><?php
+				_e( 'It seems your theme does not support customised styles for the editor. ' .
+					'You can create a CSS file named <code>editor-style.css</code> and upload it to your ' .
+					'theme\'s directory. After that, enable this setting.', 'tinymce-advanced' );
+			?></p>
+		</div>
+		<?php
+	}
+
+	?>
+	<div>
+		<label><input type="checkbox" name="importcss" id="importcss" <?php
+			if ( $this->check_admin_setting( 'importcss' ) ) echo ' checked="checked"'; ?> />
+		<?php _e('Load the CSS classes used in editor-style.css and replace the Formats button ' .
+			'and sub-menu.', 'tinymce-advanced'); ?></label>
+	</div>
+
+	<div>
+		<label><input type="checkbox" name="textpattern" id="textpattern" <?php
+			if ( $this->check_admin_setting('textpattern') ) echo ' checked="checked"'; ?> />
+		<?php _e('Markdown typing support (text pattern plugin)', 'tinymce-advanced'); ?></label>
+		<p><?php
+			_e( 'This plugin matches special patterns while you type and applies formats ' .
+				'or executed commands on these text patterns. The default patterns are the ' .
+				'same as the markdown syntax so you can type <code># text</code> to create ' .
+				'a header, <code>1. text</code> to create a list, <code>**text**</code> ' .
+				'to make something bold, etc.', 'tinymce-advanced' );
+		?> <a href="http://www.tinymce.com/wiki.php/Configuration:textpattern_patterns" target="_blank"><?php
+			_e('More information', 'tinymce-advanced'); ?></a>
+		</p>
+	</div>
+
+	<div>
+		<label><input type="checkbox" name="no_autop" id="no_autop" <?php
+			if ( $this->check_admin_setting( 'no_autop' ) ) echo ' checked="checked"'; ?> />
+		<?php _e('Stop removing the &lt;p&gt; and &lt;br /&gt; tags when saving and show them ' .
+			'in the Text editor', 'tinymce-advanced'); ?></label>
+		<p><?php
+			_e( 'This will make it possible to use more advanced coding in the HTML editor ' .
+				'without the back-end filtering affecting it much. However it may behave ' .
+				'unexpectedly in rare cases, so test it thoroughly before enabling it ' .
+				'permanently. Line breaks in the HTML editor would still affect the output, ' .
+				'in particular do not use empty lines, line breaks inside HTML tags ' .
+				'or multiple &lt;br /&gt; tags.', 'tinymce-advanced' );
+		?></p>
+	</div>
+
+	<div>
+		<label><input type="checkbox" name="fontsize_formats" id="fontsize_formats" <?php
+			if ( $this->check_admin_setting( 'fontsize_formats' ) ) echo ' checked="checked"'; ?> />
+		<?php _e('Replace font size settings', 'tinymce-advanced'); ?></label>
+		<p><?php
+			_e( 'Replaces the size setting available for fonts with: 8px 10px 12px 14px 16px 20px 24px 28px 32px 36px.', 'tinymce-advanced' );
+		?></p>
+	</div>
+
+	<div>
+		<label><input type="checkbox" name="paste_images" id="paste_images" <?php
+			if ( $this->check_admin_setting( 'paste_images' ) ) echo ' checked="checked"'; ?> />
+		<?php _e('Enable pasting of image source', 'tinymce-advanced'); ?></label>
+		<p><?php
+			_e( 'Works only in Firefox and Safari. These browsers support pasting of ' .
+				'images directly in the editor and convert them to base64 encoded text. ' .
+				'This is not acceptable for larger images like photos or graphics, ' .
+				'but may be useful in some cases for very small images like icons, ' .
+				'not larger than 2-3KB. These images will not be available in ' .
+				'the Media Library.', 'tinymce-advanced' );
+		?></p>
+	</div>
+	</div>
+
+	<div class="advanced-options">
+	<h3><?php _e('Administration', 'tinymce-advanced'); ?></h3>
+	<div>
+		<input type="submit" class="button" name="tadv-export-settings" value="<?php
+			_e( 'Export Settings', 'tinymce-advanced' ); ?>" /> &nbsp;
+		<input type="submit" class="button" name="tadv-import-settings" value="<?php
+			_e( 'Import Settings', 'tinymce-advanced' ); ?>" />
+	</div>
+	</div>
+	<?php
+
+}
+?>
+
+<p class="tadv-submit">
 	<?php wp_nonce_field( 'tadv-save-buttons-order' ); ?>
-	<input class="button tadv_btn" type="button" class="tadv_btn" value="<?php _e('Remove Settings', 'tadv'); ?>" onclick="document.getElementById('tadv_uninst_div').style.display = 'block';" />
-	<input class="button-primary tadv_btn" type="button" value="<?php _e('Save Changes', 'tadv'); ?>" onclick="tadvSortable.serialize();" />
+	<input class="button" type="submit" name="tadv-restore-defaults" value="<?php
+		_e('Restore Default Settings', 'tinymce-advanced'); ?>" />
+	<input class="button-primary button-large" type="submit" name="tadv-save" value="<?php
+		_e('Save Changes', 'tinymce-advanced'); ?>" />
 </p>
 </form>
 
-<div id="tadvWarnmsg2">&nbsp;
-	<span id="sink_err" style="display:none;"><?php _e('The Kitchen Sink button shows/hides the next toolbar row. It will not work at the current place.', 'tadv'); ?></span>
+<div id="wp-adv-error-message" class="tadv-error">
+<?php _e('The [Toolbar toggle] button shows or hides the second, third, and forth button rows. ' .
+	'It will only work when it is in the first row and there are buttons in the second row.', 'tinymce-advanced'); ?>
 </div>
-
-<div id="tadv_uninst_div" style="">
-<form method="post" action="">
-<?php wp_nonce_field('tadv-uninstall'); ?>
-<div><?php _e('Remove all saved settings from the database?', 'tadv'); ?>
-<input class="button tadv_btn" type="button" name="cancel" value="<?php _e('Cancel', 'tadv'); ?>" onclick="document.getElementById('tadv_uninst_div').style.display = 'none';" style="margin-left:20px" />
-<input class="button tadv_btn" type="submit" name="tadv_uninstall" value="<?php _e('Continue', 'tadv'); ?>" /></div>
-</form>
-</div>
-</div>
-
-<?php
-	if ( $update_tadv_options )
-		update_option( 'tadv_options', $tadv_options );
+</div><!-- /wrap -->

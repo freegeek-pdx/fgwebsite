@@ -1,17 +1,14 @@
 === No Flash Uploader ===
 Contributors: dd32
-Tags: 2.5, admin, media, uploads, post
-Requires at least: 2.5
-Tested up to: 2.7
-Stable tag: 1.1
+Tags: 2.5, admin, media, uploads, post, disable flash uploader
+Requires at least: 3.0
+Stable tag: 1.1.1
 
-WordPress 2.5 includes a new Flash based media uploader, Unfortunately for some however, It does not work as intended due to server configurations, or broken Flash on the users computer. This plugin disables the flash uploader and allows the normal uploader to work.
+WordPress includes a Flash based media uploader, Unfortunately for some however, It does not work as intended due to server configurations, or broken Flash on the users computer. This plugin disables the flash uploader which causes WordPress to fall back to a Browser-based uploader.
 
 == Description ==
 
-Please note this plugin is *not* required for 2.6, A link is present to switch to the classic uploader, However, It will default to on for every load, Therefor, You may use this plugin to default to off.
-
-WordPress 2.5 includes a new Flash based media uploader, Unfortunately for some however, It does not work as intended due to server configurations, or broken Flash on the users computer. This plugin disables the flash uploader and allows the normal uploader to work.
+WordPress includes a Flash based media uploader, Unfortunately for some however, It does not work as intended due to server configurations, or broken Flash on the users computer. This plugin disables the flash uploader which causes WordPress to fall back to a Browser-based uploader.
 
 Please Note: I *highly* suggest attempting to seek help in order to fix any problems with the flash uploader in the support forums before resorting to this plugin if the uploader simply does not work. 
 I personally use the Flash uploader, and find it does a good job.
@@ -20,7 +17,16 @@ Please take a read of this support post in order to determine what may be causin
 
 == Changelog ==
 
-= 1.0 =
- * Initial Release
+= 1.1.1 =
+ * Clarifications to the readme.txt
+
 = 1.1 =
  * Hook earlier so that 2.6's override option can override this plugin.
+
+= 1.0 =
+ * Initial Release
+
+== Upgrade Notice ==
+
+= 1.1.1 =
+ * Clarifications on readme.txt only, no change in functionality for existing users (Hey, now would be a good time to check if you still need this plugin!)

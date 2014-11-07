@@ -1,10 +1,10 @@
 === WP-DB-Backup ===
-Contributors: filosofo, skippy, Firas, LaughingLizard, MtDewVirus, Podz, Ringmaster
-Donate link: http://www.ilfilosofo.com/blog/wp-db-backup/
+Contributors: filosofo
+Donate link: http://austinmatzko.com/wordpress-plugins/wp-db-backup/
 Tags: mysql, database, backup, cron
 Requires at least: 2.0.3
-Tested up to: 2.8
-Stable tag: 2.2.2
+Tested up to: 3.6.1
+Stable tag: 2.2.4
 
 On-demand backup of your WordPress database.
 
@@ -17,10 +17,10 @@ Released under the terms of the GNU GPL, version 2.
 
               NO WARRANTY.
 
-	Copyright (c) 2008 Austin Matzko
+	Copyright (c) 2013 Austin Matzko
 
 == Installation ==
-1. Copy the wp-db-backup.php file to /wp-content/plugins/
+1. Extract the wp-db-backup/ folder file to /wp-content/plugins/
 1. Activate the plugin at your blog's Admin -> Plugins screen
 1. The plugin will attempt to create a directory /wp-content/backup-*/ inside your WordPress directory.
 1. You may need to make /wp-content writable (at least temporarily) for it to create this directory. 
@@ -62,15 +62,15 @@ Better yet, put the lines that define the `MOD_EVASIVE_OVERRIDE` and `MOD_EVASIV
 = What is wp-db-backup.pot for? =
 
 This files is used by non-English users to translate the display into their native language.  Translators are encouraged to send me translated files, which will be made available to others here:
-http://www.ilfilosofo.com/blog/wp-db-backup/i18n/
-http://dev.wp-plugins.org/browser/wp-db-backup/i18n/
+http://austinmatzko.com/wordpress-plugins/wp-db-backup/i18n/
+http://plugins.trac.wordpress.org/browser/wp-db-backup/i18n/
 
 = Why are only the core database files backed up by default? =
 
 Because it's a fairly safe bet that the core WordPress files will be successfully backed up.  Plugins vary wildly in the amount of data that they store.  For instance, it's not uncommon for some statistics plugins to have tens of megabytes worth of visitor statistics.  These are not exactly essential items to restore after a catastrophic failure.  Most poeple can reasonably live without this data in their backups.
 
 == Usage ==
-1. Click the Manage menu in your WordPress admin area.
+1. Click the Tools or Manage menu in your WordPress admin area.
 1. Click the Backup sub-menu.
 
 1. The plugin will look for other tables in the same database.  You may elect to include other tables in the backup.
@@ -103,6 +103,20 @@ When having the database backup emailed or sent to your browser for immediate do
    if other people obtain your backup file.
    *** SECURITY WARNING ***
 
+== Changelog ==
+
+= 2.2.3 = 
+* Nonce check fix for localized WP users from Sergey Biryukov
+* Fix for gzipped files' incorrect size.
+* Some styling improvements.
+* Fix for JS multiple checkbox selection.
+
+== Upgrade Notice ==
+
+= 2.2.3 =
+* Fixes problems users had when using localized WordPress installations.
+* Fixes a bug that caused the size of gzipped backup files to be reported incorrectly.
+
 == Advanced ==
 If you are using WordPress version 2.1 or newer, you can schedule automated backups to be sent to the email address 
 of your choice.
@@ -116,6 +130,7 @@ Thanks to following people for providing translation files for WP-DB-Backup:
 * Calle
 * Daniel Erb
 * Daniel Villoldo
+* Diego Pierotto
 * Eilif Nordseth
 * Eric Lassauge
 * Friedlich
@@ -140,3 +155,6 @@ Thanks to following people for providing translation files for WP-DB-Backup:
 * Timm Severin
 * Tzafrir Rehan
 * 吴曦
+
+== Past Contributors ==
+skippy, Firas, LaughingLizard, MtDewVirus, Podz, Ringmaster

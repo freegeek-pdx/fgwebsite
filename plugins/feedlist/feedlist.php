@@ -5,35 +5,46 @@
 	Description: Displays any ATOM or RSS feed in your blog.
 	Author: Bill Rawlinson
 	Author URI: http://blog.rawlinson.us/
-	Version: 2.51
+	Version: 2.70.00
 */
 
 // setup error level
- error_reporting(E_ERROR);
+ error_reporting(0);
+
+
+// use Magpie? or SimplePie?
+$useMagPie = true;
 
 
 
  	// include files
 			$relroot = ABSPATH . '/';
 			require_once('feedListExtensions.php');
- 		// get the magpie libary
- 			if (file_exists($relroot . 'wp-includes/rss.php')) {
-				require_once($relroot . 'wp-includes/rss.php');
-			} else if(file_exists($relroot . 'wp-includes/rss-functions.php')){
-				require_once($relroot . 'wp-includes/rss-functions.php');
-			} else {
-				function FeedListInitError(){
-				?>
-			
-				<div id="message" style="margin-top: 15px; padding: 10px;" class="updated fade">There was a problem initializing the feedlist plugin.  Make sure the file feedlist.php is in the feedList directory under your <strong>wp-content/plugins</strong> directory.</div>
-			<?
+
+
+
+
+			if($useMagPie){
+			// get the magpie libary
+				if (file_exists($relroot . 'wp-includes/rss.php')) {
+					require_once($relroot . 'wp-includes/rss.php');
+				} else if(file_exists($relroot . 'wp-includes/rss-functions.php')){
+					require_once($relroot . 'wp-includes/rss-functions.php');
+				} else {
+					function FeedListInitError(){
+					?>
+						<div id="message" style="margin-top: 15px; padding: 10px;" class="updated fade">There was a problem initializing the feedlist plugin.  Make sure the file feedlist.php is in the feedList directory under your <strong>wp-content/plugins</strong> directory.</div>
+					<?php
+					}
 				}
+			} else{
+				require_once('simplepie.php');
 			}
 		// end
 	// end
 
-	
-	
+
+
 	class FeedList {
 			var $dateFormat = "F j, Y, g:i a";
 			var $id;
@@ -93,12 +104,10 @@
 						$urlAndTitle =  preg_split("/~/", $thisFeed);
 						$feedUrl = trim($urlAndTitle[0]);
 						$feedTitle = trim($urlAndTitle[1]);
-						
+
 						$this->rs = $this->GetFeed($feedUrl);
 
-						if($this->rs){
-							$this->items = $this->rs->items;
-
+						if($this->items){
 							if($this->args['random']){
 								shuffle($this->items);
 							}
@@ -112,7 +121,7 @@
 								$this->output.= '<div class="feedTitle">'.$feedTitle.'</div>';
 								if($this->args['show_date']){
 									$this->output .= '<div class="feedDate">updated: '.
-									$this->NormalizeDate($this->rs) . '</div>';	
+									$this->NormalizeDate($this->rs) . '</div>';
 			//						fl_tz_convert($this->rs->last_modified,0,Date('I')).'</div>';
 								}
 
@@ -128,8 +137,8 @@
 
 				if($this->args['mergeFeeds']){
 					$this->output.=$this->Draw($feed,$this->args);
-				} 
-			
+				}
+
 				$this->output .= '</ul>';
 
 
@@ -168,10 +177,10 @@
 				$cacheTimeout = 21600;		// 21600 sec is 6 hours.
 				$connectionTimeout = 15;	// 15 seconds is default
 				$showRSSLinkListJS = true;
-				
+
 				$Language = 'en_US'; // Choose your language (from the available languages below,in the translations):
-				
-				
+
+
 				$Translations = array(); // Please send in your suggestions/translations:
 
 					// English:
@@ -185,7 +194,7 @@
 					// French:
 					$Translations['fr_FR'] = array();
 					$Translations['fr_FR']['ReadMore'] = 'Lisez davantage';
-				
+
 				$feedListFile = ABSPATH .  'wp-content\plugins\feeds.txt'; // IF you are going to use the random feedlist generator make sure this holds the correct name for your feed file:
 
 				// Build an array out of the settings and send them back:
@@ -226,9 +235,10 @@
 							'mergeFeeds'=>false,
 							'show_date_per_item' => false,
 							'show_description_only' => false,
-							'no_follow_on' => false
+							'no_follow_on' => false,
+							'language'=> $settings['language']
 						);
-			
+
 			}
 		/* end basic settings */
 			function BuildFeedOutput(){
@@ -239,8 +249,7 @@
 
 
 				$this->output = '';
-				if($this->rs){
-					$this->items = $this->rs->items;
+				if($this->items){
 					if($this->args['random']){
 						shuffle($this->items);
 					}
@@ -303,7 +312,7 @@
 						else{
 							$thisDescription = $item['content']['encoded'];
 						}
-						
+
 						// Handle max_characters and max_char_wordbreak before the htmlentities makes it more complicated:
 						if (!empty($this->args['max_characters']) && is_numeric($this->args['max_characters']))
 						{
@@ -317,9 +326,9 @@
 								{
 									$thisDescription = substr($thisDescription, 0, $max_char_pos);
 								}
-							} 
+							}
 
-						} else if ($encoding) { 
+						} else if ($encoding) {
 							//further really weak attempt at internationalization
 							$thisDescription = html_entity_decode($thisDescription, ENT_QUOTES, "UTF-8");
 						}
@@ -328,7 +337,7 @@
 						$linkTitle = strip_tags($linkTitle);
 						$linkTitle = str_replace(array("\n", "\t", '"'), array('', '', "'"), $linkTitle);
 						$linkTitle = substr($linkTitle, 0, 300);
-	
+
 						// if we are only showing the description we don't need the separator..
 						if (strlen(trim($thisDescription)) && !$this->args['show_description_only'])
 						{
@@ -401,7 +410,7 @@
 						$this->output .= $this->args['before'].$thisLink.$thisItemDate.$extraData;
 					}
 					if (is_numeric($this->args['max_characters']) && $this->args['max_characters'] > 0) {
-						$this->output .= '<div class="ReadMoreLink"><a ' . $target .' href="'.htmlentities(utf8_decode(transfromLinkURL($item['link']))).' ">'.$settings["translations"][$settings["language"]]['ReadMore'].'</a> &nbsp; </div>';
+						$this->output .= '<div class="ReadMoreLink"><a ' . $target .' href="'.htmlentities(utf8_decode(transfromLinkURL($item['link']))).' ">'.$settings["translations"][$this->args["language"]]['ReadMore'].'</a> &nbsp; </div>';
 					}
 
 					$this->output .= $this->args['after'];
@@ -434,7 +443,7 @@
 					array_push($newItems,$item);
 				}
 				return $newItems;
-			} 
+			}
 
 			function NormalizeDate($item){
 				$d="";
@@ -454,7 +463,7 @@
 
 			function TimezoneConvert($datetime,$tz_from,$tz_to,$format='d M Y h:ia T'){
 			   return date($format,strtotime($datetime)+(3600*($tz_to - $tz_from)));
-			} 
+			}
 
 			function MakeNumericOnly($val){
 				return ereg_replace( '[^0-9]+', '', $val);
@@ -497,12 +506,12 @@
 
 					array_multisort($sortByLower, $sort[1], $sort[2], $this->items);
 				}
-				
+
 				return $this->items;
 			}
 
 			function LoadFile($file){
-				/*	
+				/*
 					load the $feedListFile  contents into an array, using the --NEXT-- text as
 					a delimeter between feeds and a tilde (~) between URL and TITLE
 				*/
@@ -514,7 +523,7 @@
 				$this->args = $this->AssignDefaults();
 				$a = array();
 				foreach($this->args as $d=>$v){
-					if($this->args[$d] === 'true') { 
+					if($this->args[$d] === 'true') {
 						$a[$d] = 1;
 					}else if($this->args[$d] === 'false'){
 						$a[$d] = 0;
@@ -549,9 +558,19 @@
 				$this->feed = false;
 				if(function_exists('fetch_rss')){
 					$this->feed =  fetch_rss($feedUrl);
-				} 
+					if($this->feed){
+						$this->items = $this->feed->items;
+					}
+				}elseif(function_exists('simplepie_fetch_rss')) {
+					$this->feed = simplepie_fetch_rss($feedUrl,!$this->args['ignore_cache'],$settings["cacheTimeout"]);
+					if($this->feed){
+						$this->items = $this->feed["items"];
+					}
+				}else {
+					print ('rss functionality not available');
+				}
 				return $this->feed;
-				
+
 			}
 
 			function InitializeReader($ignore_cache){
@@ -629,7 +648,7 @@
 			$feed->Debug("called");
 			return $feed->FeedListFile();
 		}
-		
+
 		function feedListFilter($args){
 			$args = explode(",",$args[1]);
 
@@ -687,10 +706,10 @@
 		}
 
 
-		
+
 		if(function_exists('register_deactivation_hook'))
 		{
-			register_deactivation_hook(__FILE__, 'cleanupFeedlistCache'); 
+			register_deactivation_hook(__FILE__, 'cleanupFeedlistCache');
 		}
 
 		function cleanupFeedListCache(){
@@ -700,57 +719,57 @@
 		}
 
 
-if(function_exists('add_action')) { 
-	      function rssLinkList_JS(){ 
-	 
-	            $jsstring = '<script type="text/javascript"><!-- 
-	 
-	            function addEvent(elm, evType, fn, useCapture) 
-	            // addEvent and removeEvent 
-	            // cross-browser event handling for IE5+,  NS6 and Mozilla 
-	            // By Scott Andrew 
-	            { 
-	              if (elm.addEventListener){ 
-	                  elm.addEventListener(evType, fn, useCapture); 
-	                  return true; 
-	              } else if (elm.attachEvent){ 
-	                  var r = elm.attachEvent("on"+evType, fn); 
-	                  return r; 
-	              } else { 
-	                  // alert("Handler could not be removed"); 
-	              } 
-	            }  
-	            function externalLinks() { 
-	             if (!document.getElementsByTagName) return; 
-	             var anchors = document.getElementsByTagName("a"); 
+if(function_exists('add_action')) {
+	      function rssLinkList_JS(){
+
+	            $jsstring = '<script type="text/javascript"><!--
+
+	            function addEvent(elm, evType, fn, useCapture)
+	            // addEvent and removeEvent
+	            // cross-browser event handling for IE5+,  NS6 and Mozilla
+	            // By Scott Andrew
+	            {
+	              if (elm.addEventListener){
+	                  elm.addEventListener(evType, fn, useCapture);
+	                  return true;
+	              } else if (elm.attachEvent){
+	                  var r = elm.attachEvent("on"+evType, fn);
+	                  return r;
+	              } else {
+	                  // alert("Handler could not be removed");
+	              }
+	            }
+	            function externalLinks() {
+	             if (!document.getElementsByTagName) return;
+	             var anchors = document.getElementsByTagName("a");
 				 var newwindows =0;
-	             for (var i=0; i<anchors.length; i++) { 
-	               var anchor = anchors[i]; 
+	             for (var i=0; i<anchors.length; i++) {
+	               var anchor = anchors[i];
 	               if (anchor.getAttribute("href") && anchor.getAttribute("rel") == "external") {
-	                        anchor.setAttribute("target","_blank"); 
+	                        anchor.setAttribute("target","_blank");
 							newwindows++;
 					}
-	             } 
-	            } 
-	 
-	            addEvent(window, "load", externalLinks); 
+	             }
+	            }
 
-	            //--> 
-	            </script> 
-	            '; 
-	 
-	 
-	            echo $jsstring; 
+	            addEvent(window, "load", externalLinks);
+
+	            //-->
+	            </script>
+	            ';
+
+
+	            echo $jsstring;
 	      }
 
 
 	$jsFeed = new FeedList('');
 	$settings = $jsFeed->GetSettings();
-	 
-	if($settings["showRSSLinkListJS"]){ 
-		  add_action('wp_head', 'rssLinkList_JS'); 
-	} 
+
+	if($settings["showRSSLinkListJS"]){
+		  add_action('wp_head', 'rssLinkList_JS');
+	}
 }
-	 
-	 
+
+
 ?>

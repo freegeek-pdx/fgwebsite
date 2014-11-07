@@ -3,8 +3,9 @@ Contributors: finalcut
 Donate Link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bill%40doxie%2eorg&item_name=Feedlist&no_shipping=0&no_note=1&tax=0&currency_code=USD&lc=US&bn=PP%2dDonationsBF&charset=UTF%2d8
 Tags: rss, atom, feeds, listings
 Requires at least: 1.5
-Tested up to: 2.8.4
-Stable tag: 2.51
+Tested up to: 3.3  (php 5.3.5)
+Stable tag: 2.70.00
+License: GPLv2 or later	(same as wordpress uses).  Truth be told I don't really understand all of the different open source licenseing options.  See the Description for more info.
 
 Allows you to display lists of links from an rss or atom feed on your blog.
 
@@ -18,7 +19,8 @@ Allows you to display lists of links from an rss or atom feed on your blog.
 
 	Secondary inspiration for the ATOM integration comes from James Lewis at http://jameslewis.com - I had been thinking about doing it and he did it which pushed me to make the integration.
 
-
+	Finally: A bit more info on the license: I'll say that you can use the source code in this plugin however you want.  If you change it I won't help you fix things.  If you sell it - great; I wish I had made some money off of it.
+	You can use it for any purpose you imagine just don't blame me if it doesn't work as well as you'd hoped while imagining.
 
 == Installation ==
 	INSTALLATION:
@@ -35,7 +37,7 @@ Allows you to display lists of links from an rss or atom feed on your blog.
 
 	UPGRADING:
 
-	1.) jot down your configuration information in feedList.php 
+	1.) jot down your configuration information in feedList.php
 
 	2.) Overwrite your feedlist.php file
 
@@ -43,23 +45,29 @@ Allows you to display lists of links from an rss or atom feed on your blog.
 
 	4.) enjoy
 
+== Upgrade Notice ==
+	Why wouldn't you want the latest and greatest version?
+
+== Screenshots ==
+	Sorry, I don't have shots for this.  It just displays text in an ordered or unordered list - so I'm not sure a screen shot is really necessary.
+
 
 
 == Change Log ==
-	DATE					MODIFICATION						
+	DATE					MODIFICATION
 		AUTHOR
 -------------------------------------------------------------------------------------------------------
-12 October 2005			Initial Version						
+12 October 2005			Initial Version
 		Bill Rawlinson - released version 2.0B
-							rewrite of rssLinkedList  NOTE a 
-major change - the caching is handled 
-by Wordpress now so you don't need a 
+							rewrite of rssLinkedList  NOTE a
+major change - the caching is handled
+by Wordpress now so you don't need a
 cache directory.
 
 
 	06 Nov 2005			Simplified Interface and Rewrite Docs
 
-	15 Nov 2005			Fixed some bugs 
+	15 Nov 2005			Fixed some bugs
 
 	01 Dec 2005			Fixed a bug where the description wasn't being shown for atom feeds
 						and cleaned up the description display code
@@ -96,18 +104,28 @@ cache directory.
 	25 Nov 2009			Added filter for posts to use the random feed file
 
 	19 Jan 2010			Added new option of to display rel="nofollow" on the links.  Option is called "no_follow_on" and by default is set to false.
+
+	08 Apr 2010			Added support for SimplePIE feed parsing as an alternative to the default magpie choice.
+
+	29 Oct 2010			Made the language option request specific while keeping the global setting as the default choice
+
+	09 Jan 2012			Fixed mistake that was causing eof error when php demands <?php instead of just a <? on line 37
+
+	10 Jan 2012			prior tag was broken.. need to fix directory structure.
+
+	06 Feb 2013			Fix security vulnerability that allowed potential cross site scripting attack http://secunia.com/advisories/42197/
 -------------------------------------------------------------------------------------------------------
-  
+
 == LICENSE ==
-	This program is free software; you can redistribute it and/or 
-modify it under the terms of the GNU General Public License 
-(GPL) as published by the Free Software Foundation; either 
-version 2 of the License, or (at your option) any later 
+	This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+(GPL) as published by the Free Software Foundation; either
+version 2 of the License, or (at your option) any later
 version.
 
 
 == POTENTIAL ISSUES ==
-	May not handle internationalization very well.  Has seen very 
+	May not handle internationalization very well.  Has seen very
 limited testing with non UTF-8 encoding.
 
 == KNOWN BUG ==
@@ -115,8 +133,8 @@ limited testing with non UTF-8 encoding.
 
 
 == USAGE ==
-	From anywhere in your WordPress template, call the function 
-"feedList(...)", which takes the following parameters (all 
+	From anywhere in your WordPress template, call the function
+"feedList(...)", which takes the following parameters (all
 parameters have default values) you can pass in either a named array of parameters or
 pass the parameters in order as follows:
 
@@ -125,8 +143,8 @@ pass the parameters in order as follows:
 	* num_items (default: 15) - The number of items to display
 	* show_description (default: true) - Whether or not to display the "description" field
 	* random (default: false) - Whether or not to randomize the items
-	* before (default: "<li>") - Tag placed before the item	
-	* after (default: "</li>") - Tag placed after the item	
+	* before (default: "<li>") - Tag placed before the item
+	* after (default: "</li>") - Tag placed after the item
 	* description_separator (default: " - ") - Between the link and the item
 	* encoding (default: false) - Change to true if you are reading in a ISO-8859-1 formatted file.  Basically, if you see a bunch of question marks (?) in your titles set this to true and see if it fixes the problem.
 	* sort (default: "none") - takes one of three values; none, asc, desc
@@ -155,14 +173,14 @@ pass the parameters in order as follows:
 			feedList(array("rss_feed_url"=>"http://del.icio.us/rss/finalcut",
 						   "additional_fields"=>'summary~dc.subject'
 						   )
-			
+
 			In this example the list of fields is summary and dc.subject - dc.subject drills down into the rss structure to reach the node <item><dc><subject></subject></dc></title> - del.icio.us currently exports the list of tags
 			in the dc.subject field.
 	* max_characters - The maximum number of characters to return. If you want to show everything, set to 0 (default).
 			NOTE: if this is set (non 0 number) then any HTML entities will not be converted back to HTML to make sure your sites HTML doesn't get broken.
 
 	* max_char_wordbreak - Used only if max_characters is NOT 0.  Prevent breaking up words.
-			true - we cut on the last space before max_characters. 
+			true - we cut on the last space before max_characters.
 			false - cuts right at the max_characters point
 
 	* show_description_only - provides a mechanism for turning off the item titles
@@ -171,18 +189,23 @@ pass the parameters in order as follows:
 	* no_follow_on - flag for turning on, or off, the rel="nofollow" attribute on links
 			true - include rel="nofollow" with each link in the feed
 			false - don't include rel="nofollow"  (DEFAULT)
-				
+	* language -	what language to show the "Read More..." link in when the description field is longer than max_characters.  By default it uses the language setting that is in
+			the plugin around line 181 which, by default, is en_US.  As of this date the languages supported are:
+				fr_FR - French [shows, Lisez davantage]
+				nl_NL - Dutch [shows, lees verder]
+				en_US - US English [shows, Read more...]
+
 	FILTER USAGE
 
 		* basic:
-			<!--rss:[URL]--> 
+			<!--rss:[URL]-->
 
 			NOTE if you aren't using named parameters with the fitler then ONLY provide the url after the rss: or else it won't work.  Left as rss: for backwards compatability but will work with ATOM feeds as well.
 
 		* NAMED PARAMETERS
 			<!--rss:rss_feed_url:=http://del.icio.us/rss/finalcut/wishlist,num_items:=5,random:=true-->
 
-			NOTE when using the filter and named parameters ALL parameters including the URL must be named. Also note that if you are providing different HTML for the before or after parameter you must escape it.  For instance if you want before='<li>' then you must pass before='&lt;li&gt;'  
+			NOTE when using the filter and named parameters ALL parameters including the URL must be named. Also note that if you are providing different HTML for the before or after parameter you must escape it.  For instance if you want before='<li>' then you must pass before='&lt;li&gt;'
 
 			Finally note the whole thing must be on ONE line.  No line breaks or else it won't work.
 
@@ -192,7 +215,7 @@ pass the parameters in order as follows:
 
 			NOTE: if you aren't using named parameters with the filter only provide the full path to the file or else it won't work.
 			NOTE: if you don't provide a filepath the default one set in the file, feedlist.php near line 187 will be used (typically siteroot\wp-content\plugins\feeds.txt)
-			
+
 			* Named Parameters
 			<!--rssFile:feedsToShow:=1,num_items:=3,file:=c:\dev\websites\wordpress\wp-content\plugins\feeds2.txt-->
 
@@ -203,7 +226,7 @@ pass the parameters in order as follows:
 
 	NAMED PARAMETER EXAMPLE -- PREFERRED METHOD
 		<ol>
-		<?php 
+		<?php
 			feedList(array("rss_feed_url"=>"http://www.auf-der-hoehe.de/index.php?id=23&type=333&feed_id=71&no_cache=1",
 							"num_items"=>10,
 							"show_description"=>false,
@@ -212,14 +235,14 @@ pass the parameters in order as follows:
 							"new_window"=>true,
 							"show_date"=>true
 					)
-			); 
+			);
 		?>
 		</ol>
 
 	BASIC
 		<ol>
-		 <?php 
-			feedList("http://del.icio.us/rss/finalcut"); 
+		 <?php
+			feedList("http://del.icio.us/rss/finalcut");
 		 ?>
 		</ol>
 
@@ -231,8 +254,8 @@ pass the parameters in order as follows:
 		You can also combine rss calls into one html list simply by wrapping multiple rssLinkList function calls in one set of html list tags.  Notice I only specify the first parameter here.  All parameters have defaults so the only one you really need to provide is the URL.
 
 		<ol>
-		 <?php 
-			feedList("http://del.icio.us/rss/finalcut"); 
+		 <?php
+			feedList("http://del.icio.us/rss/finalcut");
 			feedList("http://www.43things.com/rss/uber/author?username=FinalCut");
 		 ?>
 		</ol>
@@ -251,6 +274,11 @@ pass the parameters in order as follows:
 	Remember, if you don't want your items to be displayed as an html list - you need to override the default parameters of "before" and "after" in the function call.
 
 
+	-------------------
+	SIMPLE PIE
+	-------------------
+	If your feeds don't show up properly OR you just want to use a more modern feed parsing engine go into feedList.php and change $useMagPie = false; instead of true.
+	Eventually this will be the only way I pull back feeds but to insure backward compatability at the moment magpie is remaining the default parser.
 
 
 	-------------------
@@ -274,13 +302,13 @@ pass the parameters in order as follows:
 		<?php randomFeedList() ?>
 
 
-	ADVANCED: 
+	ADVANCED:
 		<?php randomFeedList("feedsToShow=2&num_items=3") ?>
 
 		there are ALOT of parameters you can pass into randomFeedList.  I am taking a different approach to it here than I do elsewhere in the feedList plugin.
-		If you want to pass parameters they must be passed in as shown separating each additional name/value pair with an ampersand &.  
+		If you want to pass parameters they must be passed in as shown separating each additional name/value pair with an ampersand &.
 
-	
+
 	PARAMETERS
 	file - the path to your feedfile (default: '.wp-content/plugins/feeds.txt')
 	feedsToShow - the number of feeds to poll from your feedfile (default: 5)
@@ -299,7 +327,7 @@ pass the parameters in order as follows:
 	additional_fields - any additional fields to display with the item.  (default: an empty string)
 
 
-	
+
 	CRAZY ADVANCED CALLING:
 
 		if you want to specify all of those parameters in one call
@@ -327,3 +355,6 @@ pass the parameters in order as follows:
 		Obviously you'd want to add a little bit of logic to make sure you needed the & and not the ? before appending your new url argument (I leave that to you).  Likewise
 		this is a pretty weak example but hopefully it illustrates the extension point well enough.  One user is using this extension point to reroute all URls to a different location
 		before they go off to their actual destination (not sure why).
+
+== Frequently Asked Questions ==
+	Nobody really asks me any questions that aren't already covered in this document.  But you might be the first to get a question in here.

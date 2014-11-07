@@ -1,18 +1,20 @@
 === Exclude Pages ===
 Contributors: simonwheatley
-Donate link: http://www.simonwheatley.co.uk/wordpress-plugins/
+Donate link: http://www.simonwheatley.co.uk/wordpress/
 Tags: get_pages, navigation, menu, exclude pages, hide pages
 Requires at least: 2.2.3
-Tested up to: 2.8.4
-Stable tag: 1.8
+Tested up to: 3.4
+Stable tag: 1.92
 
-This plugin adds a checkbox, “include this page in menus”, uncheck this to exclude pages from the 
-page navigation that users see on your site.
+This plugin adds a checkbox, “include this page in menus”, uncheck this to exclude pages from the page navigation that users see on your site.
 
 == Description ==
 
-This plugin adds a checkbox, “include this page in menus”, uncheck this to exclude pages from the 
-page navigation that users see on your site.
+This plugin adds a checkbox, “include this page in menus”, uncheck this to exclude pages from the page navigation that users see on your site.
+
+Any issues: [contact me](http://www.simonwheatley.co.uk/contact-me/).
+
+== Advanced Usage ==
 
 It is possible to temporarily pause and resume the effect of Exclude Pages by using the new `<?php pause_exclude_pages(); ?>` and `<?php resume_exclude_pages(); ?>` templates tags. The following code will show a list of all pages in your site, even those normally hidden:
 
@@ -20,13 +22,15 @@ It is possible to temporarily pause and resume the effect of Exclude Pages by us
 <?php wp_list_pages('title_li=<h2>Pages</h2>' ); ?>
 <?php resume_exclude_pages(); ?>`
 
-Other plugin authors: the plugin does not operate on wp_list_pages while the user is on an admin page, if this is an issue you can take advantage of the `ep_admin_bail_out` filter and create a filter function which returns false to allow Exclude Pages to operate in the admin area.
+You can also get an array the IDs of the pages which are excluded by calling the function `ep_get_excluded_ids();`, you can then use these IDs as you wish (e.g. feed them into raw MySQL queries).
 
-Any issues: [contact me](http://www.simonwheatley.co.uk/contact-me/).
+Note to other plugin authors:
 
-=== Incompatible With ===
+The plugin does not operate on wp_list_pages while the user is on an admin page, if this is an issue you can take advantage of the `ep_admin_bail_out` filter and create a filter function which returns false to allow Exclude Pages to operate in the admin area.
 
-These plugins and themes don't use the standard WordPress functions to create it's menu, neither does it pass it's list of pages through the get_pages filter. To get them to work you will need to track down the bit of code in the theme/plugin which gets the pages and change it to apply the filter "get_pages" (I cannot be responsible for any unforseen effects of the changes you make, so please test thoroughly). The change to getting pages will probably look something like this:
+Another note:
+
+If your plugins or themes don't use the standard WordPress functions to create their menus then they won't work. To get them to work you will need to track down the bit of code in the theme/plugin which gets the pages and change it to apply the filter "get_pages" (I cannot be responsible for any unforseen effects of the changes you make, so please test thoroughly). The change to getting pages will probably look something like this:
 
 `$pages = apply_filters( 'get_pages', $pages );`
 
@@ -38,6 +42,53 @@ Exclude pages is incompatible with:
 * [Phantom theme](http://wordpress.org/extend/themes/phantom) - This theme
 
 == Change Log ==
+
+= v1.92 =
+
+* BUGFIX: Fix deprecated notice when WP_DEBUG is true, thanks [hansfordmc](http://wordpress.org/support/topic/plugin-exclude-pages-cant-update-pages)
+* Tested up to WordPress v3.3
+
+= v1.91 2011/08/26 =
+
+* BUGFIX: Prevent notice from appearing, thanks [Ray](http://wordpress.org/support/topic/notice-undefined-index-1)
+
+= v1.9 2010/6/16 =
+
+* Tested with WP 3.2.1
+* ENHANCEMENT: Detects the use of WP menus and advises the user accordingly
+
+= v1.8.4 2010/5/21 =
+
+* LOCALISATION: Italian translation courtesy of [Gianni Diurno](http://gidibao.net/index.php/portfolio/)
+
+= v1.8.3 2010/5/20 =
+
+* LOCALISATION: Polish translation courtesy of [Pawel, Siedlecki Portal Informacyjnie Najlepszy](http://www.spin.siedlce.pl)
+* LOCALISATION: German translation courtesy of [Meini, Utech Computer Solutions](http://utechworld.com)
+
+= v1.8.2 2010/5/14 =
+
+Dear Non-English Exclude Pages Users,
+
+This release includes the facility for Exclude Pages to be translated into languages other than English. Please [contact me](http://www.simonwheatley.co.uk/contact-me/) if you want to translate Exclude Pages into your language.
+
+Sorry it took so long.
+
+Best regards,
+
+Simon
+
+* DROPPED SUPPORT FOR WORDPRESS VERSIONS PRIOR TO VERSION 2.7
+* BUGFIX: Everything was reporting that it was excluded by an ancestor for some reason. Crazy. Fixed now.
+* LOCALISATION: Added POT file! Woo hoo!
+
+= v1.8.1 2010/4/19 =
+
+* BUGFIX: Check for existence of parent object before attempting to use it. (Thanks to Robert Kosara for the bug report.)
+
+= v1.8 2009/10/27 =
+
+* BUGFIX: PHP 5.3 doesn't like the fact that parameters marked as passed by reference as passed as value. Params now not marked as passed by ref.
 
 = v1.7 2009/7/29 =
 
